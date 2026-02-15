@@ -3,4 +3,4 @@ Git Assignment
 =======
 # git-assignment
 Team Members:
--Faizan Kalam
+- Faizan Kalam, Jenny Tran
