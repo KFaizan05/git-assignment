@@ -21,3 +21,6 @@ complex ingredient labels, especially for individuals with allergies,
 dietary restrictions, or ethical food preferences. 
 
 
+=======
+- Faizan Kalam, Jenny Tran, Janhavi Joshi
+>>>>>>> ce7320c701d75401d06ebc79856d5c51ae7370b3
