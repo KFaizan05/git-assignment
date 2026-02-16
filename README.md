@@ -1,7 +1,7 @@
 LabelWise
 
 Team Members:
-- Faizan Kalam, Jenny Tran, Keshav Ravi, Naomi Shah
+- Faizan Kalam, Jenny Tran, Keshav Ravi, Naomi Shah, Janhavi Joshi
 
 Project Description:
 
