@@ -1,7 +1,7 @@
 LabelWise
 
 Team Members:
-- Faizan Kalam, Jenny Tran
+- Faizan Kalam, Jenny Tran, Keshav Ravi
 
 Project Description:
 
