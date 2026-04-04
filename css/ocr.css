@@ -1,0 +1,148 @@
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+  font-family: "Inter", sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  background: #f5f8f7;
+}
+
+.ocr-loading-page {
+  width: 100%;
+  max-width: 430px;
+  min-height: 100vh;
+}
+
+.ocr-shell {
+  min-height: 100vh;
+  padding: 48px 24px;
+  background: linear-gradient(135deg, #6BA89E 0%, #5A978C 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hero-loader {
+  margin-top: 140px;
+  margin-bottom: 32px;
+}
+
+.hero-ring {
+  width: 128px;
+  height: 128px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.2);
+  display: grid;
+  place-items: center;
+  animation: pulse 1.8s ease-in-out infinite;
+}
+
+.hero-icon {
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  color: white;
+  font-size: 42px;
+  font-weight: 700;
+  transform: rotate(45deg);
+}
+
+h1 {
+  margin: 0 0 12px;
+  color: white;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 32px;
+  text-align: center;
+}
+
+.subtitle {
+  margin: 0 0 32px;
+  color: #A8D5BA;
+  font-size: 16px;
+  line-height: 24px;
+  text-align: center;
+}
+
+.steps {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.step {
+  width: 100%;
+  min-height: 60px;
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.1);
+  border: 1.78px solid rgba(255,255,255,0.2);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.step.pending {
+  opacity: 0.5;
+}
+
+.step-icon {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  display: grid;
+  place-items: center;
+}
+
+.step-icon.check {
+  border-radius: 999px;
+  background: #05DF72;
+  color: white;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.step-icon.dot {
+  border-radius: 999px;
+  background: #99A1AF;
+}
+
+.step-icon.spinner {
+  border-radius: 999px;
+  border: 2px solid rgba(244, 209, 102, 0.35);
+  border-top-color: #F4D166;
+  animation: spin 0.9s linear infinite;
+}
+
+.step-text {
+  color: white;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.96;
+  }
+  50% {
+    transform: scale(1.04);
+    opacity: 1;
+  }
+}

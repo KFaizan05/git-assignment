@@ -1,0 +1,261 @@
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+  font-family: "Inter", sans-serif;
+  background: #f5f8f7;
+  color: #111827;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+}
+
+.results-page {
+  width: 100%;
+  max-width: 430px;
+  min-height: 100vh;
+  background: white;
+}
+
+.results-header {
+  background: linear-gradient(135deg, #6BA89E 0%, #5A978C 100%);
+  padding: 48px 24px 20px;
+  position: relative;
+}
+
+.back-btn {
+  position: absolute;
+  left: 24px;
+  top: 44px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.header-title-wrap h1 {
+  margin: 36px 0 0;
+  color: white;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 32px;
+}
+
+.results-content {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.card,
+.product-card,
+.status-card {
+  background: white;
+  border-radius: 14px;
+}
+
+.product-card {
+  border: 1.78px solid #E5E7EB;
+  padding: 18px;
+}
+
+.product-card h2 {
+  margin: 0 0 8px;
+  color: #4A7C72;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 28px;
+}
+
+.product-card p {
+  margin: 0;
+  color: #6A7282;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.status-card {
+  padding: 24px;
+  text-align: center;
+  border: 1.78px solid #FFF085;
+  background: #FEFCE8;
+}
+
+.status-icon-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.status-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 999px;
+  background: #FEFCE8;
+  border: 2px solid #F0B100;
+  color: #F0B100;
+  font-size: 40px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.status-card h3 {
+  margin: 0 0 8px;
+  color: #F0B100;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 32px;
+}
+
+.status-card p {
+  margin: 0;
+  color: #4A5565;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.analysis-section h3,
+.raw-ocr-card h3 {
+  margin: 0 0 16px;
+  color: #4A7C72;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 28px;
+}
+
+.ingredient-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ingredient-item {
+  border-radius: 14px;
+  padding: 16px 18px;
+  border: 1.78px solid transparent;
+}
+
+.ingredient-item.safe {
+  background: #F0FDF4;
+  border-color: #B9F8CF;
+}
+
+.ingredient-item.caution {
+  background: #FEFCE8;
+  border-color: #FFF085;
+}
+
+.ingredient-item.unsafe {
+  background: #FEF2F2;
+  border-color: #FFC9C9;
+}
+
+.ingredient-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.ingredient-name {
+  color: #4A7C72;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+}
+
+.ingredient-note {
+  color: #4A5565;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12px;
+  line-height: 16px;
+  white-space: nowrap;
+}
+
+.tag.safe {
+  background: #B9F8CF;
+  color: #008236;
+}
+
+.tag.caution {
+  background: #FFF085;
+  color: #A65F00;
+}
+
+.tag.unsafe {
+  background: #FFC9C9;
+  color: #C10007;
+}
+
+.raw-ocr-card {
+  border: 1.78px solid #E5E7EB;
+  padding: 18px;
+}
+
+.text-box {
+  margin: 0;
+  background: #F8FAFC;
+  border-radius: 12px;
+  padding: 14px;
+
+  width: 100%;
+  max-width: 100%;
+  min-height: 120px;
+  max-height: 220px;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+
+  font-size: 14px;
+  line-height: 1.6;
+  box-sizing: border-box;
+}
+
+.primary-action,
+.secondary-action {
+  width: 100%;
+  height: 56px;
+  border-radius: 14px;
+  border: none;
+  font-family: "Inter", sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.primary-action {
+  background: linear-gradient(90deg, #6BA89E 0%, #5A978C 100%);
+  color: white;
+  box-shadow: 0 4px 6px -4px rgba(0, 0, 0, 0.10),
+              0 10px 15px -3px rgba(0, 0, 0, 0.10);
+}
+
+.secondary-action {
+  background: #A8D5BA;
+  color: #4A7C72;
+}
