@@ -1,0 +1,69 @@
+<!-- 
+Jenny Tran
+This HTML file is the ParsingPage UI. OCR processing is done here
+the logic of OCR proccessing is in ocr.js
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scan Results</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/results.css" />
+</head>
+<body>
+  <main class="results-page">
+    <header class="results-header">
+      <button class="back-btn" id="backBtn" type="button" aria-label="Back">←</button>
+      <div class="header-title-wrap">
+        <h1>Scan Results</h1>
+      </div>
+    </header>
+
+    <section class="results-content">
+      <section class="product-card">
+        <h2 id="productName">Scanned Product</h2>
+        <p id="brandName">Brand: Unknown</p>
+      </section>
+
+      <section class="status-card caution">
+        <div class="status-icon-wrap">
+          <div class="status-icon">!</div>
+        </div>
+        <h3 id="statusTitle">Caution Required</h3>
+        <p id="statusMessage">This product may contain concerning ingredients.</p>
+      </section>
+
+      <section class="analysis-section">
+        <div class="section-title-row">
+          <h3>Ingredient Analysis</h3>
+        </div>
+
+        <div id="ingredientList" class="ingredient-list">
+          <!-- JS fills this -->
+        </div>
+      </section>
+
+      <section class="card raw-ocr-card">
+        <h3>Raw Text</h3>
+        <pre id="rawOcrText" class="text-box">No text found.</pre>
+      </section>
+
+      <button class="primary-action" id="alternativesBtn" type="button">
+        View Safe Alternatives →
+      </button>
+
+      <button class="secondary-action" id="homeBtn" type="button">
+        Back to Home
+      </button>
+    </section>
+  </main>
+
+  <script src="../js/results.js"></script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Up</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Adjust path if needed -->
+  <link rel="stylesheet" href="../css/logs.css">
+</head>
+
+<body class="login-page">
+  <div class="container">
+    <img src="images/LabelWise.png" class="logo">
+    <div class="card">
+      <h2>Create Account</h2>
+
+      <form>
+
+        <!-- EMAIL -->
+        <label for="email">Email</label>
+        <input id="email" type="email" placeholder="Enter your email" required>
+
+        <!-- PASSWORD -->
+        <label for="password">Password</label>
+        <input id="password" type="password" placeholder="Enter your password" required>
+
+        <!-- PASSWORD RULES -->
+        <div class="password-rules">
+          <p id="rule-length">• At least 8 characters</p>
+          <p id="rule-uppercase">• One uppercase letter</p>
+          <p id="rule-special">• One number or special character</p>
+        </div>
+
+        <!-- CONFIRM PASSWORD -->
+        <label for="confirmPassword">Confirm Password</label>
+        <input id="confirmPassword" type="password" placeholder="Confirm your password" required>
+
+        <!-- SIGN UP BUTTON -->
+        <button type="submit" class="primary-btn">Sign Up</button>
+
+      </form>
+
+      <!-- LOGIN REDIRECT -->
+      <p class="signup-text">
+        Already have an account? 
+        <a href="LoginPage.html">Login</a>
+      </p>
+    </div>
+
+    <!-- Footer -->
+    <p style="color: white; margin-top: 16px; font-size: 14px;">
+      © 2026 LabelWise. Making food safety simple.
+    </p>
+
+  </div>
+
+  <script>
+    // Basic password validation (for demo / TA clarity)
+
+    const password = document.getElementById("password");
+
+    password.addEventListener("input", () => {
+      const value = password.value;
+
+      document.getElementById("rule-length").style.color =
+        value.length >= 8 ? "green" : "red";
+
+      document.getElementById("rule-uppercase").style.color =
+        /[A-Z]/.test(value) ? "green" : "red";
+
+      document.getElementById("rule-special").style.color =
+        /[0-9!@#$%^&*]/.test(value) ? "green" : "red";
+    });
+  </script>
+
+</body>
+</html>

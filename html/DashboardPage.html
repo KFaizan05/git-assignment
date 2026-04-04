@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/dashboard.css" />
+</head>
+<body>
+  <main class="dashboard-page">
+    <section class="dashboard-shell">
+
+      <header class="dashboard-header">
+        <div class="header-row">
+            <img src="./images/LabelWiseIcon.png" class="header-logo" alt="Logo"/>
+            
+            <div class="header-text">
+                <h1>Welcome back!</h1>
+                <p>Let's find safe food for you</p>
+            </div>
+        <button class="setting-btn">
+            <img src="./images/SettingIcon.png" alt="Setting" class="setting-icon">
+            </button>        
+        </div>
+      </header>
+
+      <section class="dashboard-content">
+
+        <section class="section-block">
+          <h2>Quick Actions</h2>
+
+          <div class="quick-actions">
+            <a href="ScanPage.html" class="quick-card primary-action-card">
+              <div class="quick-icon">
+                <img src="./images/ScanIcon.png" class="quick-icon"/>
+              </div>
+              <span>Scan Product</span>
+            </a>
+            <button class="quick-card secondary-action-card" type="button">
+              <div class="quick-icon">
+                <img src="./images/ChatIcon2.png" class="quick-icon"/>
+              </div>
+              <span>AI Chef</span>
+            </button>
+          </div>
+        </section>
+
+        <section class="section-block">
+        <div class="section-header">
+            <h2>Your Dietary Profile</h2>
+            <button class="text-link" type="button">Edit</button>
+        </div>
+
+        <div id="dietaryProfileContainer" class="profile-card"></div>
+        </section>
+
+        <section class="section-block">
+        <div class="section-header">
+            <h2>Recent Scans</h2>
+            <button class="text-link" type="button">View All</button>
+        </div>
+
+        <div id="recentScansContainer" class="scan-list"></div>
+        </section>
+
+        <section class="safe-items-card">
+          <div class="safe-items-left">
+            <div class="safe-items-icon">✓</div>
+            <div>
+              <h3>My Safe Items</h3>
+              <p>View all approved products</p>
+            </div>
+          </div>
+        </section>
+
+      </section>
+
+      <nav class="bottom-nav">
+        <button class="nav-item active" type="button">
+          <div class="nav-icon">
+            <img src="./images/HomeIcon.png" class="nav-icon"/>
+          </div>
+          <span>Home</span>
+        </button>
+
+        <a href="ScanPage.html" class="nav-item nav-scan">
+          <div class="scan-fab">
+            <img src="./images/ScanIcon.png" class="nav-icon"/>
+          </div>
+          <span>Scan</span>
+        </a>
+
+        <button class="nav-item" type="button">
+          <div class="nav-icon">
+            <img src="./images/ChatIcon.png" class="nav-icon"/>
+          </div>
+          <span>AI Chef</span>
+        </button>
+
+        <button class="nav-item" type="button">
+          <div class="nav-icon">
+            <img src="./images/RecentIcon.png" class="nav-icon"/>
+          </div>
+          <span>History</span>
+        </button>
+      </nav>
+
+    </section>
+  </main>
+</body>
+</html>

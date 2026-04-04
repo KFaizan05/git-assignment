@@ -1,0 +1,62 @@
+<!-- 
+Jenny Tran
+This HTML file is the ScanPage UI. The logic of getting camera permissions,
+taking an image, and passing it to cropping page is in scan.js
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ingredient Scanner</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/scan.css" />
+</head>
+<body>
+  <main class="scanner-page">
+    <section class="camera-shell">
+      <header class="top-bar">
+        <button class="icon-btn" id="backBtn" type="button" aria-label="Back">
+            <img src="images/CancelIcon.png" class="icon-img"> </button>
+        <button class="icon-btn" type="button" aria-label="Flash">
+            <img src="images/FlashIcon.png" class="icon-img"> </button>
+      </header>
+
+      <div class="camera-stage">
+        <video id="video" autoplay playsinline muted></video>
+        <canvas id="captureCanvas" hidden></canvas>
+
+        <div class="overlay">
+          <div class="scan-frame" id="scanFrame">
+            <span class="corner top-left"></span>
+            <span class="corner top-right"></span>
+            <span class="corner bottom-left"></span>
+            <span class="corner bottom-right"></span>
+          </div>
+          <p class="hint">Align the ingredient label within the frame</p>
+        </div>
+      </div>
+
+      <footer class="bottom-bar">
+        <button class="small-action" id="uploadBtn" type="button">
+        <img src="images/ImageIcon.png" class="icon-bttn" alt="Upload"> </button>
+
+    <button class="capture-btn" id="scanBtn" type="button" aria-label="Capture and scan">
+        <span class="capture-outer">
+            <span class="capture-inner"></span>
+          </span>
+        </button>
+      </footer>
+    </section>
+  </main>
+
+  <input id="fileInput" type="file" accept="image/*" hidden />
+
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <script src="../js/scan.js"></script>
+</body>
+</html>
