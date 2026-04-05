@@ -1,669 +1,155 @@
-/* Faizan Kalam — main layout + recipe card (tokens: vars.css) */
+/* Author: Faizan Kalam */
 
-.ai-chatbot-faizan,
-.ai-chatbot-faizan * {
-  box-sizing: border-box;
-}
-
-.ai-chatbot-faizan {
-  background: var(--white);
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  height: 777.6px;
-  position: relative;
-  box-shadow: var(--shadow-card);
-  overflow: hidden;
-}
-
-.chatbot-recipe-screen {
-  background: var(--white);
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  width: 480px;
-  position: relative;
-  overflow: hidden;
-}
-
-/* Header */
+/* The top teal section containing the back button and branding */
 .container {
-  background: var(--grad-header);
-  flex-shrink: 0;
-  width: 480px;
+  background: #74A497; 
+  width: 100%;
   height: 152px;
-  position: relative;
-}
-
-.button {
-  width: 24px;
-  height: 24px;
-  position: absolute;
-  left: 24px;
-  top: 48px;
-}
-
-.icon {
-  width: 24px;
-  height: 24px;
-  position: absolute;
-  left: 0;
-  top: 0;
-  overflow: visible;
-}
-
-.container2 {
-  display: flex;
-  flex-direction: row;
-  gap: 12px;
-  align-items: center;
-  width: 432px;
-  height: 40px;
-  position: absolute;
-  left: 24px;
-  top: 88px;
-}
-
-.container3 {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 9999px;
-  padding: 0 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  position: relative;
-}
-
-.icon2 {
-  width: 24px;
-  height: 24px;
-  position: relative;
-  overflow: visible;
-}
-
-.heading-1 {
-  flex-shrink: 0;
-  position: relative;
-}
-
-.ai-chef-recipe {
-  color: var(--white);
-  font-family: var(--font-bold);
-  font-size: 20px;
-  line-height: 28px;
-  font-weight: 700;
-}
-
-/* Chat column */
-.container4 {
-  padding: 24px 24px 0 24px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  flex: 1;
-  width: 480px;
+  padding: 40px 24px 20px 24px;
+  flex-shrink: 0; /* Prevents the header from squishing on small screens */
   position: relative;
-  overflow: hidden;
 }
 
-.container5 {
+/* Layout for the top row (Back button and Language selector) */
+.header-top-row {
   display: flex;
-  justify-content: flex-end;
-  align-self: stretch;
-  flex-shrink: 0;
-  min-height: 64px;
-  position: relative;
-}
-
-.container6 {
-  background: var(--teal);
-  border-radius: 16px 6px 16px 16px;
-  padding: 12px 16px;
-  max-width: 100%;
-  position: relative;
-}
-
-.paragraph {
-  position: relative;
-}
-
-.give-me-quick-vegan-lunch-ideas-i-can-prepare-in-1 {
-  color: var(--white);
-  font-family: var(--font-reg);
-  font-size: 14px;
-  line-height: 20px;
-}
-
-.container7 {
-  display: flex;
-  flex-direction: row;
-  gap: 12px;
-  align-items: flex-start;
-  align-self: stretch;
-  position: relative;
-}
-
-.container8 {
-  background: var(--grad-mint);
-  border-radius: 9999px;
-  padding: 0 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  flex-shrink: 0;
-  position: relative;
-}
-
-.icon3 {
-  width: 20px;
-  height: 20px;
-  position: relative;
-  overflow: visible;
-}
-
-.container9 {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  flex: 1;
-  min-width: 0;
-  position: relative;
-}
-
-.container10 {
-  background: var(--gray-bg);
-  border-radius: 6px 16px 16px 16px;
-  padding: 12px 16px;
-  align-self: stretch;
-  position: relative;
-}
-
-.paragraph2 {
-  position: relative;
-}
-
-.perfect-i-ve-created-a-quick-and-delicious-vegan,
-.dyn-intro {
-  color: var(--text);
-  font-family: var(--font-reg);
-  font-size: 14px;
-  line-height: 20px;
-}
-
-/* Recipe card */
-.container11 {
-  background: var(--white);
-  border-radius: 16px;
-  border: 1.6px solid var(--mint);
-  padding: 2px;
-  display: flex;
-  flex-direction: column;
-  align-self: stretch;
-  position: relative;
-  overflow: hidden;
-}
-
-.container12 {
-  background: var(--grad-mint);
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  align-self: stretch;
-  position: relative;
-}
-
-.heading-2 {
-  align-self: stretch;
-  position: relative;
-}
-
-.quinoa-chickpea-power-bowl {
-  color: var(--teal-dark);
-  font-family: var(--font-bold);
-  font-size: 20px;
-  line-height: 28px;
-  font-weight: 700;
-}
-
-.container13 {
-  display: flex;
-  flex-direction: row;
-  gap: 16px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.container14,
-.container15,
-.container16 {
-  display: flex;
-  flex-direction: row;
-  gap: 4px;
-  align-items: center;
-}
-
-.icon4,
-.icon5,
-.icon6 {
-  width: 16px;
-  height: 16px;
-  position: relative;
-  overflow: visible;
-}
-
-.text,
-.text2 {
-  position: relative;
-  min-height: 20px;
-}
-
-._15-min,
-._2-servings,
-._350-cal {
-  color: var(--teal-dark);
-  font-family: var(--font-reg);
-  font-size: 14px;
-  line-height: 20px;
-}
-
-.container17 {
-  background: var(--mint-soft);
-  border-bottom: 0.8px solid var(--mint-border);
-  padding: 12px 16px;
-  align-self: stretch;
-  position: relative;
-}
-
-.paragraph3 {
-  position: relative;
-}
-
-.all-ingredients-are-safe-based-on-your-profile {
-  color: var(--green-safe);
-  font-family: var(--font-md);
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 500;
-}
-
-.container18 {
-  border-bottom: 0.8px solid var(--line);
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  align-self: stretch;
-  position: relative;
-}
-
-.heading-3 {
-  position: relative;
-}
-
-.ingredients,
-.instructions {
-  color: var(--teal-dark);
-  font-family: var(--font-sb);
-  font-size: 18px;
-  line-height: 27px;
-  font-weight: 600;
-}
-
-.list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  align-self: stretch;
-  position: relative;
-}
-
-.list-item {
-  display: flex;
-  flex-direction: row;
-  gap: 8px;
-  align-items: flex-start;
-  align-self: stretch;
-  min-height: 20px;
-  position: relative;
-}
-
-.text3 {
-  flex-shrink: 0;
-  position: relative;
-}
-
-.div {
-  color: var(--teal);
-  font-family: var(--font-bold);
-  font-size: 14px;
-  line-height: 20px;
-}
-
-.list-item > div + div {
-  flex: 1;
-  min-width: 0;
-  position: relative;
-  height: auto;
-}
-
-.list-item > div + div > div {
-  color: var(--text);
-  font-family: var(--font-reg);
-  font-size: 14px;
-  line-height: 20px;
-  position: relative;
-  white-space: pre-wrap;
-}
-
-.container19 {
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  align-self: stretch;
-  position: relative;
-}
-
-.numbered-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  align-self: stretch;
-  position: relative;
-}
-
-.list-item2,
-.list-item3 {
-  display: flex;
-  flex-direction: row;
-  gap: 12px;
-  align-items: flex-start;
-  align-self: stretch;
-  position: relative;
-}
-
-.list-item2 > div:first-child,
-.list-item3 > div:first-child {
-  flex-shrink: 0;
-  position: relative;
-}
-
-.list-item2 > div:first-child > div,
-.list-item3 > div:first-child > div {
-  color: var(--teal);
-  font-family: var(--font-bold);
-  font-size: 14px;
-  line-height: 20px;
-}
-
-.list-item2 > div:last-child,
-.list-item3 > div:last-child {
-  flex: 1;
-  min-width: 0;
-  position: relative;
-  height: auto;
-}
-
-.list-item2 > div:last-child > div,
-.list-item3 > div:last-child > div {
-  color: var(--text);
-  font-family: var(--font-reg);
-  font-size: 14px;
-  line-height: 20px;
-  white-space: pre-wrap;
-  position: relative;
-}
-
-.container20 {
-  padding: 16px;
-  align-self: stretch;
-  position: relative;
-}
-
-.heading-32 {
-  margin-bottom: 8px;
-  position: relative;
-}
-
-.nutritional-highlights {
-  color: var(--teal-dark);
-  font-family: var(--font-sb);
-  font-size: 18px;
-  line-height: 27px;
-  font-weight: 600;
-}
-
-.container21 {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  position: relative;
-}
-
-.text16,
-.text17,
-.text18 {
-  position: relative;
-  left: auto;
-  top: auto;
-}
-
-.high-protein,
-.high-fiber,
-.iron-rich {
-  color: var(--teal-dark);
-  font-family: var(--font-reg);
-  font-size: 12px;
-  line-height: 16px;
-  display: inline-block;
-  padding: 4px 12px;
-  border-radius: 999px;
-  border: 0.8px solid var(--mint);
-  background: var(--white);
-}
-
-/* Composer */
-.container22 {
-  background: var(--white);
-  border-top: 0.8px solid var(--line);
-  padding: 16px 16px 0;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 480px;
-  flex-shrink: 0;
-  position: relative;
-}
-
-.container23 {
-  display: flex;
-  align-self: stretch;
-  position: relative;
-}
-
-.button2 {
-  background: var(--grad-btn);
-  border-radius: 14px;
-  flex: 1;
-  height: 48px;
-  position: relative;
-  box-shadow: var(--shadow-btn);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-
-.icon7 {
-  width: 20px;
-  height: 20px;
-  position: relative;
-  overflow: visible;
-}
-
-.save-recipe {
-  color: var(--white);
-  font-family: var(--font-sb);
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 600;
-  position: relative;
-}
-
-.container24 {
-  display: flex;
-  flex-direction: row;
-  gap: 8px;
-  align-items: center;
-  align-self: stretch;
-  height: 48px;
-  position: relative;
-}
-
-.text-input {
-  border-radius: 14px;
-  border: 1.6px solid var(--mint);
-  padding: 12px 16px;
-  display: flex;
-  flex: 1;
-  min-height: 48px;
-  position: relative;
-  overflow: hidden;
-}
-
-.ask-for-modifications-or-new-recipe {
-  color: rgba(10, 10, 10, 0.5);
-  font-family: var(--font-reg);
-  font-size: 14px;
-  position: relative;
-}
-
-.button3 {
-  background: var(--grad-btn);
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 48px;
-  height: 48px;
-  position: relative;
-  box-shadow: var(--shadow-btn);
-}
-
-.text19 {
-  position: relative;
-}
-
-.div2 {
-  color: var(--white);
-  font-family: var(--font-md);
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 500;
-  position: relative;
-}
-
-/* Bottom nav */
-.navigation {
-  background: var(--white);
-  border-top: 0.8px solid #000;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
   justify-content: space-between;
-  width: 480px;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+/* Layout for the chef icon and title text */
+.header-content { display: flex; align-items: center; gap: 12px; }
+
+/* The circular background behind the chef icon */
+.chef-circle { 
+  background: rgba(255, 255, 255, 0.2); 
+  border-radius: 50%; 
+  width: 44px; 
+  height: 44px; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+}
+
+.ai-chef-recipe { color: #FFFFFF; font-size: 20px; font-weight: 700; }
+
+/* Inverts icons to make them white */
+.icon, .icon2 { filter: brightness(0) invert(1); width: 22px; height: 22px; }
+
+/* --- Language Selector Fix --- */
+.language-dropdown {
+  position: relative;
+  z-index: 1001; /* Ensures dropdown stays above other elements */
+}
+
+/* The clickable language button style */
+.language-switch {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid #FFFFFF;
+  border-radius: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.language-switch span { color: #FFFFFF; font-size: 13px; font-weight: 600; }
+
+/* The hidden list that appears when the language menu is open */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 38px;
+  background: #FFF;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  min-width: 100px;
+  z-index: 1002;
+}
+
+.dropdown-content li { padding: 10px 15px; font-size: 14px; color: #333; cursor: pointer; list-style: none; }
+.dropdown-content li:hover { background: #f5f5f5; }
+
+/* JavaScript toggles this class to show the menu */
+.dropdown-show { display: block !important; }
+
+
+/* User message bubble (Teal) */
+.container6 { 
+  background: #74A497; 
+  border-radius: 16px 6px 16px 16px; 
+  padding: 12px 16px; 
+  color: white; 
+  align-self: flex-end; 
+  max-width: 80%; 
+  word-wrap: break-word; 
+}
+
+/* Bot message bubble (Light Grey) */
+.container10 { 
+  background: #F2F2F2; 
+  border-radius: 6px 16px 16px 16px; 
+  padding: 12px 16px; 
+  color: #333; 
+  max-width: 80%; 
+  word-wrap: break-word; 
+}
+
+/* --- Input Area --- */
+/* The footer area where the user types */
+.container22 { background: #FFF; border-top: 1px solid #EEE; padding: 16px; flex-shrink: 0; }
+
+/* Internal layout for the input bar components */
+.container24 { display: flex; align-items: center; gap: 8px; }
+
+/* The text input box styling */
+.text-input { border: 1.6px solid #B0D0C8; border-radius: 12px; padding: 12px; flex: 1; }
+
+/* The send button styling */
+.button3 { 
+  background: #74A497; 
+  border-radius: 12px; 
+  width: 44px; 
+  height: 44px; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  cursor: pointer; 
+}
+
+.div2 { color: white; font-weight: bold; }
+
+/* --- Navigation (Scan Fix & Flat Layout) --- */
+/* The bottom-most navigation bar */
+.navigation {
+  background: #FFFFFF;
+  border-top: 1px solid #f0f0f0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
   height: 64px;
   flex-shrink: 0;
-  position: relative;
 }
 
-.link {
-  padding: 10px 0;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-  height: 64px;
-  position: relative;
-}
+/* Navigation item column layout */
+.nav-item { display: flex; flex-direction: column; align-items: center; flex: 1; }
 
-.icon8 {
+/* Labels under the navigation icons */
+.home, .scan, .ai-chef, .history { font-size: 11px; margin-top: 4px; color: #888; }
+
+/* Filter applied to inactive icons to make them greyish */
+.icon8, .icon9, .icon11 {
   width: 24px;
   height: 24px;
-  position: relative;
-  overflow: visible;
+  filter: invert(56%) sepia(0%) saturate(0%) brightness(92%) contrast(88%);
 }
 
-.layout,
-.layout3,
-.layout4,
-.layout5 {
-  display: flex;
-  position: relative;
-}
+/* The active/colored icon (AI Chat) */
+.icon10 { width: 24px; height: 24px; }
 
-.home,
-.scan,
-.history {
-  color: var(--text-muted);
-  font-family: var(--font-reg);
-  font-size: 12px;
-  line-height: 16px;
-  position: relative;
-}
-
-.link2 {
-  padding: 6px 0;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-  height: 64px;
-  position: relative;
-}
-
-.layout2 {
-  background: var(--teal);
-  border-radius: 9999px;
-  padding: 0 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 56px;
-  height: 56px;
-  box-shadow: var(--shadow-btn);
-  position: relative;
-}
-
-.icon9 {
-  width: 28px;
-  height: 28px;
-  position: relative;
-  overflow: visible;
-}
-
-.ai-chef {
-  color: var(--teal);
-  font-family: var(--font-reg);
-  font-size: 12px;
-  line-height: 16px;
-  position: relative;
-}
-
-.icon10,
-.icon11 {
-  width: 24px;
-  height: 24px;
-  position: relative;
-  overflow: visible;
-}
+/* Active state for the AI Chat link */
+.nav-item.is-active .ai-chef { color: #74A497; font-weight: 600; }

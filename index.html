@@ -1,153 +1,107 @@
 <!DOCTYPE html>
-<!-- Faizan Kalam — pages in HTML; logic in app.js; tokens vars.css + style.css + app.css -->
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Chef - Faizan Kalam</title>
+  
   <link rel="stylesheet" href="./vars.css">
   <link rel="stylesheet" href="./style.css">
   <link rel="stylesheet" href="./app.css">
+  
   <style>
-   a,
-   button,
-   input,
-   select,
-   textarea,
-   h1,
-   h2,
-   h3,
-   h4,
-   h5,
-   * {
-       box-sizing: border-box;
-       margin: 0;
-       padding: 0;
-       border: none;
-       text-decoration: none;
-       background: none;
-       -webkit-font-smoothing: antialiased;
+   * { box-sizing: border-box; margin: 0; padding: 0; border: none; text-decoration: none; background: none; -webkit-font-smoothing: antialiased; }
+   
+   .ai-chatbot-faizan {
+       display: flex;
+       flex-direction: column;
+       height: 777.6px;
+       width: 480px;
+       margin: 0 auto;
+       overflow: hidden;
+       background: #FFFFFF;
+       position: relative;
    }
-   menu, ol, ul {
-       list-style-type: none;
-       margin: 0;
-       padding: 0;
+
+   .app-screen { 
+       display: flex; 
+       flex-direction: column;
+       flex: 1; 
+       width: 100%; 
+       overflow: hidden;
    }
-   </style>
-  <title>AI Chef Recipe</title>
+   
+   .app-chat-scroll { 
+       overflow-y: auto; 
+       flex: 1; 
+       padding: 24px;
+       display: flex;
+       flex-direction: column;
+       gap: 16px;
+   }
+  </style>
 </head>
 <body>
   <div class="ai-chatbot-faizan">
-    <div class="app-screen is-active" data-screen="home" id="screen-home">
-      <div class="home-panel">
-        <div class="home-header">
-          <h1>AI Chef</h1>
-          <p>Recipes tailored to you — chat, scan ingredients, save favorites.</p>
-        </div>
-        <div class="home-body">
-          <h2>Get started</h2>
-          <p>Open <strong>AI Chef</strong> to chat. Put your OpenAI key in <code>app.js</code> (<code>OPENAI_API_KEY</code>), then reload.</p>
-          <p class="home-hint">Until a key is set, the chat shows “Connect to API”. Models: <code>gpt-4o-mini</code> (chat) and <code>gpt-4o</code> (scan).</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="app-screen" data-screen="chef" id="screen-chef">
-      <div class="chatbot-recipe-screen">
+    
+    <div class="app-screen" id="screen-chef">
+      <div class="chatbot-recipe-screen" style="display: flex; flex-direction: column; height: 100%;">
+        
         <div class="container">
-          <div class="button" aria-hidden="true">
-            <img class="icon" src="icon0.svg" alt="" />
+          <div class="header-top-row">
+            <div class="button"><img class="icon" src="icon0.svg" alt="Back" /></div>
+            
+            <div class="language-dropdown" id="lang-menu-container">
+              <button type="button" class="language-switch" id="lang-toggle">
+                <span>Language</span>
+              </button>
+              <ul class="dropdown-content" id="lang-options">
+                <li data-lang="en">English</li>
+                <li data-lang="es">Spanish</li>
+                <li data-lang="fr">French</li>
+              </ul>
+            </div>
           </div>
-          <div class="container2">
-            <div class="container3">
-              <img class="icon2" src="icon1.svg" alt="" />
-            </div>
-            <div class="heading-1">
-              <div class="ai-chef-recipe">AI Chef Recipe</div>
-            </div>
+
+          <div class="header-content">
+            <div class="chef-circle"><img class="icon2" src="icon1.svg" alt="Chef" /></div>
+            <div class="ai-chef-recipe">AI Chef Recipe</div>
           </div>
         </div>
-        <div class="container4 app-chat-scroll">
-          <div id="messages-root"></div>
-          <p id="chef-empty" class="chef-empty">
-            Ask for a recipe or meal idea below. Follow-ups stay in context until you refresh the page.
-          </p>
-        </div>
+
+        <div class="app-chat-scroll" id="messages-root"></div>
+
         <div class="container22">
-          <div class="container23">
-            <button type="button" class="button2 app-btn-interactive app-btn-save">
-              <img class="icon7" src="icon6.svg" alt="" />
-              <div class="save-recipe">Save Recipe</div>
-            </button>
-          </div>
           <div class="container24">
-            <label class="text-input" for="chef-input">
-              <textarea
-                id="chef-input"
-                rows="1"
-                placeholder="Ask for modifications or new recipe..."
-                aria-label="Message to AI Chef"
-              ></textarea>
+            <label class="upload-btn" for="chef-file-upload">
+              <img src="icon0.svg" class="icon-upload" alt="Upload" />
+              <input type="file" id="chef-file-upload" style="display: none;" accept="image/*" />
             </label>
-            <button type="button" class="button3 app-btn-interactive" id="chef-send" aria-label="Send message">
-              <div class="text19">
-                <div class="div2">→</div>
-              </div>
-            </button>
+            <div class="text-input" style="flex: 1;"><textarea id="chef-input" rows="1" placeholder="Type here..."></textarea></div>
+            <button type="button" class="button3" id="chef-send"><div class="div2">→</div></button>
           </div>
         </div>
-      </div>
-    </div>
-
-    <div class="app-screen" data-screen="scan" id="screen-scan">
-      <div class="scan-panel">
-        <h2>Scan ingredients</h2>
-        <p class="scan-desc">Upload a photo of your fridge, pantry, or ingredients. We’ll list what we see and suggest a simple recipe.</p>
-        <button type="button" class="scan-file-btn">Choose photo</button>
-        <input type="file" id="scan-file" accept="image/*" />
-        <img id="scan-preview" class="scan-preview" hidden alt="Selected image preview" />
-        <div class="scan-actions">
-          <button type="button" id="scan-analyze">Analyze with AI</button>
-        </div>
-        <pre id="scan-result" class="scan-result"></pre>
-      </div>
-    </div>
-
-    <div class="app-screen" data-screen="history" id="screen-history">
-      <div class="history-panel">
-        <h2>Saved recipes</h2>
-        <ul id="history-list" class="history-list"></ul>
-        <p id="history-empty" class="history-empty">No saved recipes yet. Get a recipe from AI Chef, then tap Save Recipe.</p>
       </div>
     </div>
 
     <div class="navigation">
-      <button type="button" class="link nav-item" data-nav="home">
-        <img class="icon8" src="icon7.svg" alt="" />
-        <div class="layout">
-          <div class="home">Home</div>
-        </div>
-      </button>
-      <button type="button" class="link2 nav-item" data-nav="scan">
-        <div class="layout2">
-          <img class="icon9" src="icon8.svg" alt="" />
-        </div>
-        <div class="layout3">
-          <div class="scan">Scan</div>
-        </div>
-      </button>
-      <button type="button" class="link nav-item" data-nav="chef">
-        <img class="icon10" src="icon9.svg" alt="" />
-        <div class="layout4">
-          <div class="ai-chef">AI Chef</div>
-        </div>
-      </button>
-      <button type="button" class="link nav-item" data-nav="history">
-        <img class="icon11" src="icon10.svg" alt="" />
-        <div class="layout5">
-          <div class="history">History</div>
-        </div>
-      </button>
+      <div class="link nav-item">
+        <img class="icon8" src="icon7.svg" alt="Home" />
+        <div class="home">Home</div>
+      </div>
+      <div class="link nav-item">
+        <img class="icon9" src="icon8.svg" alt="Scan" />
+        <div class="scan">Scan</div>
+      </div>
+      <div class="link nav-item is-active">
+        <img class="icon10" src="icon9.svg" alt="AI Chat" />
+        <div class="ai-chef">AI Chat</div>
+      </div>
+      <div class="link nav-item">
+        <img class="icon11" src="icon10.svg" alt="History" />
+        <div class="history">History</div>
+      </div>
     </div>
   </div>
   <script src="app.js"></script>
