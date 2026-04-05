@@ -1,16 +1,16 @@
-/* Faizan Kalam */
+/* Faizan Kalam — AI Chef chat, OpenAI calls, scan, saved recipes */
 
 (function () {
   "use strict";
 
-  // OpenAI key — empty until you add it
-  var OPENAI_API_KEY = "";
+  var OPENAI_API_KEY = ""; // add sk-... key here
 
   var HISTORY_STORAGE = "ai_recipe_saved_v1";
   var CHAT_STORAGE = "ai_recipe_chat_v1";
   var MODEL = "gpt-4o-mini";
   var VISION_MODEL = "gpt-4o";
 
+  // Model must return JSON for recipes (see safeParseRecipe)
   var SYSTEM_RECIPE =
     "You are AI Chef, a helpful cooking assistant. " +
     "When the user asks for recipes, meal ideas, modifications to a dish, or cooking help that includes a concrete recipe, " +
@@ -51,6 +51,7 @@
   };
 
   function parseRecipeJson(text) {
+    // strip ```json fences if the model adds them
     var t = String(text).trim();
     if (t.indexOf("```") === 0) {
       t = t.replace(/^```(?:json)?\s*/i, "").replace(/\s*```\s*$/i, "");
@@ -80,27 +81,19 @@
 
   function nutritionTagsHtml(tags) {
     if (!tags || !tags.length) return "";
-    var chunks = tags.slice(0, 5).map(function (tag, i) {
-      var cls = i === 0 ? "text16" : i === 1 ? "text17" : "text18";
-      var offset = "";
-      if (i > 2) {
-        cls = "text16";
-        offset =
-          ' style="position:relative!important;left:auto!important;top:auto!important;margin-top:8px;"';
-      }
-      return (
-        '<div class="' +
-        cls +
-        '"' +
-        offset +
-        '><div class="high-protein">' +
-        escapeHtml(tag) +
-        "</div></div>"
-      );
-    });
-    return chunks.join("");
+    return tags
+      .slice(0, 5)
+      .map(function (tag) {
+        return (
+          '<div class="text16"><div class="high-protein">' +
+          escapeHtml(tag) +
+          "</div></div>"
+        );
+      })
+      .join("");
   }
 
+  // Build list HTML (classes match style.css)
   function ingredientsHtml(items) {
     if (!items || !items.length)
       return "<p class='chef-empty'>No ingredients listed.</p>";
@@ -151,6 +144,7 @@
   }
 
   function recipeCardHtml(data) {
+    // plainReply or empty title → single gray bubble only
     if (data.plainReply || !data.title) {
       return (
         '<div class="container10">' +
@@ -257,6 +251,7 @@
     } catch (e) {}
   }
 
+  // Paint #messages-root from conversationMessages
   function renderChefThread() {
     var root = $("#messages-root");
     var empty = $("#chef-empty");
@@ -298,7 +293,18 @@
     root.scrollTop = root.scrollHeight;
   }
 
+  // --------------------------------------------------------------------------
+  // OpenAI HTTP API
+  // --------------------------------------------------------------------------
+
+  /**
+   * POST /v1/chat/completions with the given messages array.
+   * @param {Array} messages OpenAI chat messages (system + user + assistant)
+   * @param {string} [model] optional model override (default MODEL)
+   * @returns {Promise<string>} assistant message content text
+   */
   function openaiChat(messages, model) {
+    // POST chat/completions
     var key = getApiKey();
     if (!key) return Promise.reject(new Error("Connect to API"));
 
@@ -341,6 +347,7 @@
   }
 
   function sendChefMessage() {
+    // No key → show CONNECT_API_PARSED bubble; else call API
     var input = $("#chef-input");
     var text = (input && input.value) || "";
     text = text.trim();
@@ -402,6 +409,7 @@
   }
 
   function saveRecipe() {
+    // Needs last structured recipe from model
     if (!lastRecipeData || lastRecipeData.plainReply || !lastRecipeData.title) {
       alert("Ask the AI for a recipe first, then save.");
       return;
@@ -429,6 +437,7 @@
   }
 
   function renderHistoryList() {
+    // List + open/remove handlers
     var ul = $("#history-list");
     var empty = $("#history-empty");
     if (!ul) return;
@@ -510,6 +519,7 @@
   }
 
   function scanAnalyze() {
+    // Vision model on selected file
     var fileInput = $("#scan-file");
     var result = $("#scan-result");
     var btn = $("#scan-analyze");
@@ -587,6 +597,7 @@
   function init() {
     loadChatFromStorage();
 
+    // Bottom nav
     document.querySelectorAll(".nav-item").forEach(function (btn) {
       btn.addEventListener("click", function () {
         var name = btn.getAttribute("data-nav");

@@ -1,53 +1,40 @@
-/* Faizan Kalam */
+/* Faizan Kalam — main layout + recipe card (tokens: vars.css) */
 
 .ai-chatbot-faizan,
 .ai-chatbot-faizan * {
   box-sizing: border-box;
 }
+
 .ai-chatbot-faizan {
-  background: #ffffff;
+  background: var(--white);
   display: flex;
   flex-direction: column;
-  gap: 0.8px;
   align-items: flex-start;
-  justify-content: flex-start;
   height: 777.6px;
   position: relative;
-  box-shadow: 0px 25px 50px -12px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--shadow-card);
   overflow: hidden;
 }
 
 .chatbot-recipe-screen {
-  background: #ffffff;
-  padding: 0px;
+  background: var(--white);
   display: flex;
   flex-direction: column;
-  gap: 0px;
-  align-items: flex-start;
-  justify-content: flex-start;
   flex: 1;
   width: 480px;
   position: relative;
   overflow: hidden;
 }
 
+/* Header */
 .container {
-  background: linear-gradient(
-    135deg,
-    rgba(107, 168, 158, 1) 0%,
-    rgba(105, 166, 155, 1) 14.28571492433548%,
-    rgba(102, 163, 153, 1) 28.57142984867096%,
-    rgba(100, 161, 150, 1) 42.85714328289032%,
-    rgba(97, 158, 148, 1) 57.14285969734192%,
-    rgba(95, 156, 145, 1) 71.42857313156128%,
-    rgba(92, 153, 143, 1) 85.71428656578064%,
-    rgba(90, 151, 140, 1) 100%
-  );
+  background: var(--grad-header);
   flex-shrink: 0;
   width: 480px;
   height: 152px;
   position: relative;
 }
+
 .button {
   width: 24px;
   height: 24px;
@@ -55,1077 +42,549 @@
   left: 24px;
   top: 48px;
 }
+
 .icon {
   width: 24px;
   height: 24px;
   position: absolute;
-  left: 0px;
-  top: 0px;
+  left: 0;
+  top: 0;
   overflow: visible;
 }
+
 .container2 {
   display: flex;
   flex-direction: row;
   gap: 12px;
   align-items: center;
-  justify-content: flex-start;
   width: 432px;
   height: 40px;
   position: absolute;
   left: 24px;
   top: 88px;
 }
+
 .container3 {
   background: rgba(255, 255, 255, 0.2);
-  border-radius: 26843500px;
-  padding: 0px 8px 0px 8px;
+  border-radius: 9999px;
+  padding: 0 8px;
   display: flex;
-  flex-direction: row;
-  gap: 0px;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
   width: 40px;
   height: 40px;
   position: relative;
 }
+
 .icon2 {
-  flex-shrink: 0;
   width: 24px;
   height: 24px;
   position: relative;
   overflow: visible;
 }
+
 .heading-1 {
   flex-shrink: 0;
-  width: 136.34px;
-  height: 28px;
   position: relative;
 }
+
 .ai-chef-recipe {
-  color: #ffffff;
-  text-align: left;
-  font-family: "Inter-Bold", sans-serif;
+  color: var(--white);
+  font-family: var(--font-bold);
   font-size: 20px;
   line-height: 28px;
   font-weight: 700;
-  position: absolute;
-  left: 0px;
-  top: -1.2px;
 }
 
+/* Chat column */
 .container4 {
-  padding: 24px 39.2px 0px 24px;
+  padding: 24px 24px 0 24px;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  align-items: flex-start;
-  justify-content: flex-start;
   flex: 1;
   width: 480px;
   position: relative;
   overflow: hidden;
 }
+
 .container5 {
-  padding: 0px;
   display: flex;
-  flex-direction: row;
-  gap: 0px;
-  align-items: flex-start;
   justify-content: flex-end;
   align-self: stretch;
   flex-shrink: 0;
-  height: 64px;
+  min-height: 64px;
   position: relative;
 }
+
 .container6 {
-  background: #6ba89e;
+  background: var(--teal);
   border-radius: 16px 6px 16px 16px;
-  padding: 12px 16px 0px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 0px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  flex-shrink: 0;
-  width: 333.44px;
-  height: 64px;
+  padding: 12px 16px;
+  max-width: 100%;
   position: relative;
 }
+
 .paragraph {
-  align-self: stretch;
-  flex-shrink: 0;
-  height: 40px;
   position: relative;
 }
+
 .give-me-quick-vegan-lunch-ideas-i-can-prepare-in-1 {
-  color: #ffffff;
-  text-align: left;
-  font-family: "Inter-Regular", sans-serif;
+  color: var(--white);
+  font-family: var(--font-reg);
   font-size: 14px;
   line-height: 20px;
-  font-weight: 400;
-  position: absolute;
-  left: 0px;
-  top: -0.2px;
-  width: 302px;
 }
+
 .container7 {
   display: flex;
   flex-direction: row;
   gap: 12px;
   align-items: flex-start;
-  justify-content: flex-start;
   align-self: stretch;
-  flex-shrink: 0;
-  height: 913.19px;
   position: relative;
 }
+
 .container8 {
-  background: linear-gradient(
-    135deg,
-    rgba(168, 213, 186, 1) 0%,
-    rgba(164, 210, 183, 1) 16.66666716337204%,
-    rgba(160, 208, 180, 1) 33.33333432674408%,
-    rgba(156, 205, 177, 1) 50%,
-    rgba(151, 202, 175, 1) 66.66666865348816%,
-    rgba(147, 200, 172, 1) 83.33333134651184%,
-    rgba(143, 197, 169, 1) 100%
-  );
-  border-radius: 26843500px;
-  padding: 0px 6px 0px 6px;
+  background: var(--grad-mint);
+  border-radius: 9999px;
+  padding: 0 6px;
   display: flex;
-  flex-direction: row;
-  gap: 0px;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
   width: 32px;
   height: 32px;
+  flex-shrink: 0;
   position: relative;
 }
+
 .icon3 {
-  flex-shrink: 0;
   width: 20px;
   height: 20px;
   position: relative;
   overflow: visible;
 }
+
 .container9 {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  align-items: flex-start;
-  justify-content: flex-start;
   flex: 1;
-  height: 913.19px;
+  min-width: 0;
   position: relative;
 }
+
 .container10 {
-  background: #f3f4f6;
+  background: var(--gray-bg);
   border-radius: 6px 16px 16px 16px;
-  padding: 12px 16px 0px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 0px;
-  align-items: flex-start;
-  justify-content: flex-start;
+  padding: 12px 16px;
   align-self: stretch;
-  flex-shrink: 0;
-  height: 92px;
   position: relative;
 }
+
 .paragraph2 {
-  align-self: stretch;
-  flex-shrink: 0;
-  height: 60px;
   position: relative;
 }
-.perfect-i-ve-created-a-quick-and-delicious-vegan {
-  color: #364153;
-  text-align: left;
-  font-family: "Inter-Regular", sans-serif;
+
+.perfect-i-ve-created-a-quick-and-delicious-vegan,
+.dyn-intro {
+  color: var(--text);
+  font-family: var(--font-reg);
   font-size: 14px;
   line-height: 20px;
-  font-weight: 400;
-  position: absolute;
-  left: 0px;
-  top: -0.2px;
-  width: 333px;
 }
+
+/* Recipe card */
 .container11 {
-  background: #ffffff;
+  background: var(--white);
   border-radius: 16px;
-  border-style: solid;
-  border-color: #a8d5ba;
-  border-width: 1.6px;
-  padding: 1.6px;
+  border: 1.6px solid var(--mint);
+  padding: 2px;
   display: flex;
   flex-direction: column;
-  gap: 0px;
-  align-items: flex-start;
-  justify-content: flex-start;
   align-self: stretch;
-  flex-shrink: 0;
-  height: 809.19px;
   position: relative;
   overflow: hidden;
 }
+
 .container12 {
-  background: linear-gradient(
-    135deg,
-    rgba(168, 213, 186, 1) 0%,
-    rgba(164, 210, 183, 1) 16.66666716337204%,
-    rgba(160, 208, 180, 1) 33.33333432674408%,
-    rgba(156, 205, 177, 1) 50%,
-    rgba(151, 202, 175, 1) 66.66666865348816%,
-    rgba(147, 200, 172, 1) 83.33333134651184%,
-    rgba(143, 197, 169, 1) 100%
-  );
-  padding: 16px 16px 0px 16px;
+  background: var(--grad-mint);
+  padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  align-items: flex-start;
-  justify-content: flex-start;
   align-self: stretch;
-  flex-shrink: 0;
-  height: 88px;
   position: relative;
 }
+
 .heading-2 {
   align-self: stretch;
-  flex-shrink: 0;
-  height: 28px;
   position: relative;
 }
+
 .quinoa-chickpea-power-bowl {
-  color: #4a7c72;
-  text-align: left;
-  font-family: "Inter-Bold", sans-serif;
+  color: var(--teal-dark);
+  font-family: var(--font-bold);
   font-size: 20px;
   line-height: 28px;
   font-weight: 700;
-  position: absolute;
-  left: 0px;
-  top: -1.2px;
 }
+
 .container13 {
   display: flex;
   flex-direction: row;
   gap: 16px;
   align-items: center;
-  justify-content: flex-start;
-  align-self: stretch;
-  flex-shrink: 0;
-  height: 20px;
-  position: relative;
+  flex-wrap: wrap;
 }
-.container14 {
-  display: flex;
-  flex-direction: row;
-  gap: 4px;
-  align-items: center;
-  justify-content: flex-start;
-  flex-shrink: 0;
-  width: 62.31px;
-  height: 20px;
-  position: relative;
-}
-.icon4 {
-  flex-shrink: 0;
-  width: 16px;
-  height: 16px;
-  position: relative;
-  overflow: visible;
-}
-.text {
-  flex: 1;
-  height: 20px;
-  position: relative;
-}
-._15-min {
-  color: #4a7c72;
-  text-align: left;
-  font-family: "Inter-Regular", sans-serif;
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 400;
-  position: absolute;
-  left: 0px;
-  top: -0.2px;
-}
-.container15 {
-  display: flex;
-  flex-direction: row;
-  gap: 4px;
-  align-items: center;
-  justify-content: flex-start;
-  flex-shrink: 0;
-  width: 81.72px;
-  height: 20px;
-  position: relative;
-}
-.icon5 {
-  flex-shrink: 0;
-  width: 16px;
-  height: 16px;
-  position: relative;
-  overflow: visible;
-}
-.text2 {
-  flex-shrink: 0;
-  width: 61.73px;
-  height: 20px;
-  position: relative;
-}
-._2-servings {
-  color: #4a7c72;
-  text-align: left;
-  font-family: "Inter-Regular", sans-serif;
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 400;
-  position: absolute;
-  left: 0px;
-  top: -0.2px;
-}
+
+.container14,
+.container15,
 .container16 {
   display: flex;
   flex-direction: row;
   gap: 4px;
   align-items: center;
-  justify-content: flex-start;
-  flex-shrink: 0;
-  width: 63.46px;
-  height: 20px;
-  position: relative;
 }
+
+.icon4,
+.icon5,
 .icon6 {
-  flex-shrink: 0;
   width: 16px;
   height: 16px;
   position: relative;
   overflow: visible;
 }
+
+.text,
+.text2 {
+  position: relative;
+  min-height: 20px;
+}
+
+._15-min,
+._2-servings,
 ._350-cal {
-  color: #4a7c72;
-  text-align: left;
-  font-family: "Inter-Regular", sans-serif;
+  color: var(--teal-dark);
+  font-family: var(--font-reg);
   font-size: 14px;
   line-height: 20px;
-  font-weight: 400;
-  position: absolute;
-  left: 0px;
-  top: -0.2px;
 }
+
 .container17 {
-  background: #f0fdf4;
-  border-style: solid;
-  border-color: #b9f8cf;
-  border-width: 0px 0px 0.8px 0px;
-  padding: 12px 16px 0.8px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 0px;
-  align-items: flex-start;
-  justify-content: flex-start;
+  background: var(--mint-soft);
+  border-bottom: 0.8px solid var(--mint-border);
+  padding: 12px 16px;
   align-self: stretch;
-  flex-shrink: 0;
-  height: 44.8px;
   position: relative;
 }
+
 .paragraph3 {
-  align-self: stretch;
-  flex-shrink: 0;
-  height: 20px;
   position: relative;
 }
+
 .all-ingredients-are-safe-based-on-your-profile {
-  color: #008236;
-  text-align: left;
-  font-family: "Inter-Medium", sans-serif;
+  color: var(--green-safe);
+  font-family: var(--font-md);
   font-size: 14px;
   line-height: 20px;
   font-weight: 500;
-  position: absolute;
-  left: 0px;
-  top: -0.2px;
 }
+
 .container18 {
-  border-style: solid;
-  border-color: #e5e7eb;
-  border-width: 0px 0px 0.8px 0px;
-  padding: 16px 16px 0.8px 16px;
+  border-bottom: 0.8px solid var(--line);
+  padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  align-items: flex-start;
-  justify-content: flex-start;
   align-self: stretch;
-  flex-shrink: 0;
-  height: 287.8px;
   position: relative;
 }
+
 .heading-3 {
-  align-self: stretch;
-  flex-shrink: 0;
-  height: 27px;
   position: relative;
 }
-.ingredients {
-  color: #4a7c72;
-  text-align: left;
-  font-family: "Inter-SemiBold", sans-serif;
+
+.ingredients,
+.instructions {
+  color: var(--teal-dark);
+  font-family: var(--font-sb);
   font-size: 18px;
   line-height: 27px;
   font-weight: 600;
-  position: absolute;
-  left: 0px;
-  top: -1.2px;
 }
+
 .list {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  align-items: flex-start;
-  justify-content: flex-start;
   align-self: stretch;
-  flex-shrink: 0;
-  height: 216px;
   position: relative;
 }
+
 .list-item {
   display: flex;
   flex-direction: row;
   gap: 8px;
   align-items: flex-start;
-  justify-content: flex-start;
   align-self: stretch;
-  flex-shrink: 0;
-  height: 20px;
+  min-height: 20px;
   position: relative;
 }
+
 .text3 {
   flex-shrink: 0;
-  width: 5.93px;
-  height: 20px;
   position: relative;
 }
+
 .div {
-  color: #6ba89e;
-  text-align: left;
-  font-family: "Inter-Bold", sans-serif;
+  color: var(--teal);
+  font-family: var(--font-bold);
   font-size: 14px;
   line-height: 20px;
-  font-weight: 700;
-  position: absolute;
-  left: 0px;
-  top: -0.2px;
 }
-.text4 {
-  flex-shrink: 0;
-  width: 321.04px;
-  height: 20px;
+
+.list-item > div + div {
+  flex: 1;
+  min-width: 0;
   position: relative;
+  height: auto;
 }
-._1-cup-pre-cooked-quinoa-or-use-microwave-packet {
-  color: #364153;
-  text-align: left;
-  font-family: "Inter-Regular", sans-serif;
+
+.list-item > div + div > div {
+  color: var(--text);
+  font-family: var(--font-reg);
   font-size: 14px;
   line-height: 20px;
-  font-weight: 400;
-  position: absolute;
-  left: 0px;
-  top: -0.2px;
-}
-.text5 {
-  flex-shrink: 0;
-  width: 219.19px;
-  height: 20px;
   position: relative;
+  white-space: pre-wrap;
 }
-._1-can-chickpeas-drained-and-rinsed {
-  color: #364153;
-  text-align: left;
-  font-family: "Inter-Regular", sans-serif;
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 400;
-  position: absolute;
-  left: 0px;
-  top: -0.2px;
-}
-.text6 {
-  flex-shrink: 0;
-  width: 271.09px;
-  height: 20px;
-  position: relative;
-}
-._2-cups-mixed-greens-spinach-kale-arugula {
-  color: #364153;
-  text-align: left;
-  font-family: "Inter-Regular", sans-serif;
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 400;
-  position: absolute;
-  left: 0px;
-  top: -0.2px;
-}
-.text7 {
-  flex-shrink: 0;
-  width: 113.19px;
-  height: 20px;
-  position: relative;
-}
-._1-cucumber-diced {
-  color: #364153;
-  text-align: left;
-  font-family: "Inter-Regular", sans-serif;
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 400;
-  position: absolute;
-  left: 0px;
-  top: -0.2px;
-}
-.text8 {
-  flex-shrink: 0;
-  width: 97px;
-  height: 20px;
-  position: relative;
-}
-._1-tomato-diced {
-  color: #364153;
-  text-align: left;
-  font-family: "Inter-Regular", sans-serif;
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 400;
-  position: absolute;
-  left: 0px;
-  top: -0.2px;
-}
-.text9 {
-  flex-shrink: 0;
-  width: 90.2px;
-  height: 20px;
-  position: relative;
-}
-._2-tbsp-olive-oil {
-  color: #364153;
-  text-align: left;
-  font-family: "Inter-Regular", sans-serif;
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 400;
-  position: absolute;
-  left: 0px;
-  top: -0.2px;
-}
-.text10 {
-  flex-shrink: 0;
-  width: 113.59px;
-  height: 20px;
-  position: relative;
-}
-._1-tbsp-lemon-juice {
-  color: #364153;
-  text-align: left;
-  font-family: "Inter-Regular", sans-serif;
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 400;
-  position: absolute;
-  left: 0px;
-  top: -0.2px;
-}
-.text11 {
-  flex-shrink: 0;
-  width: 224.23px;
-  height: 20px;
-  position: relative;
-}
-.salt-pepper-and-your-favorite-herbs {
-  color: #364153;
-  text-align: left;
-  font-family: "Inter-Regular", sans-serif;
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 400;
-  position: absolute;
-  left: 0px;
-  top: -0.2px;
-}
+
 .container19 {
-  padding: 16px 16px 0px 16px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  align-items: flex-start;
-  justify-content: flex-start;
   align-self: stretch;
-  flex-shrink: 0;
-  height: 299px;
   position: relative;
 }
-.instructions {
-  color: #4a7c72;
-  text-align: left;
-  font-family: "Inter-SemiBold", sans-serif;
-  font-size: 18px;
-  line-height: 27px;
-  font-weight: 600;
-  position: absolute;
-  left: 0px;
-  top: -1.2px;
-}
+
 .numbered-list {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  align-items: flex-start;
-  justify-content: flex-start;
   align-self: stretch;
-  flex-shrink: 0;
-  height: 228px;
   position: relative;
 }
-.list-item2 {
-  display: flex;
-  flex-direction: row;
-  gap: 12px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  align-self: stretch;
-  flex-shrink: 0;
-  height: 40px;
-  position: relative;
-}
-.text12 {
-  flex-shrink: 0;
-  width: 11.85px;
-  height: 40px;
-  position: relative;
-}
-._1 {
-  color: #6ba89e;
-  text-align: left;
-  font-family: "Inter-Bold", sans-serif;
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 700;
-  position: absolute;
-  left: 0px;
-  top: -0.2px;
-}
-.text13 {
-  flex: 1;
-  height: 40px;
-  position: relative;
-}
-.heat-chickpeas-in-a-pan-with-a-drizzle-of-olive-oi {
-  color: #364153;
-  text-align: left;
-  font-family: "Inter-Regular", sans-serif;
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 400;
-  position: absolute;
-  left: 0px;
-  top: -0.2px;
-  width: 299px;
-}
-._2 {
-  color: #6ba89e;
-  text-align: left;
-  font-family: "Inter-Bold", sans-serif;
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 700;
-  position: absolute;
-  left: 0px;
-  top: -0.2px;
-}
-.if-using-uncooked-quinoa-microwave-according-to-p {
-  color: #364153;
-  text-align: left;
-  font-family: "Inter-Regular", sans-serif;
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 400;
-  position: absolute;
-  left: 0px;
-  top: -0.2px;
-  width: 312px;
-}
-._3 {
-  color: #6ba89e;
-  text-align: left;
-  font-family: "Inter-Bold", sans-serif;
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 700;
-  position: absolute;
-  left: 0px;
-  top: -0.2px;
-}
-.in-a-bowl-combine-mixed-greens-cucumber-and-tom {
-  color: #364153;
-  text-align: left;
-  font-family: "Inter-Regular", sans-serif;
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 400;
-  position: absolute;
-  left: 0px;
-  top: -0.2px;
-  width: 302px;
-}
+
+.list-item2,
 .list-item3 {
   display: flex;
   flex-direction: row;
   gap: 12px;
   align-items: flex-start;
-  justify-content: flex-start;
   align-self: stretch;
-  flex-shrink: 0;
-  height: 20px;
   position: relative;
-}
-.text14 {
-  flex-shrink: 0;
-  width: 11.85px;
-  height: 20px;
-  position: relative;
-}
-._4 {
-  color: #6ba89e;
-  text-align: left;
-  font-family: "Inter-Bold", sans-serif;
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 700;
-  position: absolute;
-  left: 0px;
-  top: -0.2px;
-}
-.text15 {
-  flex-shrink: 0;
-  width: 248.96px;
-  height: 20px;
-  position: relative;
-}
-.add-warm-quinoa-and-chickpeas-on-top {
-  color: #364153;
-  text-align: left;
-  font-family: "Inter-Regular", sans-serif;
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 400;
-  position: absolute;
-  left: 0px;
-  top: -0.2px;
-}
-._5 {
-  color: #6ba89e;
-  text-align: left;
-  font-family: "Inter-Bold", sans-serif;
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 700;
-  position: absolute;
-  left: 0px;
-  top: -0.2px;
-}
-.drizzle-with-olive-oil-and-lemon-juice-season-wit {
-  color: #364153;
-  text-align: left;
-  font-family: "Inter-Regular", sans-serif;
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 400;
-  position: absolute;
-  left: 0px;
-  top: -0.2px;
-  width: 305px;
-}
-.container20 {
-  background: #f5f8f7;
-  border-style: solid;
-  border-color: #e5e7eb;
-  border-width: 0.8px 0px 0px 0px;
-  padding: 16.8px 16px 0px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  align-self: stretch;
-  flex-shrink: 0;
-  height: 86.39px;
-  position: relative;
-}
-.heading-32 {
-  align-self: stretch;
-  flex-shrink: 0;
-  height: 20px;
-  position: relative;
-}
-.nutritional-highlights {
-  color: #4a7c72;
-  text-align: left;
-  font-family: "Inter-SemiBold", sans-serif;
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 600;
-  position: absolute;
-  left: 0px;
-  top: -0.2px;
-}
-.container21 {
-  align-self: stretch;
-  flex-shrink: 0;
-  height: 25.59px;
-  position: relative;
-}
-.text16 {
-  background: #ffffff;
-  border-radius: 26843500px;
-  border-style: solid;
-  border-color: #a8d5ba;
-  border-width: 0.8px;
-  padding: 0.8px;
-  width: 92.14px;
-  height: 25.59px;
-  position: absolute;
-  left: 0px;
-  top: 0px;
-}
-.high-protein {
-  color: #4a7c72;
-  text-align: left;
-  font-family: "Inter-Regular", sans-serif;
-  font-size: 12px;
-  line-height: 16px;
-  font-weight: 400;
-  position: absolute;
-  left: 12.8px;
-  top: 4.8px;
-}
-.text17 {
-  background: #ffffff;
-  border-radius: 26843500px;
-  border-style: solid;
-  border-color: #a8d5ba;
-  border-width: 0.8px;
-  padding: 0.8px;
-  width: 80.45px;
-  height: 25.59px;
-  position: absolute;
-  left: 100.14px;
-  top: 0px;
-}
-.high-fiber {
-  color: #4a7c72;
-  text-align: left;
-  font-family: "Inter-Regular", sans-serif;
-  font-size: 12px;
-  line-height: 16px;
-  font-weight: 400;
-  position: absolute;
-  left: 12.8px;
-  top: 4.8px;
-}
-.text18 {
-  background: #ffffff;
-  border-radius: 26843500px;
-  border-style: solid;
-  border-color: #a8d5ba;
-  border-width: 0.8px;
-  padding: 0.8px;
-  width: 72.5px;
-  height: 25.59px;
-  position: absolute;
-  left: 188.59px;
-  top: 0px;
-}
-.iron-rich {
-  color: #4a7c72;
-  text-align: left;
-  font-family: "Inter-Regular", sans-serif;
-  font-size: 12px;
-  line-height: 16px;
-  font-weight: 400;
-  position: absolute;
-  left: 12.8px;
-  top: 4.8px;
 }
 
+.list-item2 > div:first-child,
+.list-item3 > div:first-child {
+  flex-shrink: 0;
+  position: relative;
+}
+
+.list-item2 > div:first-child > div,
+.list-item3 > div:first-child > div {
+  color: var(--teal);
+  font-family: var(--font-bold);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.list-item2 > div:last-child,
+.list-item3 > div:last-child {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  height: auto;
+}
+
+.list-item2 > div:last-child > div,
+.list-item3 > div:last-child > div {
+  color: var(--text);
+  font-family: var(--font-reg);
+  font-size: 14px;
+  line-height: 20px;
+  white-space: pre-wrap;
+  position: relative;
+}
+
+.container20 {
+  padding: 16px;
+  align-self: stretch;
+  position: relative;
+}
+
+.heading-32 {
+  margin-bottom: 8px;
+  position: relative;
+}
+
+.nutritional-highlights {
+  color: var(--teal-dark);
+  font-family: var(--font-sb);
+  font-size: 18px;
+  line-height: 27px;
+  font-weight: 600;
+}
+
+.container21 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  position: relative;
+}
+
+.text16,
+.text17,
+.text18 {
+  position: relative;
+  left: auto;
+  top: auto;
+}
+
+.high-protein,
+.high-fiber,
+.iron-rich {
+  color: var(--teal-dark);
+  font-family: var(--font-reg);
+  font-size: 12px;
+  line-height: 16px;
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 0.8px solid var(--mint);
+  background: var(--white);
+}
+
+/* Composer */
 .container22 {
-  background: #ffffff;
-  border-style: solid;
-  border-color: #e5e7eb;
-  border-width: 0.8px 0px 0px 0px;
-  padding: 16.8px 16px 0px 16px;
+  background: var(--white);
+  border-top: 0.8px solid var(--line);
+  padding: 16px 16px 0;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  flex-shrink: 0;
   width: 480px;
-  height: 140.8px;
+  flex-shrink: 0;
   position: relative;
 }
+
 .container23 {
   display: flex;
-  flex-direction: row;
-  gap: 0px;
-  align-items: flex-start;
-  justify-content: flex-start;
   align-self: stretch;
-  flex-shrink: 0;
-  height: 48px;
   position: relative;
 }
+
 .button2 {
-  background: linear-gradient(
-    90deg,
-    rgba(107, 168, 158, 1) 0%,
-    rgba(105, 166, 155, 1) 14.28571492433548%,
-    rgba(102, 163, 153, 1) 28.57142984867096%,
-    rgba(100, 161, 150, 1) 42.85714328289032%,
-    rgba(97, 158, 148, 1) 57.14285969734192%,
-    rgba(95, 156, 145, 1) 71.42857313156128%,
-    rgba(92, 153, 143, 1) 85.71428656578064%,
-    rgba(90, 151, 140, 1) 100%
-  );
+  background: var(--grad-btn);
   border-radius: 14px;
   flex: 1;
   height: 48px;
   position: relative;
-  box-shadow: 0px 4px 6px -4px rgba(0, 0, 0, 0.1),
-    0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-btn);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
+
 .icon7 {
   width: 20px;
   height: 20px;
-  position: absolute;
-  left: 167.07px;
-  top: 14px;
+  position: relative;
   overflow: visible;
 }
+
 .save-recipe {
-  color: #ffffff;
-  text-align: center;
-  font-family: "Inter-SemiBold", sans-serif;
+  color: var(--white);
+  font-family: var(--font-sb);
   font-size: 16px;
   line-height: 24px;
   font-weight: 600;
-  position: absolute;
-  left: 191.07px;
-  top: 9.8px;
+  position: relative;
 }
+
 .container24 {
-  padding: 0px;
   display: flex;
   flex-direction: row;
   gap: 8px;
   align-items: center;
-  justify-content: flex-start;
   align-self: stretch;
-  flex-shrink: 0;
   height: 48px;
   position: relative;
 }
+
 .text-input {
   border-radius: 14px;
-  border-style: solid;
-  border-color: #a8d5ba;
-  border-width: 1.6px;
-  padding: 12px 16px 12px 16px;
+  border: 1.6px solid var(--mint);
+  padding: 12px 16px;
   display: flex;
-  flex-direction: row;
-  gap: 0px;
-  align-items: center;
-  justify-content: flex-start;
   flex: 1;
-  height: 47.2px;
+  min-height: 48px;
   position: relative;
   overflow: hidden;
 }
+
 .ask-for-modifications-or-new-recipe {
   color: rgba(10, 10, 10, 0.5);
-  text-align: left;
-  font-family: "Inter-Regular", sans-serif;
+  font-family: var(--font-reg);
   font-size: 14px;
-  font-weight: 400;
   position: relative;
 }
+
 .button3 {
-  background: linear-gradient(
-    90deg,
-    rgba(107, 168, 158, 1) 0%,
-    rgba(105, 166, 155, 1) 14.28571492433548%,
-    rgba(102, 163, 153, 1) 28.57142984867096%,
-    rgba(100, 161, 150, 1) 42.85714328289032%,
-    rgba(97, 158, 148, 1) 57.14285969734192%,
-    rgba(95, 156, 145, 1) 71.42857313156128%,
-    rgba(92, 153, 143, 1) 85.71428656578064%,
-    rgba(90, 151, 140, 1) 100%
-  );
+  background: var(--grad-btn);
   border-radius: 14px;
-  padding: 0px 17.1px 0px 17.09px;
   display: flex;
-  flex-direction: row;
-  gap: 0px;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   width: 48px;
   height: 48px;
   position: relative;
-  box-shadow: 0px 4px 6px -4px rgba(0, 0, 0, 0.1),
-    0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-btn);
 }
+
 .text19 {
-  flex-shrink: 0;
-  width: 13.81px;
-  height: 24px;
   position: relative;
 }
+
 .div2 {
-  color: #ffffff;
-  text-align: center;
-  font-family: "Inter-Medium", sans-serif;
+  color: var(--white);
+  font-family: var(--font-md);
   font-size: 16px;
   line-height: 24px;
   font-weight: 500;
-  position: absolute;
-  left: -1px;
-  top: -2.2px;
+  position: relative;
 }
 
+/* Bottom nav */
 .navigation {
-  background: #ffffff;
-  border-style: solid;
-  border-color: #000000;
-  border-width: 0.8px 0px 0px 0px;
-  padding: 0px;
+  background: var(--white);
+  border-top: 0.8px solid #000;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  flex-shrink: 0;
   width: 480px;
   height: 64px;
+  flex-shrink: 0;
   position: relative;
 }
+
 .link {
-  padding: 10px 0px 10.01px 0px;
+  padding: 10px 0;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -1135,35 +594,34 @@
   height: 64px;
   position: relative;
 }
+
 .icon8 {
-  flex-shrink: 0;
   width: 24px;
   height: 24px;
   position: relative;
   overflow: visible;
 }
-.layout {
+
+.layout,
+.layout3,
+.layout4,
+.layout5 {
   display: flex;
-  flex-direction: row;
-  gap: 0px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  flex-shrink: 0;
-  width: 32.16px;
-  height: 15.99px;
   position: relative;
 }
-.home {
-  color: #99a1af;
-  text-align: left;
-  font-family: "Inter-Regular", sans-serif;
+
+.home,
+.scan,
+.history {
+  color: var(--text-muted);
+  font-family: var(--font-reg);
   font-size: 12px;
   line-height: 16px;
-  font-weight: 400;
   position: relative;
 }
+
 .link2 {
-  padding: -18px 0px 6.01px 0px;
+  padding: 6px 0;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -1173,100 +631,39 @@
   height: 64px;
   position: relative;
 }
+
 .layout2 {
-  background: #6ba89e;
-  border-radius: 26843500px;
-  padding: 0px 14px 0px 14px;
+  background: var(--teal);
+  border-radius: 9999px;
+  padding: 0 14px;
   display: flex;
-  flex-direction: row;
-  gap: 0px;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
   width: 56px;
   height: 56px;
+  box-shadow: var(--shadow-btn);
   position: relative;
-  box-shadow: 0px 4px 6px -4px rgba(0, 0, 0, 0.1),
-    0px 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
+
 .icon9 {
-  flex-shrink: 0;
   width: 28px;
   height: 28px;
   position: relative;
   overflow: visible;
 }
-.layout3 {
-  display: flex;
-  flex-direction: row;
-  gap: 0px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  flex-shrink: 0;
-  width: 24.83px;
-  height: 15.99px;
-  position: relative;
-}
-.scan {
-  color: #99a1af;
-  text-align: left;
-  font-family: "Inter-Regular", sans-serif;
-  font-size: 12px;
-  line-height: 16px;
-  font-weight: 400;
-  position: relative;
-}
-.icon10 {
-  flex-shrink: 0;
-  width: 24px;
-  height: 24px;
-  position: relative;
-  overflow: visible;
-}
-.layout4 {
-  display: flex;
-  flex-direction: row;
-  gap: 0px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  flex-shrink: 0;
-  width: 38.48px;
-  height: 15.99px;
-  position: relative;
-}
+
 .ai-chef {
-  color: #6ba89e;
-  text-align: left;
-  font-family: "Inter-Regular", sans-serif;
+  color: var(--teal);
+  font-family: var(--font-reg);
   font-size: 12px;
   line-height: 16px;
-  font-weight: 400;
   position: relative;
 }
+
+.icon10,
 .icon11 {
-  flex-shrink: 0;
   width: 24px;
   height: 24px;
   position: relative;
   overflow: visible;
-}
-.layout5 {
-  display: flex;
-  flex-direction: row;
-  gap: 0px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  flex-shrink: 0;
-  width: 37.6px;
-  height: 15.99px;
-  position: relative;
-}
-.history {
-  color: #99a1af;
-  text-align: left;
-  font-family: "Inter-Regular", sans-serif;
-  font-size: 12px;
-  line-height: 16px;
-  font-weight: 400;
-  position: relative;
 }

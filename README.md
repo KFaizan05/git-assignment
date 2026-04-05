@@ -1,6 +1,6 @@
 Faizan Kalam
 
-LabelWise
+LabelWise — AI recipe UI: `index.html`, `app.js`.
 
 Team Members:
 - Faizan Kalam, Jenny Tran, Keshav Ravi, Naomi Shah, Janhavi Joshi

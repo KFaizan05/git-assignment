@@ -1,4 +1,25 @@
-/* Faizan Kalam */
+/* Faizan Kalam — shared colors/fonts (style.css + app.css use these) */
 
 :root {
+  --teal: #6ba89e;
+  --teal-dark: #4a7c72;
+  --text: #364153;
+  --text-muted: #99a1af;
+  --mint: #a8d5ba;
+  --mint-soft: #f0fdf4;
+  --mint-border: #b9f8cf;
+  --gray-bg: #f3f4f6;
+  --line: #e5e7eb;
+  --green-safe: #008236;
+  --white: #ffffff;
+  --grad-header: linear-gradient(135deg, #6ba89e 0%, #5a978c 100%);
+  --grad-mint: linear-gradient(135deg, #a8d5ba 0%, #8fc9a8 100%);
+  --grad-btn: linear-gradient(90deg, #6ba89e 0%, #5a978c 100%);
+  --shadow-card: 0px 25px 50px -12px rgba(0, 0, 0, 0.25);
+  --shadow-btn: 0px 4px 6px -4px rgba(0, 0, 0, 0.1),
+    0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --font-bold: "Inter-Bold", sans-serif;
+  --font-sb: "Inter-SemiBold", sans-serif;
+  --font-md: "Inter-Medium", sans-serif;
+  --font-reg: "Inter-Regular", sans-serif;
 }
