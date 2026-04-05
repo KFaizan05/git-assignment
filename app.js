@@ -1,12 +1,35 @@
+/**
+ * ============================================================================
+ * AI Chef Recipe — client-side application logic
+ * Author: Faizan Kalam
+ * ============================================================================
+ * This file powers the chatbot, OpenAI API calls, local storage for chat/history,
+ * screen navigation, and the ingredient photo scan (vision). The UI markup lives
+ * in index.html; layout overrides in app.css.
+ * ============================================================================
+ */
+
 (function () {
   "use strict";
 
+  // --------------------------------------------------------------------------
+  // Constants: localStorage keys and OpenAI model names
+  // --------------------------------------------------------------------------
+  /** Key used to read/write the user's OpenAI API key in localStorage. */
   var API_KEY_STORAGE = "openai_api_key";
+  /** Key for the array of saved recipe objects (max 50 entries). */
   var HISTORY_STORAGE = "ai_recipe_saved_v1";
+  /** Key for persisting the in-progress chat with the model. */
   var CHAT_STORAGE = "ai_recipe_chat_v1";
+  /** Text-only chat model (fast and inexpensive). */
   var MODEL = "gpt-4o-mini";
+  /** Multimodal model used to describe images from the Scan screen. */
   var VISION_MODEL = "gpt-4o";
 
+  /**
+   * System prompt: tells the model to return JSON for structured recipes,
+   * or a "plain reply" shape for general conversation (parsed in safeParseRecipe).
+   */
   var SYSTEM_RECIPE =
     "You are AI Chef, a helpful cooking assistant. " +
     "When the user asks for recipes, meal ideas, modifications to a dish, or cooking help that includes a concrete recipe, " +
@@ -15,10 +38,16 @@
     "For general chat, tips without a full recipe, or questions that are not recipe-focused, set plainReply to true, put your full answer in intro, and use empty string for title and empty arrays for ingredients and instructions.\n" +
     "Always use plainReply false when giving a structured recipe.";
 
+  // --------------------------------------------------------------------------
+  // Small utilities
+  // --------------------------------------------------------------------------
+
+  /** Shorthand for document.querySelector (optional root for scoped search). */
   function $(sel, root) {
     return (root || document).querySelector(sel);
   }
 
+  /** Escapes HTML special characters so user/model text is safe in innerHTML. */
   function escapeHtml(s) {
     if (!s) return "";
     return String(s)
@@ -28,15 +57,18 @@
       .replace(/"/g, "&quot;");
   }
 
+  /** Returns the stored API key, or empty string if none. */
   function getApiKey() {
     return localStorage.getItem(API_KEY_STORAGE) || "";
   }
 
+  /** Saves or clears the API key in localStorage. */
   function setApiKey(v) {
     if (v) localStorage.setItem(API_KEY_STORAGE, v);
     else localStorage.removeItem(API_KEY_STORAGE);
   }
 
+  /** Shows or hides the API key modal; updates aria-hidden for accessibility. */
   function showModal(show) {
     var m = $("#api-modal");
     if (!m) return;
@@ -44,6 +76,14 @@
     m.setAttribute("aria-hidden", show ? "false" : "true");
   }
 
+  // --------------------------------------------------------------------------
+  // Parsing model output into a recipe object
+  // --------------------------------------------------------------------------
+
+  /**
+   * Parses JSON from the model; strips optional ```json fences if present.
+   * @throws SyntaxError if the string is not valid JSON
+   */
   function parseRecipeJson(text) {
     var t = String(text).trim();
     if (t.indexOf("```") === 0) {
@@ -53,6 +93,10 @@
     return obj;
   }
 
+  /**
+   * Like parseRecipeJson but never throws: on failure returns a plainReply object
+   * so the UI can still show the raw text in a safe bubble.
+   */
   function safeParseRecipe(text) {
     try {
       return parseRecipeJson(text);
@@ -73,9 +117,13 @@
     }
   }
 
+  // --------------------------------------------------------------------------
+  // HTML builders for recipe cards (match classes from style.css / Figma export)
+  // --------------------------------------------------------------------------
+
+  /** Builds the "nutrition tag" pills inside the recipe card. */
   function nutritionTagsHtml(tags) {
     if (!tags || !tags.length) return "";
-    var labels = ["High Protein", "High Fiber", "Iron Rich"];
     var chunks = tags.slice(0, 5).map(function (tag, i) {
       var cls = i === 0 ? "text16" : i === 1 ? "text17" : "text18";
       var offset = "";
@@ -97,8 +145,10 @@
     return chunks.join("");
   }
 
+  /** Renders the bullet list of ingredient lines. */
   function ingredientsHtml(items) {
-    if (!items || !items.length) return "<p class='chef-empty'>No ingredients listed.</p>";
+    if (!items || !items.length)
+      return "<p class='chef-empty'>No ingredients listed.</p>";
     return items
       .map(function (line) {
         return (
@@ -112,12 +162,16 @@
       .join("");
   }
 
+  /** Renders numbered instruction steps (reuses list-item2 / list-item3 layout). */
   function instructionsHtml(items) {
     if (!items || !items.length) return "";
     return items
       .map(function (line, idx) {
         var n = idx + 1;
-        var rowClass = idx === items.length - 1 && items.length === 4 ? "list-item3" : "list-item2";
+        var rowClass =
+          idx === items.length - 1 && items.length === 4
+            ? "list-item3"
+            : "list-item2";
         var numClass = rowClass === "list-item3" ? "text14" : "text12";
         var bodyClass = rowClass === "list-item3" ? "text15" : "text13";
         var numInner = rowClass === "list-item3" ? "_4" : "_1";
@@ -142,6 +196,10 @@
       .join("");
   }
 
+  /**
+   * Full assistant message: either a simple gray intro bubble (plainReply)
+   * or the full recipe card (title, meta, ingredients, steps, tags).
+   */
   function recipeCardHtml(data) {
     if (data.plainReply || !data.title) {
       return (
@@ -207,6 +265,7 @@
     );
   }
 
+  /** User message bubble (teal, right-aligned block in the thread). */
   function userBubbleHtml(text) {
     return (
       '<div class="container5">' +
@@ -218,6 +277,7 @@
     );
   }
 
+  /** Wraps inner HTML in the assistant row (avatar + content column). */
   function assistantRowHtml(inner) {
     return (
       '<div class="container7">' +
@@ -228,27 +288,43 @@
     );
   }
 
+  // --------------------------------------------------------------------------
+  // Chat state: last savable recipe + full message list for the API
+  // --------------------------------------------------------------------------
+
+  /** Last successfully parsed structured recipe (used by Save Recipe). */
   var lastRecipeData = null;
+  /** Alternating user / assistant messages; assistant may include .parsed cache. */
   var conversationMessages = [];
 
+  /** Restores chat from localStorage after a page reload. */
   function loadChatFromStorage() {
     try {
       var raw = localStorage.getItem(CHAT_STORAGE);
       if (!raw) return;
       var parsed = JSON.parse(raw);
       if (parsed && parsed.messages) conversationMessages = parsed.messages;
-    } catch (e) {}
+    } catch (e) {
+      /* ignore corrupt storage */
+    }
   }
 
+  /** Persists the current conversation for refresh continuity. */
   function saveChatToStorage() {
     try {
       localStorage.setItem(
         CHAT_STORAGE,
         JSON.stringify({ messages: conversationMessages })
       );
-    } catch (e) {}
+    } catch (e) {
+      /* quota exceeded or private mode */
+    }
   }
 
+  /**
+   * Rebuilds #messages-root from conversationMessages: each "turn" is user bubble
+   * plus optional assistant recipe card. Shows #chef-empty when there is no chat.
+   */
   function renderChefThread() {
     var root = $("#messages-root");
     var empty = $("#chef-empty");
@@ -268,7 +344,10 @@
         turn.className = "chat-turn";
         turn.innerHTML = userBubbleHtml(m.content);
         var assistantContent = "";
-        if (conversationMessages[i + 1] && conversationMessages[i + 1].role === "assistant") {
+        if (
+          conversationMessages[i + 1] &&
+          conversationMessages[i + 1].role === "assistant"
+        ) {
           var asst = conversationMessages[i + 1];
           var data = asst.parsed || safeParseRecipe(asst.content);
           assistantContent = recipeCardHtml(data);
@@ -287,6 +366,16 @@
     root.scrollTop = root.scrollHeight;
   }
 
+  // --------------------------------------------------------------------------
+  // OpenAI HTTP API
+  // --------------------------------------------------------------------------
+
+  /**
+   * POST /v1/chat/completions with the given messages array.
+   * @param {Array} messages OpenAI chat messages (system + user + assistant)
+   * @param {string} [model] optional model override (default MODEL)
+   * @returns {Promise<string>} assistant message content text
+   */
   function openaiChat(messages, model) {
     var key = getApiKey();
     if (!key) return Promise.reject(new Error("missing_api_key"));
@@ -306,16 +395,20 @@
       return res.json().then(function (body) {
         if (!res.ok) {
           var msg =
-            (body.error && body.error.message) || res.statusText || "Request failed";
+            (body.error && body.error.message) ||
+            res.statusText ||
+            "Request failed";
           throw new Error(msg);
         }
         var choice = body.choices && body.choices[0];
-        if (!choice || !choice.message) throw new Error("No response from model");
+        if (!choice || !choice.message)
+          throw new Error("No response from model");
         return choice.message.content;
       });
     });
   }
 
+  /** Builds the request body messages: system prompt + stored conversation. */
   function buildApiMessages() {
     var out = [{ role: "system", content: SYSTEM_RECIPE }];
     conversationMessages.forEach(function (m) {
@@ -326,9 +419,14 @@
     return out;
   }
 
+  /**
+   * Reads #chef-input, appends user message, shows loading row, calls OpenAI,
+   * then appends assistant message and re-renders. Errors show a red banner.
+   */
   function sendChefMessage() {
     var input = $("#chef-input");
-    var text = (input && input.value || "").trim();
+    var text = (input && input.value) || "";
+    text = text.trim();
     if (!text) return;
 
     if (!getApiKey()) {
@@ -378,6 +476,11 @@
       });
   }
 
+  // --------------------------------------------------------------------------
+  // Saved recipes (History tab)
+  // --------------------------------------------------------------------------
+
+  /** Pushes lastRecipeData onto history in localStorage (cap 50 items). */
   function saveRecipe() {
     if (!lastRecipeData || lastRecipeData.plainReply || !lastRecipeData.title) {
       alert("Ask the AI for a recipe first, then save.");
@@ -394,6 +497,7 @@
     renderHistoryList();
   }
 
+  /** Returns parsed history array or []. */
   function loadHistory() {
     try {
       var raw = localStorage.getItem(HISTORY_STORAGE);
@@ -405,6 +509,9 @@
     }
   }
 
+  /**
+   * Renders #history-list from loadHistory(); wires Open / Remove buttons.
+   */
   function renderHistoryList() {
     var ul = $("#history-list");
     var empty = $("#history-empty");
@@ -463,6 +570,9 @@
     });
   }
 
+  /**
+   * Replaces the chat with a synthetic turn that displays a saved recipe card.
+   */
   function openRecipeInChef(recipe) {
     lastRecipeData = recipe;
     var fakeContent = JSON.stringify(recipe);
@@ -474,21 +584,31 @@
     renderChefThread();
   }
 
+  // --------------------------------------------------------------------------
+  // Navigation between Home / Chef / Scan / History
+  // --------------------------------------------------------------------------
+
+  /** Toggles .is-active on .app-screen elements by data-screen name. */
   function switchScreen(name) {
     document.querySelectorAll(".app-screen").forEach(function (el) {
       el.classList.toggle("is-active", el.getAttribute("data-screen") === name);
     });
   }
 
+  /** Highlights the bottom nav button matching the current screen. */
   function setNavActive(name) {
     document.querySelectorAll(".nav-item").forEach(function (btn) {
       btn.classList.toggle("is-active", btn.getAttribute("data-nav") === name);
     });
   }
 
+  // --------------------------------------------------------------------------
+  // Scan tab: image file → data URL → vision model
+  // --------------------------------------------------------------------------
+
+  /** Reads selected file, posts image + prompt to gpt-4o, prints text in #scan-result. */
   function scanAnalyze() {
     var fileInput = $("#scan-file");
-    var preview = $("#scan-preview");
     var result = $("#scan-result");
     var btn = $("#scan-analyze");
     if (!fileInput || !fileInput.files || !fileInput.files[0]) {
@@ -560,12 +680,17 @@
     reader.readAsDataURL(file);
   }
 
+  // --------------------------------------------------------------------------
+  // init: attach all event listeners and show the Home screen by default
+  // --------------------------------------------------------------------------
+
   function init() {
     loadChatFromStorage();
 
     var keyInput = $("#api-key-input");
     if (keyInput && getApiKey()) keyInput.value = getApiKey();
 
+    // Modal: save / clear API key, close on backdrop or ×
     $("#api-key-save") &&
       $("#api-key-save").addEventListener("click", function () {
         var v = (keyInput && keyInput.value.trim()) || "";
@@ -587,6 +712,7 @@
         showModal(false);
       });
 
+    // Bottom navigation
     document.querySelectorAll(".nav-item").forEach(function (btn) {
       btn.addEventListener("click", function () {
         var name = btn.getAttribute("data-nav");
@@ -596,6 +722,7 @@
       });
     });
 
+    // AI Chef header: open API key modal
     var back = $("#header-back");
     if (back)
       back.addEventListener("click", function () {
@@ -603,6 +730,7 @@
         if (keyInput) keyInput.value = getApiKey();
       });
 
+    // Composer: send on button click or Enter (Shift+Enter = newline)
     $("#chef-send") &&
       $("#chef-send").addEventListener("click", function () {
         sendChefMessage();
@@ -618,6 +746,7 @@
     $(".app-btn-save") &&
       $(".app-btn-save").addEventListener("click", saveRecipe);
 
+    // Scan tab
     $("#scan-analyze") &&
       $("#scan-analyze").addEventListener("click", scanAnalyze);
     $("#scan-file") &&

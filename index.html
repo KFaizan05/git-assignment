@@ -1,4 +1,10 @@
 <!DOCTYPE html>
+<!--
+  AI Chef Recipe — main application page
+  Author: Faizan Kalam
+  Structure: modal + four screens (home, chef, scan, history) + bottom nav.
+  Behavior: app.js | Extra styles: app.css (on top of Figma export in style.css)
+-->
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -7,6 +13,7 @@
   <link rel="stylesheet" href="./vars.css">
   <link rel="stylesheet" href="./style.css">
   <link rel="stylesheet" href="./app.css">
+  <!-- Reset-ish rules so buttons/inputs match the design (no browser defaults) -->
   <style>
    a,
    button,
@@ -36,7 +43,9 @@
   <title>AI Chef Recipe</title>
 </head>
 <body>
+  <!-- Root: fixed width ~phone; contains all screens + shared navigation -->
   <div class="ai-chatbot-faizan">
+    <!-- OpenAI API key: stored in localStorage by app.js (dev/demo only) -->
     <div id="api-modal" class="app-modal" hidden aria-hidden="true">
       <div class="app-modal__backdrop"></div>
       <div class="app-modal__card">
@@ -54,6 +63,7 @@
       </div>
     </div>
 
+    <!-- Landing / instructions -->
     <div class="app-screen is-active" data-screen="home" id="screen-home">
       <div class="home-panel">
         <div class="home-header">
@@ -68,6 +78,7 @@
       </div>
     </div>
 
+    <!-- Chat + structured recipe cards; messages injected into #messages-root -->
     <div class="app-screen" data-screen="chef" id="screen-chef">
       <div class="chatbot-recipe-screen">
         <div class="container">
@@ -115,6 +126,7 @@
       </div>
     </div>
 
+    <!-- Photo → gpt-4o vision; result in #scan-result -->
     <div class="app-screen" data-screen="scan" id="screen-scan">
       <div class="scan-panel">
         <h2>Scan ingredients</h2>
@@ -129,6 +141,7 @@
       </div>
     </div>
 
+    <!-- Saved recipes list built by app.js from localStorage -->
     <div class="app-screen" data-screen="history" id="screen-history">
       <div class="history-panel">
         <h2>Saved recipes</h2>
@@ -137,6 +150,7 @@
       </div>
     </div>
 
+    <!-- data-nav values must match switchScreen() in app.js -->
     <div class="navigation">
       <button type="button" class="link nav-item" data-nav="home">
         <img class="icon8" src="icon7.svg" alt="" />
@@ -166,6 +180,7 @@
       </button>
     </div>
   </div>
+  <!-- Author: Faizan Kalam — see file header comment above -->
   <script src="app.js"></script>
 </body>
 </html>

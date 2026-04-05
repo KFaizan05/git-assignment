@@ -1,3 +1,14 @@
+/*
+ * ============================================================================
+ * AI Chef Recipe — design export stylesheet (Figma → CSS)
+ * Author: Faizan Kalam
+ * ============================================================================
+ * Auto-generated layout: class names match the design tool. Do not rename
+ * lightly — app.js builds HTML that depends on these selectors. Interactive
+ * overrides and multi-screen layout live in app.css.
+ * ============================================================================
+ */
+
 .ai-chatbot-faizan,
 .ai-chatbot-faizan * {
   box-sizing: border-box;
@@ -14,6 +25,8 @@
   box-shadow: 0px 25px 50px -12px rgba(0, 0, 0, 0.25);
   overflow: hidden;
 }
+
+/* ----- Chef screen wrapper (fills area below global chrome) ----- */
 .chatbot-recipe-screen {
   background: #ffffff;
   padding: 0px;
@@ -27,6 +40,8 @@
   position: relative;
   overflow: hidden;
 }
+
+/* ----- Header strip (gradient) with back button + title row ----- */
 .container {
   background: linear-gradient(
     135deg,
@@ -109,6 +124,8 @@
   left: 0px;
   top: -1.2px;
 }
+
+/* ----- Scrollable content: user bubble + assistant column ----- */
 .container4 {
   padding: 24px 39.2px 0px 24px;
   display: flex;
@@ -958,6 +975,8 @@
   left: 12.8px;
   top: 4.8px;
 }
+
+/* ----- Footer: Save recipe + composer row ----- */
 .container22 {
   background: #ffffff;
   border-style: solid;
@@ -1102,6 +1121,8 @@
   left: -1px;
   top: -2.2px;
 }
+
+/* ----- Bottom navigation tabs ----- */
 .navigation {
   background: #ffffff;
   border-style: solid;

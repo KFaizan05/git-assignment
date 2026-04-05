@@ -1,5 +1,12 @@
+<!--
+  AI Chef Recipe — static UI fragment (design reference / legacy markup)
+  Author: Faizan Kalam
+  Note: The runnable app is index.html + app.js + app.css. This file mirrors
+  the original single-screen layout without scripts.
+-->
 <div class="ai-chatbot-faizan">
   <div class="chatbot-recipe-screen">
+    <!-- Top bar: back affordance + app title -->
     <div class="container">
       <div class="button">
         <img class="icon" src="icon0.svg" />
@@ -13,7 +20,9 @@
         </div>
       </div>
     </div>
+    <!-- Main column: sample user message + assistant recipe card -->
     <div class="container4">
+      <!-- Demo user prompt bubble -->
       <div class="container5">
         <div class="container6">
           <div class="paragraph">
@@ -23,11 +32,13 @@
           </div>
         </div>
       </div>
+      <!-- Assistant avatar + recipe content -->
       <div class="container7">
         <div class="container8">
           <img class="icon3" src="icon2.svg" />
         </div>
-        <div class="container9">
+          <div class="container9">
+          <!-- Intro text from the assistant -->
           <div class="container10">
             <div class="paragraph2">
               <div class="perfect-i-ve-created-a-quick-and-delicious-vegan">
@@ -37,6 +48,7 @@
               </div>
             </div>
           </div>
+          <!-- Bordered recipe card: title, meta, ingredients, steps, nutrition -->
           <div class="container11">
             <div class="container12">
               <div class="heading-2">
@@ -241,6 +253,7 @@
         </div>
       </div>
     </div>
+    <!-- Sticky footer: save + text field + send (placeholders in this fragment) -->
     <div class="container22">
       <div class="container23">
         <div class="button2">
@@ -262,6 +275,7 @@
       </div>
     </div>
   </div>
+  <!-- Bottom tab bar (Home / Scan / AI Chef / History) -->
   <div class="navigation">
     <div class="link">
       <img class="icon8" src="icon7.svg" />
