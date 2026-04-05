@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./vars.css">
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./app.css">
+  <style>
+   a,
+   button,
+   input,
+   select,
+   textarea,
+   h1,
+   h2,
+   h3,
+   h4,
+   h5,
+   * {
+       box-sizing: border-box;
+       margin: 0;
+       padding: 0;
+       border: none;
+       text-decoration: none;
+       background: none;
+       -webkit-font-smoothing: antialiased;
+   }
+   menu, ol, ul {
+       list-style-type: none;
+       margin: 0;
+       padding: 0;
+   }
+   </style>
+  <title>AI Chef Recipe</title>
+</head>
+<body>
+  <div class="ai-chatbot-faizan">
+    <div id="api-modal" class="app-modal" hidden aria-hidden="true">
+      <div class="app-modal__backdrop"></div>
+      <div class="app-modal__card">
+        <button type="button" class="app-modal__close" id="api-modal-close" aria-label="Close">×</button>
+        <h3>OpenAI API key</h3>
+        <p class="app-modal__hint">
+          Your key is stored only in this browser (localStorage). Anyone with access to this computer can see it.
+          For a public app, use a small backend instead of putting keys in the frontend.
+        </p>
+        <input type="password" id="api-key-input" placeholder="sk-..." autocomplete="off" />
+        <div class="app-modal__actions">
+          <button type="button" id="api-key-save">Save</button>
+          <button type="button" id="api-key-clear">Remove key</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="app-screen is-active" data-screen="home" id="screen-home">
+      <div class="home-panel">
+        <div class="home-header">
+          <h1>AI Chef</h1>
+          <p>Recipes tailored to you — chat, scan ingredients, save favorites.</p>
+        </div>
+        <div class="home-body">
+          <h2>Get started</h2>
+          <p>Open <strong>AI Chef</strong> and add your OpenAI API key using the menu button (top-left) on that screen.</p>
+          <p class="home-hint">Models used: <code>gpt-4o-mini</code> for chat and <code>gpt-4o</code> for photo scan.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="app-screen" data-screen="chef" id="screen-chef">
+      <div class="chatbot-recipe-screen">
+        <div class="container">
+          <button type="button" class="button header-back" id="header-back" title="API key settings" aria-label="API key settings">
+            <img class="icon" src="icon0.svg" alt="" />
+          </button>
+          <div class="container2">
+            <div class="container3">
+              <img class="icon2" src="icon1.svg" alt="" />
+            </div>
+            <div class="heading-1">
+              <div class="ai-chef-recipe">AI Chef Recipe</div>
+            </div>
+          </div>
+        </div>
+        <div class="container4 app-chat-scroll">
+          <div id="messages-root"></div>
+          <p id="chef-empty" class="chef-empty">
+            Ask for a recipe or meal idea below. Follow-ups stay in context until you refresh the page.
+          </p>
+        </div>
+        <div class="container22">
+          <div class="container23">
+            <button type="button" class="button2 app-btn-interactive app-btn-save">
+              <img class="icon7" src="icon6.svg" alt="" />
+              <div class="save-recipe">Save Recipe</div>
+            </button>
+          </div>
+          <div class="container24">
+            <label class="text-input" for="chef-input">
+              <textarea
+                id="chef-input"
+                rows="1"
+                placeholder="Ask for modifications or new recipe..."
+                aria-label="Message to AI Chef"
+              ></textarea>
+            </label>
+            <button type="button" class="button3 app-btn-interactive" id="chef-send" aria-label="Send message">
+              <div class="text19">
+                <div class="div2">→</div>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="app-screen" data-screen="scan" id="screen-scan">
+      <div class="scan-panel">
+        <h2>Scan ingredients</h2>
+        <p class="scan-desc">Upload a photo of your fridge, pantry, or ingredients. We’ll list what we see and suggest a simple recipe.</p>
+        <button type="button" class="scan-file-btn">Choose photo</button>
+        <input type="file" id="scan-file" accept="image/*" />
+        <img id="scan-preview" class="scan-preview" hidden alt="Selected image preview" />
+        <div class="scan-actions">
+          <button type="button" id="scan-analyze">Analyze with AI</button>
+        </div>
+        <pre id="scan-result" class="scan-result"></pre>
+      </div>
+    </div>
+
+    <div class="app-screen" data-screen="history" id="screen-history">
+      <div class="history-panel">
+        <h2>Saved recipes</h2>
+        <ul id="history-list" class="history-list"></ul>
+        <p id="history-empty" class="history-empty">No saved recipes yet. Get a recipe from AI Chef, then tap Save Recipe.</p>
+      </div>
+    </div>
+
+    <div class="navigation">
+      <button type="button" class="link nav-item" data-nav="home">
+        <img class="icon8" src="icon7.svg" alt="" />
+        <div class="layout">
+          <div class="home">Home</div>
+        </div>
+      </button>
+      <button type="button" class="link2 nav-item" data-nav="scan">
+        <div class="layout2">
+          <img class="icon9" src="icon8.svg" alt="" />
+        </div>
+        <div class="layout3">
+          <div class="scan">Scan</div>
+        </div>
+      </button>
+      <button type="button" class="link nav-item" data-nav="chef">
+        <img class="icon10" src="icon9.svg" alt="" />
+        <div class="layout4">
+          <div class="ai-chef">AI Chef</div>
+        </div>
+      </button>
+      <button type="button" class="link nav-item" data-nav="history">
+        <img class="icon11" src="icon10.svg" alt="" />
+        <div class="layout5">
+          <div class="history">History</div>
+        </div>
+      </button>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
