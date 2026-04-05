@@ -1,15 +1,5 @@
-/*
- * ============================================================================
- * AI Chef Recipe — application stylesheet (interactive UI & layout fixes)
- * Author: Faizan Kalam
- * ============================================================================
- * Loaded after style.css. Adds multi-screen layout, scrolling chat, nav states,
- * modal, home/scan/history panels, and overrides fixed heights from the Figma
- * export so dynamic recipe content can grow naturally.
- * ============================================================================
- */
+/* Faizan Kalam */
 
-/* ----- Multi-screen shell: only one .app-screen visible at a time ----- */
 .app-screen {
   display: none;
   flex-direction: column;
@@ -23,14 +13,12 @@
   display: flex;
 }
 
-/* Main phone-width column; caps height to viewport */
 .ai-chatbot-faizan {
   height: min(777.6px, 100vh);
   max-height: 100vh;
   margin: 0 auto;
 }
 
-/* Chef tab: column flex so header + scroll + composer stack correctly */
 .chatbot-recipe-screen {
   min-height: 0;
   flex: 1;
@@ -38,7 +26,6 @@
   flex-direction: column;
 }
 
-/* Scrollable message list between header and input bar */
 .app-chat-scroll {
   flex: 1;
   min-height: 0;
@@ -47,7 +34,6 @@
   -webkit-overflow-scrolling: touch;
 }
 
-/* ----- Overrides: Figma used fixed heights; allow recipe cards to expand ----- */
 .app-chat-scroll .container7,
 .app-chat-scroll .container9,
 .app-chat-scroll .container11 {
@@ -132,7 +118,6 @@
   top: auto !important;
 }
 
-/* Bottom nav: real <button> elements styled like the original links */
 .nav-item {
   cursor: pointer;
   border: none;
@@ -155,7 +140,6 @@
   font-weight: 600;
 }
 
-/* Chef screen top-left: opens API key modal */
 .header-back {
   cursor: pointer;
   border: none;
@@ -168,7 +152,6 @@
   outline-offset: 2px;
 }
 
-/* Message composer: multiline textarea inside the styled “pill” */
 #chef-input {
   width: 100%;
   border: none;
@@ -198,7 +181,6 @@
   border: none;
 }
 
-/* Shown when there are no messages yet */
 .chef-empty {
   padding: 24px;
   color: #6b7280;
@@ -223,7 +205,6 @@
   margin-bottom: 0;
 }
 
-/* Inline error after a failed API call */
 .app-error {
   background: #fef2f2;
   border: 1px solid #fecaca;
@@ -240,7 +221,6 @@
   padding: 8px 0;
 }
 
-/* ----- Home tab ----- */
 .home-panel {
   flex: 1;
   display: flex;
@@ -298,7 +278,6 @@
   color: #6b7280 !important;
 }
 
-/* ----- Scan tab (photo upload + vision results) ----- */
 .scan-panel {
   flex: 1;
   padding: 24px;
@@ -333,7 +312,6 @@
   margin-bottom: 12px;
 }
 
-/* Hidden native file input; opened via .scan-file-btn in app.js */
 #scan-file {
   position: absolute;
   width: 0;
@@ -394,7 +372,6 @@
   display: none;
 }
 
-/* ----- History tab (saved recipes from localStorage) ----- */
 .history-panel {
   flex: 1;
   padding: 24px;
@@ -472,7 +449,6 @@
   display: none;
 }
 
-/* ----- API key modal (overlay + card) ----- */
 .app-modal {
   position: fixed;
   inset: 0;
@@ -567,7 +543,6 @@
   color: #374151;
 }
 
-/* Page background behind the app “phone” frame */
 body {
   margin: 0;
   min-height: 100vh;

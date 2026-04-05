@@ -1,10 +1,5 @@
 <!DOCTYPE html>
-<!--
-  AI Chef Recipe — main application page
-  Author: Faizan Kalam
-  Structure: modal + four screens (home, chef, scan, history) + bottom nav.
-  Behavior: app.js | Extra styles: app.css (on top of Figma export in style.css)
--->
+<!-- Faizan Kalam -->
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -13,7 +8,6 @@
   <link rel="stylesheet" href="./vars.css">
   <link rel="stylesheet" href="./style.css">
   <link rel="stylesheet" href="./app.css">
-  <!-- Reset-ish rules so buttons/inputs match the design (no browser defaults) -->
   <style>
    a,
    button,
@@ -43,27 +37,7 @@
   <title>AI Chef Recipe</title>
 </head>
 <body>
-  <!-- Root: fixed width ~phone; contains all screens + shared navigation -->
   <div class="ai-chatbot-faizan">
-    <!-- OpenAI API key: stored in localStorage by app.js (dev/demo only) -->
-    <div id="api-modal" class="app-modal" hidden aria-hidden="true">
-      <div class="app-modal__backdrop"></div>
-      <div class="app-modal__card">
-        <button type="button" class="app-modal__close" id="api-modal-close" aria-label="Close">×</button>
-        <h3>OpenAI API key</h3>
-        <p class="app-modal__hint">
-          Your key is stored only in this browser (localStorage). Anyone with access to this computer can see it.
-          For a public app, use a small backend instead of putting keys in the frontend.
-        </p>
-        <input type="password" id="api-key-input" placeholder="sk-..." autocomplete="off" />
-        <div class="app-modal__actions">
-          <button type="button" id="api-key-save">Save</button>
-          <button type="button" id="api-key-clear">Remove key</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Landing / instructions -->
     <div class="app-screen is-active" data-screen="home" id="screen-home">
       <div class="home-panel">
         <div class="home-header">
@@ -72,19 +46,18 @@
         </div>
         <div class="home-body">
           <h2>Get started</h2>
-          <p>Open <strong>AI Chef</strong> and add your OpenAI API key using the menu button (top-left) on that screen.</p>
-          <p class="home-hint">Models used: <code>gpt-4o-mini</code> for chat and <code>gpt-4o</code> for photo scan.</p>
+          <p>Open <strong>AI Chef</strong> to chat. Put your OpenAI key in <code>app.js</code> (<code>OPENAI_API_KEY</code>), then reload.</p>
+          <p class="home-hint">Until a key is set, the chat shows “Connect to API”. Models: <code>gpt-4o-mini</code> (chat) and <code>gpt-4o</code> (scan).</p>
         </div>
       </div>
     </div>
 
-    <!-- Chat + structured recipe cards; messages injected into #messages-root -->
     <div class="app-screen" data-screen="chef" id="screen-chef">
       <div class="chatbot-recipe-screen">
         <div class="container">
-          <button type="button" class="button header-back" id="header-back" title="API key settings" aria-label="API key settings">
+          <div class="button" aria-hidden="true">
             <img class="icon" src="icon0.svg" alt="" />
-          </button>
+          </div>
           <div class="container2">
             <div class="container3">
               <img class="icon2" src="icon1.svg" alt="" />
@@ -126,7 +99,6 @@
       </div>
     </div>
 
-    <!-- Photo → gpt-4o vision; result in #scan-result -->
     <div class="app-screen" data-screen="scan" id="screen-scan">
       <div class="scan-panel">
         <h2>Scan ingredients</h2>
@@ -141,7 +113,6 @@
       </div>
     </div>
 
-    <!-- Saved recipes list built by app.js from localStorage -->
     <div class="app-screen" data-screen="history" id="screen-history">
       <div class="history-panel">
         <h2>Saved recipes</h2>
@@ -150,7 +121,6 @@
       </div>
     </div>
 
-    <!-- data-nav values must match switchScreen() in app.js -->
     <div class="navigation">
       <button type="button" class="link nav-item" data-nav="home">
         <img class="icon8" src="icon7.svg" alt="" />
@@ -180,7 +150,6 @@
       </button>
     </div>
   </div>
-  <!-- Author: Faizan Kalam — see file header comment above -->
   <script src="app.js"></script>
 </body>
 </html>
