@@ -1,3 +1,5 @@
+<!-- // Author: Faizan Kalam -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,8 +13,10 @@
   <link rel="stylesheet" href="./app.css">
   
   <style>
+   /* Global resets to ensure consistent layout across browsers */
    * { box-sizing: border-box; margin: 0; padding: 0; border: none; text-decoration: none; background: none; -webkit-font-smoothing: antialiased; }
    
+   /* Main App Container */
    .ai-chatbot-faizan {
        display: flex;
        flex-direction: column;
@@ -24,6 +28,7 @@
        position: relative;
    }
 
+   /* Individual screen wrapper */
    .app-screen { 
        display: flex; 
        flex-direction: column;
@@ -32,6 +37,7 @@
        overflow: hidden;
    }
    
+   /* Scrollable area for chat bubbles */
    .app-chat-scroll { 
        overflow-y: auto; 
        flex: 1; 
@@ -78,8 +84,12 @@
               <img src="icon0.svg" class="icon-upload" alt="Upload" />
               <input type="file" id="chef-file-upload" style="display: none;" accept="image/*" />
             </label>
-            <div class="text-input" style="flex: 1;"><textarea id="chef-input" rows="1" placeholder="Type here..."></textarea></div>
-            <button type="button" class="button3" id="chef-send"><div class="div2">→</div></button>
+            <div class="text-input" style="flex: 1;">
+              <textarea id="chef-input" rows="1" placeholder="Type here..."></textarea>
+            </div>
+            <button type="button" class="button3" id="chef-send">
+              <div class="div2">→</div>
+            </button>
           </div>
         </div>
       </div>
@@ -104,6 +114,7 @@
       </div>
     </div>
   </div>
+
   <script src="app.js"></script>
 </body>
 </html>
