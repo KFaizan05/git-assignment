@@ -1,0 +1,264 @@
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+  font-family: "Inter", sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  background: #f5f8f7;
+}
+
+.ocr-loading-page {
+  width: 100%;
+  max-width: 430px;
+  min-height: 100vh;
+}
+
+.ocr-shell {
+  min-height: 100vh;
+  padding: 48px 24px;
+  background: linear-gradient(135deg, #6BA89E 0%, #5A978C 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hero-loader {
+  margin-top: 140px;
+  margin-bottom: 32px;
+}
+
+.hero-ring {
+  width: 128px;
+  height: 128px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.2);
+  display: grid;
+  place-items: center;
+  animation: pulse 1.8s ease-in-out infinite;
+}
+
+.hero-icon {
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  color: white;
+  font-size: 42px;
+  font-weight: 700;
+  transform: rotate(45deg);
+}
+
+h1 {
+  margin: 0 0 12px;
+  color: white;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 32px;
+  text-align: center;
+}
+
+.subtitle {
+  margin: 0 0 32px;
+  color: #A8D5BA;
+  font-size: 16px;
+  line-height: 24px;
+  text-align: center;
+}
+
+.steps {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.step {
+  width: 100%;
+  min-height: 60px;
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.1);
+  border: 1.78px solid rgba(255,255,255,0.2);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.step.pending {
+  opacity: 0.5;
+}
+
+.step-icon {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  display: grid;
+  place-items: center;
+}
+
+.step-icon.check {
+  border-radius: 999px;
+  background: #05DF72;
+  color: white;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.step-icon.dot {
+  border-radius: 999px;
+  background: #99A1AF;
+}
+
+.step-icon.spinner {
+  border-radius: 999px;
+  border: 2px solid rgba(244, 209, 102, 0.35);
+  border-top-color: #F4D166;
+  animation: spin 0.9s linear infinite;
+}
+
+.step-text {
+  color: white;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.96;
+  }
+  50% {
+    transform: scale(1.04);
+    opacity: 1;
+  }
+}
+
+/* --- In-app error modal (replaces alert() for OCR errors) -------------- */
+
+.ocr-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: ocrModalFadeIn 0.15s ease-out;
+}
+
+.ocr-modal[hidden] {
+  display: none !important;
+}
+
+.ocr-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.ocr-modal-card {
+  position: relative;
+  background: white;
+  border-radius: 18px;
+  padding: 28px 24px 20px;
+  width: 100%;
+  max-width: 360px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+  text-align: center;
+  animation: ocrModalPopIn 0.2s ease-out;
+}
+
+.ocr-modal-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 14px;
+  border-radius: 999px;
+  background: #FEF2F2;
+  color: #C10007;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+}
+
+.ocr-modal-title {
+  margin: 0 0 8px;
+  color: #111827;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 24px;
+}
+
+.ocr-modal-body {
+  margin: 0 0 20px;
+  color: #4A5565;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.ocr-modal-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.ocr-modal-btn {
+  flex: 1;
+  height: 48px;
+  border-radius: 12px;
+  border: none;
+  font-family: "Inter", sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+.ocr-modal-btn.primary {
+  background: linear-gradient(90deg, #6BA89E 0%, #5A978C 100%);
+  color: white;
+  box-shadow: 0 4px 6px -4px rgba(0, 0, 0, 0.15),
+              0 10px 15px -3px rgba(0, 0, 0, 0.15);
+}
+
+.ocr-modal-btn.primary:hover {
+  filter: brightness(1.05);
+}
+
+.ocr-modal-btn.secondary {
+  background: #F3F4F6;
+  color: #374151;
+}
+
+.ocr-modal-btn.secondary:hover {
+  background: #E5E7EB;
+}
+
+@keyframes ocrModalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes ocrModalPopIn {
+  from {
+    transform: scale(0.92);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

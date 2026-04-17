@@ -15,12 +15,14 @@
     <div class="card">
       <h2>Welcome Back!</h2>
 
-      <form>
+      <form id="loginForm" novalidate>
         <label for="email">Email</label>
-        <input id="email" type="email" placeholder="Enter your email">
+        <input id="email" type="email" placeholder="Enter your email" autocomplete="username">
 
         <label for="password">Password</label>
-        <input id="password" type="password" placeholder="Enter your password">
+        <input id="password" type="password" placeholder="Enter your password" autocomplete="current-password">
+
+        <p id="loginError" class="login-error" role="alert" hidden></p>
 
         <a href="#" class="forgot">Forgot password?</a>
 
@@ -29,13 +31,14 @@
 
       <div class="divider"><span>or</span></div>
 
-      <button class="secondary">Quick Start - Create Profile</button>
+      <a href="./CreateProfilePage.html" class="secondary quick-start-link">
+        Quick Start - Create Profile
+      </a>
 
       <p class="signup-text">
-      Don’t have an account? 
-      <a href="SignUpPage.html" class="signup-link">Sign Up</a>
-    </p>
-    </a>
+        Don’t have an account?
+        <a href="SignUpPage.html" class="signup-link">Sign Up</a>
+      </p>
     </div>
     <!-- Footer -->
     <p style="color: white; margin-top: 16px; font-size: 14px;">
@@ -43,5 +46,7 @@
     </p>
   </div>
 
+  <script src="../js/profileStorage.js"></script>
+  <script src="../js/login.js"></script>
 </body>
 </html>

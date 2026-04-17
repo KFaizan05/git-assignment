@@ -18,6 +18,48 @@ if (!storedImage) {
 //Display image
 capturedImage.src = storedImage;
 
+// Default the crop box to cover the full visible image area. Because the
+// image is rendered with object-fit: contain, the picture is often smaller
+// than its container — so we compute the image's rendered rect relative to
+// the wrap and position the crop box on top of that instead of just 100%
+// of the wrap (which would include the letterbox margins).
+function fitCropBoxToImage() {
+  if (!capturedImage.naturalWidth || !capturedImage.naturalHeight) return;
+
+  const wrapW = imageWrap.clientWidth;
+  const wrapH = imageWrap.clientHeight;
+  if (wrapW === 0 || wrapH === 0) return;
+
+  const imgAspect = capturedImage.naturalWidth / capturedImage.naturalHeight;
+  const wrapAspect = wrapW / wrapH;
+
+  let renderedW, renderedH, offsetX, offsetY;
+  if (imgAspect > wrapAspect) {
+    // Image is wider than the wrap — letterboxed top & bottom.
+    renderedW = wrapW;
+    renderedH = wrapW / imgAspect;
+    offsetX = 0;
+    offsetY = (wrapH - renderedH) / 2;
+  } else {
+    // Image is taller/narrower — letterboxed left & right.
+    renderedH = wrapH;
+    renderedW = wrapH * imgAspect;
+    offsetX = (wrapW - renderedW) / 2;
+    offsetY = 0;
+  }
+
+  cropBox.style.left = `${offsetX}px`;
+  cropBox.style.top = `${offsetY}px`;
+  cropBox.style.width = `${renderedW}px`;
+  cropBox.style.height = `${renderedH}px`;
+}
+
+capturedImage.addEventListener("load", fitCropBoxToImage);
+window.addEventListener("resize", fitCropBoxToImage);
+// If the image was already cached and fired load before we attached the
+// listener, run once immediately too.
+if (capturedImage.complete) fitCropBoxToImage();
+
 backBtn.addEventListener("click", () => {
   window.location.href = "ScanPage.html";
 });

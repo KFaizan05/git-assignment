@@ -47,6 +47,20 @@ of OCR processing, database search, crosschecking profile, etc.
     </section>
   </main>
 
+  <!-- In-app error popup used by ocr.js instead of alert(). Hidden by default. -->
+  <div class="ocr-modal" id="ocrErrorModal" hidden role="dialog" aria-modal="true" aria-labelledby="ocrErrorTitle">
+    <div class="ocr-modal-backdrop"></div>
+    <div class="ocr-modal-card">
+      <div class="ocr-modal-icon" id="ocrErrorIcon">⚠</div>
+      <h2 class="ocr-modal-title" id="ocrErrorTitle">Unreadable scan</h2>
+      <p class="ocr-modal-body" id="ocrErrorBody">We couldn't read any ingredients from that image.</p>
+      <div class="ocr-modal-actions">
+        <button type="button" class="ocr-modal-btn secondary" id="ocrErrorCancel">Cancel</button>
+        <button type="button" class="ocr-modal-btn primary" id="ocrErrorRetry">Try Again</button>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <script src="../js/ocr.js"></script>
 </body>

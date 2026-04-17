@@ -9,7 +9,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Adjust path if needed -->
   <link rel="stylesheet" href="../css/logs.css">
 </head>
 
@@ -19,15 +18,15 @@
     <div class="card">
       <h2>Create Account</h2>
 
-      <form>
+      <form id="signupForm" novalidate>
 
         <!-- EMAIL -->
         <label for="email">Email</label>
-        <input id="email" type="email" placeholder="Enter your email" required>
+        <input id="email" type="email" placeholder="Enter your email" autocomplete="email" required>
 
         <!-- PASSWORD -->
         <label for="password">Password</label>
-        <input id="password" type="password" placeholder="Enter your password" required>
+        <input id="password" type="password" placeholder="Enter your password" autocomplete="new-password" required>
 
         <!-- PASSWORD RULES -->
         <div class="password-rules">
@@ -38,7 +37,10 @@
 
         <!-- CONFIRM PASSWORD -->
         <label for="confirmPassword">Confirm Password</label>
-        <input id="confirmPassword" type="password" placeholder="Confirm your password" required>
+        <input id="confirmPassword" type="password" placeholder="Confirm your password" autocomplete="new-password" required>
+
+        <!-- ERROR MESSAGE -->
+        <p id="signupError" class="login-error" role="alert" hidden></p>
 
         <!-- SIGN UP BUTTON -->
         <button type="submit" class="primary-btn">Sign Up</button>
@@ -47,7 +49,7 @@
 
       <!-- LOGIN REDIRECT -->
       <p class="signup-text">
-        Already have an account? 
+        Already have an account?
         <a href="LoginPage.html">Login</a>
       </p>
     </div>
@@ -59,24 +61,8 @@
 
   </div>
 
-  <script>
-    // Basic password validation (for demo / TA clarity)
-
-    const password = document.getElementById("password");
-
-    password.addEventListener("input", () => {
-      const value = password.value;
-
-      document.getElementById("rule-length").style.color =
-        value.length >= 8 ? "green" : "red";
-
-      document.getElementById("rule-uppercase").style.color =
-        /[A-Z]/.test(value) ? "green" : "red";
-
-      document.getElementById("rule-special").style.color =
-        /[0-9!@#$%^&*]/.test(value) ? "green" : "red";
-    });
-  </script>
+  <script src="../js/profileStorage.js"></script>
+  <script src="../js/signup.js"></script>
 
 </body>
 </html>

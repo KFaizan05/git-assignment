@@ -15,11 +15,14 @@ the logic of OCR proccessing is in ocr.js
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="../css/results.css" />
+  <link rel="stylesheet" href="../css/settings.css" />
 </head>
 <body>
   <main class="results-page">
     <header class="results-header">
-      <button class="back-btn" id="backBtn" type="button" aria-label="Back">←</button>
+      <button class="back-btn" id="backBtn" type="button" aria-label="Back">
+        <img src="./images/WLeftArrow.png">
+      </button>
       <div class="header-title-wrap">
         <h1>Scan Results</h1>
       </div>
@@ -45,7 +48,7 @@ the logic of OCR proccessing is in ocr.js
         </div>
 
         <div id="ingredientList" class="ingredient-list">
-          <!-- JS fills this -->
+          <!-- DB fills this -->
         </div>
       </section>
 
@@ -55,7 +58,7 @@ the logic of OCR proccessing is in ocr.js
       </section>
 
       <button class="primary-action" id="alternativesBtn" type="button">
-        View Safe Alternatives →
+        Find Safe Alternatives
       </button>
 
       <button class="secondary-action" id="homeBtn" type="button">
@@ -64,6 +67,7 @@ the logic of OCR proccessing is in ocr.js
     </section>
   </main>
 
+  <script src="../js/profileStorage.js"></script>
   <script src="../js/results.js"></script>
 </body>
 </html>

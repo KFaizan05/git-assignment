@@ -17,15 +17,16 @@
 
       <header class="dashboard-header">
         <div class="header-row">
-            <img src="./images/LabelWiseIcon.png" class="header-logo" alt="Logo"/>
-            
-            <div class="header-text">
-                <h1>Welcome back!</h1>
-                <p>Let's find safe food for you</p>
-            </div>
-        <button class="setting-btn">
+          <img src="./images/LabelWiseIcon.png" class="header-logo" alt="Logo"/>
+
+          <div class="header-text">
+            <h1 id="welcomeTitle">Welcome back!</h1>
+            <p>Let's find safe food for you</p>
+          </div>
+
+          <button id="settingsBtn" class="setting-btn" type="button" aria-label="Settings">
             <img src="./images/SettingIcon.png" alt="Setting" class="setting-icon">
-            </button>        
+          </button>
         </div>
       </header>
 
@@ -37,38 +38,39 @@
           <div class="quick-actions">
             <a href="ScanPage.html" class="quick-card primary-action-card">
               <div class="quick-icon">
-                <img src="./images/ScanIcon.png" class="quick-icon"/>
+                <img src="./images/ScanIcon.png" class="quick-icon" alt="Scan"/>
               </div>
               <span>Scan Product</span>
             </a>
-            <button class="quick-card secondary-action-card" type="button">
+
+            <a href="AIChatbotPage.html" class="quick-card secondary-action-card">
               <div class="quick-icon">
-                <img src="./images/ChatIcon2.png" class="quick-icon"/>
+                <img src="./images/GChatIcon.png" class="quick-icon" alt="AI Chef"/>
               </div>
               <span>AI Chef</span>
-            </button>
+            </a>
           </div>
         </section>
 
         <section class="section-block">
-        <div class="section-header">
+          <div class="section-header">
             <h2>Your Dietary Profile</h2>
-            <button class="text-link" type="button">Edit</button>
-        </div>
+            <button class="text-link" id="editProfileBtn" type="button">Edit</button>
+          </div>
 
-        <div id="dietaryProfileContainer" class="profile-card"></div>
+          <div id="dietaryProfileContainer" class="profile-card"></div>
         </section>
 
         <section class="section-block">
-        <div class="section-header">
+          <div class="section-header">
             <h2>Recent Scans</h2>
-            <button class="text-link" type="button">View All</button>
-        </div>
+            <a class="text-link" href="ScanHistoryPage.html">View All</a>
+          </div>
 
-        <div id="recentScansContainer" class="scan-list"></div>
+          <div id="recentScansContainer" class="scan-list"></div>
         </section>
 
-        <section class="safe-items-card">
+        <a href="SafeItemsPage.html" class="safe-items-card">
           <div class="safe-items-left">
             <div class="safe-items-icon">✓</div>
             <div>
@@ -76,41 +78,152 @@
               <p>View all approved products</p>
             </div>
           </div>
-        </section>
+        </a>
 
       </section>
 
       <nav class="bottom-nav">
-        <button class="nav-item active" type="button">
+        <a href="DashboardPage.html" class="nav-item active">
           <div class="nav-icon">
-            <img src="./images/HomeIcon.png" class="nav-icon"/>
+            <img src="./images/HomeIcon.png" class="nav-icon" alt="Home"/>
           </div>
           <span>Home</span>
-        </button>
+        </a>
 
         <a href="ScanPage.html" class="nav-item nav-scan">
           <div class="scan-fab">
-            <img src="./images/ScanIcon.png" class="nav-icon"/>
+            <img src="./images/ScanIcon.png" class="nav-icon" alt="Scan"/>
           </div>
           <span>Scan</span>
         </a>
 
-        <button class="nav-item" type="button">
+        <a href="AIChatbotPage.html" class="nav-item">
           <div class="nav-icon">
-            <img src="./images/ChatIcon.png" class="nav-icon"/>
+            <img src="./images/ChatIcon.png" class="nav-icon" alt="AI Chef"/>
           </div>
           <span>AI Chef</span>
-        </button>
+        </a>
 
-        <button class="nav-item" type="button">
+        <a href="ScanHistoryPage.html" class="nav-item">
           <div class="nav-icon">
-            <img src="./images/RecentIcon.png" class="nav-icon"/>
+            <img src="./images/RecentIcon.png" class="nav-icon" alt="History"/>
           </div>
           <span>History</span>
-        </button>
+        </a>
       </nav>
 
     </section>
   </main>
+
+  <script src="../js/profileStorage.js"></script>
+  <script>
+  (function initDashboard() {
+    "use strict";
+
+    const settingsBtn = document.getElementById("settingsBtn");
+    const editProfileBtn = document.getElementById("editProfileBtn");
+    const dietaryProfileContainer = document.getElementById("dietaryProfileContainer");
+    const recentScansContainer = document.getElementById("recentScansContainer");
+    const welcomeTitle = document.getElementById("welcomeTitle");
+
+    settingsBtn.addEventListener("click", () => {
+      window.location.href = "SettingsPage.html";
+    });
+
+    editProfileBtn.addEventListener("click", () => {
+      window.location.href = "EditProfilePage.html";
+    });
+
+    function escapeHtml(text) {
+      return String(text ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function createTag(text, type = "default") {
+      return `<span class="profile-tag ${type}">${escapeHtml(text)}</span>`;
+    }
+
+    function formatRelativeTime(timestamp) {
+      if (!timestamp) return "";
+      const seconds = Math.max(0, Math.floor((Date.now() - timestamp) / 1000));
+      if (seconds < 60) return "just now";
+      const minutes = Math.floor(seconds / 60);
+      if (minutes < 60) return `${minutes} min ago`;
+      const hours = Math.floor(minutes / 60);
+      if (hours < 24) return `${hours} hour${hours === 1 ? "" : "s"} ago`;
+      const days = Math.floor(hours / 24);
+      if (days < 7) return `${days} day${days === 1 ? "" : "s"} ago`;
+      const weeks = Math.floor(days / 7);
+      return `${weeks} week${weeks === 1 ? "" : "s"} ago`;
+    }
+
+    function renderDietaryProfile() {
+      const profile = profileStorage.getCurrentProfile();
+      const dietary = profile.dietary || [];
+      const allergens = profile.allergens || [];
+
+      welcomeTitle.textContent = profile.name && profile.name.trim()
+        ? `Welcome back, ${profile.name.trim()}!`
+        : "Welcome back!";
+
+      const allTags = [
+        ...dietary.map(item => createTag(item, "safe")),
+        ...allergens.map(item => createTag(item, "danger"))
+      ];
+
+      if (allTags.length === 0) {
+        dietaryProfileContainer.innerHTML = `
+          <div class="profile-tags">
+            <span class="profile-muted">No profile selections yet</span>
+          </div>
+        `;
+        return;
+      }
+
+      dietaryProfileContainer.innerHTML = `
+        <div class="profile-tags">
+          ${allTags.join("")}
+        </div>
+      `;
+    }
+
+    function renderRecentScans() {
+      const scans = profileStorage.getCurrentScans().slice(0, 3);
+
+      if (scans.length === 0) {
+        recentScansContainer.innerHTML = `
+          <div class="scan-empty">
+            <p>No scans yet. Tap <strong>Scan Product</strong> to get started.</p>
+          </div>
+        `;
+        return;
+      }
+
+      recentScansContainer.innerHTML = scans
+        .map((scan) => {
+          const status = String(scan.status || "Safe");
+          const statusClass = status.toLowerCase();
+          return `
+            <div class="scan-item">
+              <div class="scan-item-left">
+                <div class="scan-status ${statusClass}">${status === "Unsafe" ? "✕" : status === "Caution" ? "⚠" : "✓"}</div>
+                <div>
+                  <div class="scan-title">${escapeHtml(scan.productName)}</div>
+                  <div class="scan-meta">${escapeHtml(status)} • ${escapeHtml(formatRelativeTime(scan.timestamp))}</div>
+                </div>
+              </div>
+            </div>
+          `;
+        })
+        .join("");
+    }
+
+    renderDietaryProfile();
+    renderRecentScans();
+  })();
+  </script>
 </body>
 </html>

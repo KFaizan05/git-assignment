@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Chef Recipe</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/recipegeneration.css" />
+</head>
+<body>
+  <main class="recipe-page">
+    <section class="recipe-shell">
+      <header class="recipe-header">
+        <button class="back-btn" id="backBtn" type="button" aria-label="Back">
+          <img src="./images/WLeftArrow.png" alt="Back">
+        </button>
+
+        <div class="header-row">
+          <div class="avatar-wrap">
+            <img src="./images/ChefIcon.png" alt="Chef Icon" class="avatar-icon">
+          </div>
+          <div class="header-text">
+            <h1>AI Chef Recipe</h1>
+            <p>Your personal recipe assistant</p>
+          </div>
+        </div>
+      </header>
+
+      <section class="recipe-content" id="recipeContent">
+
+        <div class="chat-message user-message" id="userMessageBlock" hidden>
+          <p id="userPrompt"></p>
+        </div>
+
+        <div class="chat-message ai-message" id="aiMessageBlock">
+          <div class="ai-avatar">✨</div>
+          <div class="ai-bubble-wrap">
+            <div class="ai-bubble">
+              <p id="aiIntro">Tell me what you're in the mood for and I'll build a recipe that matches your profile.</p>
+            </div>
+
+            <div class="empty-state" id="emptyState">
+              <div class="empty-icon">✨</div>
+              <h3>No recipe yet</h3>
+              <p>Ask me for a recipe below, or head back to AI Chef to pick a suggested prompt.</p>
+              <a href="AIChatbotPage.html" class="primary-action inline-link">Back to AI Chef</a>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <footer class="recipe-footer">
+        <div class="chat-composer">
+          <input type="text" id="chatInput" class="chat-input" placeholder="Ask for a recipe or a modification..." />
+          <button id="chatSendBtn" class="send-btn" type="button" aria-label="Send">
+            <img src="./images/WChatIcon.png" alt="Send">
+          </button>
+        </div>
+      </footer>
+
+      <nav class="bottom-nav">
+        <a href="DashboardPage.html" class="nav-item active">
+          <div class="nav-icon">
+            <img src="./images/WHomeIcon.png" class="nav-icon" alt="Home"/>
+          </div>
+          <span>Home</span>
+        </a>
+
+        <a href="ScanPage.html" class="nav-item nav-scan">
+          <div class="scan-fab">
+            <img src="./images/ScanIcon.png" class="nav-icon" alt="Scan"/>
+          </div>
+          <span>Scan</span>
+        </a>
+
+        <a href="AIChatbotPage.html" class="nav-item">
+          <div class="nav-icon">
+            <img src="./images/GChatIcon.png" class="nav-icon" alt="AI Chef"/>
+          </div>
+          <span>AI Chef</span>
+        </a>
+
+        <a href="ScanHistoryPage.html" class="nav-item">
+          <div class="nav-icon">
+            <img src="./images/RecentIcon.png" class="nav-icon" alt="History"/>
+          </div>
+          <span>History</span>
+        </a>
+      </nav>
+
+    </section>
+  </main>
+
+  <script src="../js/profileStorage.js"></script>
+  <script src="../js/recipegeneration.js"></script>
+</body>
+</html>
