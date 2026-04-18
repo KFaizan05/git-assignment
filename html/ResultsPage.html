@@ -15,7 +15,6 @@ the logic of OCR proccessing is in ocr.js
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="../css/results.css" />
-  <link rel="stylesheet" href="../css/settings.css" />
 </head>
 <body>
   <main class="results-page">
@@ -29,8 +28,23 @@ the logic of OCR proccessing is in ocr.js
     </header>
 
     <section class="results-content">
+      <!-- Product title + optional rename. The pencil button swaps the <h2>
+           for a text input so the user can give this scan a real name
+           (e.g. "Honey Nut Cheerios"). The new name is persisted back into
+           the scan history so it also shows up under Recent Scans. -->
       <section class="product-card">
-        <h2 id="productName">Scanned Product</h2>
+        <div class="product-title-row">
+          <h2 id="productName">Scanned Product</h2>
+          <button type="button" id="renameBtn" class="rename-btn" aria-label="Rename product">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                 stroke-linejoin="round" aria-hidden="true">
+              <path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+            </svg>
+          </button>
+        </div>
+        <input type="text" id="productNameInput" class="rename-input" hidden
+               maxlength="60" placeholder="Name this scan..." />
         <p id="brandName">Brand: Unknown</p>
       </section>
 

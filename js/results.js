@@ -10,6 +10,8 @@ const statusTitle = document.getElementById("statusTitle");
 const statusMessage = document.getElementById("statusMessage");
 const ingredientList = document.getElementById("ingredientList");
 const rawOcrText = document.getElementById("rawOcrText");
+const renameBtn = document.getElementById("renameBtn");
+const productNameInput = document.getElementById("productNameInput");
 
 // Top-level verdict card + its icon. results.js toggles .safe / .caution /
 // .unsafe on the card so the green/yellow/red palette matches the verdict.
@@ -72,10 +74,25 @@ const userCustomAllergenRegexes = userCustomAllergens
   .map((term) => ({ term, regex: buildCustomAllergenRegex(term) }))
   .filter((x) => x.regex);
 
+// Detect a "revisit" — the user tapped a card in Scan History / Recent
+// Scans. When this is set, we skip re-saving (we're looking at an existing
+// record) and prefer the stored product name + OCR text from that scan.
+const revisitScanId = sessionStorage.getItem("revisitScanId") || "";
+const revisitProductName = sessionStorage.getItem("revisitProductName") || "";
+// Clear the hand-off keys so refreshes / next scans don't re-trigger
+// revisit mode. We've already captured them into locals.
+sessionStorage.removeItem("revisitScanId");
+sessionStorage.removeItem("revisitProductName");
+
 //Get OCR extracted text
 const ocrText = sessionStorage.getItem("ocrText") || "";
-//Displays the raw OCR text for debug and visibilty 
+//Displays the raw OCR text for debug and visibilty
 rawOcrText.textContent = ocrText || "No text found.";
+
+// Track the id of the scan record tied to this view so rename can patch it.
+// For a fresh scan, persistScan() fills this in after it inserts the record.
+// For a revisit, we already know the id up front.
+let currentScanId = revisitScanId || "";
 
 backBtn.addEventListener("click", () => {
   window.location.href = "ScanPage.html";
@@ -324,11 +341,17 @@ function analyzeAllergyStatement(statementLower) {
 }
 
 function renderIngredientCard(name, status, note) {
+  // Normalize the class to lowercase so it matches the CSS selectors
+  // (.ingredient-item.safe / .tag.safe etc.) regardless of whether the
+  // caller passed "Safe" or "safe". The visible label is capitalized via
+  // `text-transform: capitalize` in CSS.
+  const cls = String(status || "").toLowerCase();
+  const label = cls ? cls.charAt(0).toUpperCase() + cls.slice(1) : "";
   return `
-    <div class="ingredient-item ${status}">
+    <div class="ingredient-item ${cls}">
       <div class="ingredient-top">
         <div class="ingredient-name">${name}</div>
-        <div class="tag ${status}">${status}</div>
+        <div class="tag ${cls}">${label}</div>
       </div>
       <div class="ingredient-note">${note}</div>
     </div>
@@ -451,7 +474,7 @@ if (extracted) {
       applyStatusCardStyle(overallStatus);
     }
 
-    productName.textContent = "Scanned Product";
+    productName.textContent = revisitProductName || "Scanned Product";
     brandName.textContent = `Ingredients Detected: ${items.length}`;
   } else {
     overallStatus = "Caution";
@@ -501,6 +524,72 @@ if (extracted) {
   applyStatusCardStyle(overallStatus);
 }
 
+// If this is a revisit (user tapped a saved scan), make sure the custom
+// name they chose last time shows up no matter which branch above ran.
+if (revisitProductName) {
+  productName.textContent = revisitProductName;
+}
+
+// ---- Rename "Scanned Product" -------------------------------------------
+// Small edit-in-place flow: click the pencil → swap in the input → press
+// Enter / click away to save. The new name is pushed back into the scan
+// record (via profileStorage.updateCurrentScan) so Scan History, Recent
+// Scans, and Safe Items all show the name the user chose.
+(function initRename() {
+  if (!renameBtn || !productNameInput) return;
+
+  function enterEditMode() {
+    productNameInput.value =
+      productName.textContent === "Scanned Product"
+        ? ""
+        : productName.textContent || "";
+    productName.hidden = true;
+    renameBtn.hidden = true;
+    productNameInput.hidden = false;
+    // Defer focus so the input is actually in the layout.
+    setTimeout(() => {
+      productNameInput.focus();
+      productNameInput.select();
+    }, 0);
+  }
+
+  function exitEditMode(save) {
+    if (save) {
+      const raw = productNameInput.value.trim();
+      const finalName = raw || "Scanned Product";
+      productName.textContent = finalName;
+      // Persist the rename into the scan record if we've got one yet.
+      if (currentScanId) {
+        try {
+          profileStorage.updateCurrentScan(currentScanId, {
+            productName: finalName
+          });
+        } catch (err) {
+          console.warn("Could not persist renamed scan:", err);
+        }
+      }
+    }
+    productNameInput.hidden = true;
+    productName.hidden = false;
+    renameBtn.hidden = false;
+  }
+
+  renameBtn.addEventListener("click", enterEditMode);
+
+  productNameInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      exitEditMode(true);
+    } else if (event.key === "Escape") {
+      event.preventDefault();
+      exitEditMode(false);
+    }
+  });
+
+  // Commit on blur so clicking anywhere else saves the edit.
+  productNameInput.addEventListener("blur", () => exitEditMode(true));
+})();
+
 // Build a tiny square thumbnail (data URL) from a full-size image data URL so
 // Scan History can render a visual preview without blowing localStorage.
 // Returns "" if there's no source image (e.g. manual paste flow) or the
@@ -546,6 +635,10 @@ function buildScanThumbnail(sourceDataUrl, maxDim = 128, quality = 0.6) {
   if (!ocrText) return;
   if (!profileStorage.getCurrentUser()) return;
 
+  // Revisit mode: we're just re-rendering an existing scan record. Don't
+  // create a new one. currentScanId is already set to the revisited id.
+  if (revisitScanId) return;
+
   const persistKey = "labelwiseLastSavedOcr";
   if (sessionStorage.getItem(persistKey) === ocrText) return;
 
@@ -563,31 +656,32 @@ function buildScanThumbnail(sourceDataUrl, maxDim = 128, quality = 0.6) {
     thumbnail = "";
   }
 
+  // Build the scan payload once so both the with-thumbnail save and the
+  // quota-retry use the same shape. Persisting ocrText lets the history
+  // card click re-open this exact result page without re-OCRing.
+  const basePayload = {
+    productName: (productName.textContent || "Scanned Product").trim(),
+    brandName: "",
+    status: overallStatus,
+    category: "",
+    note: overallNote,
+    // Safe scans are NOT auto-favorited anymore. Users opt in by tapping
+    // the star on the My Safe Items card.
+    savedToSafe: false,
+    ocrText
+  };
+
   try {
-    profileStorage.addCurrentScan({
-      productName: (productName.textContent || "Scanned Product").trim(),
-      brandName: "",
-      status: overallStatus,
-      category: "",
-      note: overallNote,
-      savedToSafe: overallStatus === "Safe",
-      thumbnail
-    });
+    const saved = profileStorage.addCurrentScan({ ...basePayload, thumbnail });
+    if (saved && saved.id) currentScanId = saved.id;
   } catch (err) {
     // localStorage quota errors (QuotaExceededError) can happen if history
     // gets large + every scan has a thumbnail. Retry without the thumbnail
     // so the scan itself still gets saved.
     console.warn("Scan save failed with thumbnail, retrying without:", err);
     try {
-      profileStorage.addCurrentScan({
-        productName: (productName.textContent || "Scanned Product").trim(),
-        brandName: "",
-        status: overallStatus,
-        category: "",
-        note: overallNote,
-        savedToSafe: overallStatus === "Safe",
-        thumbnail: ""
-      });
+      const saved = profileStorage.addCurrentScan({ ...basePayload, thumbnail: "" });
+      if (saved && saved.id) currentScanId = saved.id;
     } catch (err2) {
       console.warn("Scan save failed even without thumbnail:", err2);
     }

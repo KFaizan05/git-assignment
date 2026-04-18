@@ -46,9 +46,9 @@ button { font: inherit; }
 
 .scanhistory-header p {
   margin: 0;
-  color: #DCFCE7;
-  font-size: 15px;
-  line-height: 22px;
+  color: #A8D5BA;
+  font-size: 16px;
+  line-height: 24px;
 }
 
 .scanhistory-search {
@@ -117,6 +117,33 @@ button { font: inherit; }
 .stat.caution { background: #FEFCE8; }
 .stat.caution strong { color: #D08700; }
 
+/* Clickable filter tiles — all three stat cards act as click-to-filter
+   toggles. The active filter gets a colored ring so users can tell which
+   filter is currently applied at a glance. */
+.stat[data-filter] {
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+  user-select: none;
+}
+
+.stat[data-filter]:hover {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.stat[data-filter]:active {
+  transform: scale(0.98);
+}
+
+.stat[data-filter]:focus-visible {
+  outline: none;
+  border-color: #6BA89E;
+}
+
+.stat.safe.is-active { border-color: #00A63E; }
+.stat.unsafe.is-active { border-color: #E7000B; }
+.stat.caution.is-active { border-color: #D08700; }
+
 .scanhistory-content {
   flex: 1;
   padding: 16px 24px 24px;
@@ -136,6 +163,13 @@ button { font: inherit; }
   display: flex;
   align-items: flex-start;
   gap: 12px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.history-card:hover {
+  border-color: #A8D5BA;
+  background: #F7FBF9;
 }
 
 .history-icon {
@@ -238,6 +272,14 @@ button { font: inherit; }
   flex-direction: column;
   align-items: center;
   gap: 8px;
+}
+
+/* Honor the `hidden` attribute even though .empty-state sets display:flex.
+   Without this override, the empty state keeps showing even when the JS
+   sets `emptyState.hidden = true` — making it look like "No scans yet"
+   is always present. */
+.empty-state[hidden] {
+  display: none !important;
 }
 
 .empty-icon {

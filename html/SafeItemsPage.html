@@ -16,7 +16,9 @@
     <section class="safeitems-shell">
 
       <header class="safeitems-header">
-        <button class="back-btn" id="backBtn" type="button" aria-label="Back">←</button>
+        <button class="back-btn" id="backBtn" type="button" aria-label="Back">
+          <img src="./images/WLeftArrow.png">
+        </button>
         <div class="header-row">
           <div class="header-icon">✓</div>
           <div class="header-text">
@@ -36,7 +38,7 @@
           <span>Total Safe</span>
         </div>
         <div class="stat-divider"></div>
-        <div class="stat">
+        <div class="stat" data-filter="favorites" role="button" tabindex="0" aria-pressed="false" aria-label="Filter by Favorites">
           <strong id="statFavorites">0</strong>
           <span>Favorites</span>
         </div>
@@ -66,14 +68,14 @@
       <nav class="bottom-nav">
         <a href="DashboardPage.html" class="nav-item active">
           <div class="nav-icon">
-            <img src="./images/WHomeIcon.png" class="nav-icon" alt="Home"/>
+            <img src="./images/HomeIcon.png" class="nav-icon" alt="Home"/>
           </div>
           <span>Home</span>
         </a>
 
         <a href="ScanPage.html" class="nav-item nav-scan">
           <div class="scan-fab">
-            <img src="./images/ScanIcon.png" class="nav-icon" alt="Scan"/>
+            <img src="./images/SmallScanIcon.png" class="nav-icon" alt="Scan"/>
           </div>
           <span>Scan</span>
         </a>
@@ -87,7 +89,7 @@
 
         <a href="ScanHistoryPage.html" class="nav-item">
           <div class="nav-icon">
-            <img src="./images/GRecentIcon.png" class="nav-icon" alt="History"/>
+            <img src="./images/RecentIcon.png" class="nav-icon" alt="History"/>
           </div>
           <span>History</span>
         </a>

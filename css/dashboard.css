@@ -46,7 +46,7 @@ button {
 
 .header-text {
   text-align: center;
-  flex: 1; 
+  flex: 1;
 }
 
 .header-logo {
@@ -65,7 +65,7 @@ button {
 .dashboard-header h1 {
   margin: 0 0 4px;
   color: #4A7C72;
-  font-size: 23px;
+  font-size: 24px;
   font-weight: 700;
   line-height: 32px;
 }
@@ -73,7 +73,7 @@ button {
 .dashboard-header p {
   margin: 0;
   color: #FFFFFF;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 24px;
 }
 
@@ -218,6 +218,18 @@ button {
   justify-content: space-between;
   align-items: center;
   gap: 12px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.scan-item:hover {
+  border-color: #A8D5BA;
+  background: #F7FBF9;
+}
+
+.scan-item:focus-visible {
+  outline: 2px solid #6BA89E;
+  outline-offset: 2px;
 }
 
 .scan-left,
@@ -291,12 +303,52 @@ button {
   line-height: 24px;
 }
 
-.scan-item p,
-.scan-meta {
+.scan-item p {
   margin: 0;
   color: #6A7282;
   font-size: 14px;
   line-height: 20px;
+}
+
+/* Meta row for recent scans — pill + category + time ago, matching the
+   Scan History page layout. */
+.scan-meta {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  color: #99A1AF;
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.scan-meta-sep {
+  color: #99A1AF;
+}
+
+/* Colored status pill — same shape + palette as Scan History's .status-pill. */
+.scan-meta .status-pill {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+}
+
+.scan-meta .status-pill.safe {
+  background: #DCFCE7;
+  color: #008236;
+}
+
+.scan-meta .status-pill.unsafe {
+  background: #FFE2E2;
+  color: #C10007;
+}
+
+.scan-meta .status-pill.caution {
+  background: #FEF9C2;
+  color: #A65F00;
 }
 
 .scan-time {

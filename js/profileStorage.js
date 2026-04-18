@@ -170,6 +170,10 @@
         // Scan History can show a visual preview instead of a generic icon.
         // Empty string when the scan came from a manual text paste (no image).
         thumbnail: typeof scan.thumbnail === "string" ? scan.thumbnail : "",
+        // Raw OCR text we ran the verdict on. Persisted so the user can
+        // tap a scan in history and have the Results page fully re-render
+        // with the same ingredient analysis — no re-OCR needed.
+        ocrText: typeof scan.ocrText === "string" ? scan.ocrText : "",
         timestamp: scan.timestamp || Date.now()
       };
       list.unshift(entry); // newest first

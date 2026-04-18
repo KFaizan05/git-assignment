@@ -31,12 +31,17 @@ button { font: inherit; }
   flex: 1;
 }
 
-/* Header */
+/* Header — padding matches Dashboard/Scan History/Alternatives (48/24/24).
+   Back button sits inline with the title row so the header doesn't grow
+   taller than the other pages. */
 .safeitems-header {
   padding: 48px 24px 24px;
   background: linear-gradient(135deg, #00C950 0%, #00A63E 100%);
   color: white;
   position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
 .back-btn {
@@ -46,13 +51,15 @@ button { font: inherit; }
   font-size: 24px;
   cursor: pointer;
   padding: 0;
-  margin-bottom: 16px;
+  line-height: 1;
 }
 
 .header-row {
   display: flex;
   align-items: center;
   gap: 12px;
+  flex: 1;
+  min-width: 0;
 }
 
 .header-icon {
@@ -77,7 +84,7 @@ button { font: inherit; }
 .header-text p {
   margin: 0;
   color: #DCFCE7;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 20px;
 }
 
@@ -143,6 +150,40 @@ button { font: inherit; }
   width: 1px;
   height: 36px;
   background: #D1D5DC;
+}
+
+/* Favorites tile acts as a click-to-filter toggle. Only tiles with a
+   data-filter attribute get the interactive styles so Total Safe and
+   Categories stay plain info tiles. */
+.stat[data-filter] {
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  transition: border-color 0.15s ease, background 0.15s ease, transform 0.1s ease;
+  user-select: none;
+}
+
+.stat[data-filter]:hover {
+  background: #ECFDF5;
+}
+
+.stat[data-filter]:active {
+  transform: scale(0.98);
+}
+
+.stat[data-filter]:focus-visible {
+  outline: none;
+  border-color: #F59E0B;
+}
+
+.stat[data-filter].is-active {
+  border-color: #F59E0B;
+  background: #FFFBEB;
+}
+
+.stat[data-filter].is-active strong {
+  color: #F59E0B;
 }
 
 /* Content */
@@ -229,6 +270,60 @@ button { font: inherit; }
   line-height: 24px;
 }
 
+.safe-card-title-text {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Favorite star — empty outline by default, filled gold when active.
+   The SVG is the same for both states; CSS just swaps fill/stroke. */
+.safe-card-fav {
+  background: none;
+  border: none;
+  padding: 4px;
+  margin-left: auto;
+  border-radius: 999px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.safe-card-fav:hover {
+  background: #F9FAFB;
+}
+
+.safe-card-fav:active {
+  transform: scale(0.92);
+}
+
+.safe-card-fav:focus-visible {
+  outline: 2px solid #F59E0B;
+  outline-offset: 2px;
+}
+
+.safe-card-fav .star-svg {
+  fill: none;
+  stroke: #D1D5DB;
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  transition: fill 0.15s ease, stroke 0.15s ease;
+}
+
+.safe-card-fav:hover .star-svg {
+  stroke: #F59E0B;
+}
+
+.safe-card-fav.is-fav .star-svg {
+  fill: #F59E0B;
+  stroke: #F59E0B;
+}
+
 .safe-card-brand {
   color: #4A5565;
   font-size: 14px;
@@ -294,6 +389,13 @@ button { font: inherit; }
   flex-direction: column;
   align-items: center;
   gap: 8px;
+}
+
+/* Honor the `hidden` attribute even though .empty-state sets display:flex.
+   Otherwise the "No safe items yet" card keeps rendering even when the
+   JS has set emptyState.hidden = true. */
+.empty-state[hidden] {
+  display: none !important;
 }
 
 .empty-icon {

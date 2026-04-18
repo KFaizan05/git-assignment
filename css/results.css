@@ -4,35 +4,27 @@
 
 html, body {
   margin: 0;
-  /* 100% here doesn't resolve unless the parent has an explicit height, which
-     left the white container stopping short on tall scans. Use 100vh on html
-     and let body grow with content. */
-  min-height: 100vh;
   font-family: "Inter", sans-serif;
-  background: #f5f8f7;
   color: #111827;
+  /* Gray surround sits on html so it always fills the viewport even if
+     body shrinks to its content. */
+  background: #f5f8f7;
 }
 
+/* Body grows with its content so the white .results-page shell (centered
+   with margin: 0 auto) is allowed to grow past the viewport when the
+   ingredient list is long. Flex centering caused the shell to cap at the
+   viewport height on tall scans, leaking content past the background. */
 body {
-  display: flex;
-  justify-content: center;
-  /* Align children to the top so the flex container doesn't vertically
-     center when content overflows, and so min-height on .results-page
-     behaves predictably. */
-  align-items: flex-start;
   min-height: 100vh;
 }
 
 .results-page {
   width: 100%;
   max-width: 430px;
-  /* Ensure the white shell always covers the viewport AND extends with
-     content. `min-height: 100vh` alone sometimes left the background short
-     when the body was taller than the viewport — add `align-self: stretch`
-     so the flex item fills the body height too. */
   min-height: 100vh;
+  margin: 0 auto;
   background: white;
-  align-self: stretch;
   display: flex;
   flex-direction: column;
 }
@@ -90,12 +82,23 @@ body {
   padding: 18px;
 }
 
+.product-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
 .product-card h2 {
-  margin: 0 0 8px;
+  margin: 0;
   color: #4A7C72;
   font-size: 18px;
   font-weight: 600;
   line-height: 28px;
+  flex: 1;
+  min-width: 0;
+  /* Wrap long custom names instead of overflowing. */
+  overflow-wrap: anywhere;
 }
 
 .product-card p {
@@ -103,6 +106,59 @@ body {
   color: #6A7282;
   font-size: 14px;
   line-height: 20px;
+}
+
+/* Rename pencil button — small, unobtrusive, sits next to the title. */
+.rename-btn {
+  background: none;
+  border: none;
+  color: #6BA89E;
+  padding: 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.rename-btn:hover {
+  background: #F0FDF4;
+  color: #4A7C72;
+}
+
+.rename-btn:active {
+  transform: scale(0.95);
+}
+
+/* display:inline-flex would otherwise defeat the hidden attribute. */
+.rename-btn[hidden] {
+  display: none !important;
+}
+
+/* Edit-in-place input. Same visual weight as the h2 it replaces so the
+   layout doesn't jump when the user toggles rename mode. */
+.rename-input {
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1.78px solid #A8D5BA;
+  outline: none;
+  font-family: "Inter", sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 28px;
+  color: #4A7C72;
+  background: white;
+}
+
+.rename-input:focus {
+  border-color: #6BA89E;
+}
+
+.rename-input[hidden] {
+  display: none !important;
 }
 
 .status-card {
@@ -212,6 +268,16 @@ body {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  /* Cap the list at a sensible height and scroll internally, mirroring
+     the Raw OCR text-box. Keeps the Results page from growing absurdly
+     long on labels with 30+ ingredients. */
+  max-height: 420px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  /* Slight inset on the right so the scroll track doesn't press against
+     the ingredient card borders. */
+  padding-right: 4px;
 }
 
 .ingredient-item {
@@ -256,6 +322,9 @@ body {
   line-height: 20px;
 }
 
+/* Per-ingredient classification pill. Styled to match the Scan History
+   status pill so the Safe / Caution / Unsafe chips feel consistent
+   across the app. */
 .tag {
   display: inline-flex;
   align-items: center;
@@ -263,22 +332,24 @@ body {
   border-radius: 999px;
   padding: 4px 10px;
   font-size: 12px;
+  font-weight: 500;
   line-height: 16px;
   white-space: nowrap;
+  text-transform: capitalize;
 }
 
 .tag.safe {
-  background: #B9F8CF;
+  background: #DCFCE7;
   color: #008236;
 }
 
 .tag.caution {
-  background: #FFF085;
+  background: #FEF9C2;
   color: #A65F00;
 }
 
 .tag.unsafe {
-  background: #FFC9C9;
+  background: #FFE2E2;
   color: #C10007;
 }
 
