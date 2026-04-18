@@ -164,6 +164,7 @@
       const profile = profileStorage.getCurrentProfile();
       const dietary = profile.dietary || [];
       const allergens = profile.allergens || [];
+      const customAllergens = profile.customAllergens || [];
 
       welcomeTitle.textContent = profile.name && profile.name.trim()
         ? `Welcome back, ${profile.name.trim()}!`
@@ -171,7 +172,8 @@
 
       const allTags = [
         ...dietary.map(item => createTag(item, "safe")),
-        ...allergens.map(item => createTag(item, "danger"))
+        ...allergens.map(item => createTag(item, "danger")),
+        ...customAllergens.map(item => createTag(item, "danger"))
       ];
 
       if (allTags.length === 0) {
@@ -206,10 +208,18 @@
         .map((scan) => {
           const status = String(scan.status || "Safe");
           const statusClass = status.toLowerCase();
+          // Prefer a real photo thumbnail; fall back to the status glyph so
+          // older scans (saved before thumbnails existed) still render.
+          const thumb = typeof scan.thumbnail === "string" ? scan.thumbnail : "";
+          const leftTile = thumb
+            ? `<div class="scan-status scan-thumb ${statusClass}">
+                 <img src="${escapeHtml(thumb)}" alt="" class="scan-thumb-img" />
+               </div>`
+            : `<div class="scan-status ${statusClass}">${status === "Unsafe" ? "✕" : status === "Caution" ? "⚠" : "✓"}</div>`;
           return `
             <div class="scan-item">
               <div class="scan-item-left">
-                <div class="scan-status ${statusClass}">${status === "Unsafe" ? "✕" : status === "Caution" ? "⚠" : "✓"}</div>
+                ${leftTile}
                 <div>
                   <div class="scan-title">${escapeHtml(scan.productName)}</div>
                   <div class="scan-meta">${escapeHtml(status)} • ${escapeHtml(formatRelativeTime(scan.timestamp))}</div>

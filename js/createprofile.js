@@ -20,6 +20,16 @@ const saveBtn = document.getElementById("saveBtn");
 const errorMsg = document.getElementById("profileError");
 const optionButtons = document.querySelectorAll(".option-btn");
 
+// Custom allergens — free-form strings the user wants flagged in scans.
+const customAllergenManager = (window.customAllergens && window.customAllergens.init)
+  ? window.customAllergens.init({
+      listEl: document.getElementById("customAllergenList"),
+      inputEl: document.getElementById("customAllergenInput"),
+      addBtn: document.getElementById("customAllergenAddBtn"),
+      initial: []
+    })
+  : { getList: () => [], setList: () => {} };
+
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // True when we arrived already signed in (i.e. from Sign Up). We skip the
@@ -43,17 +53,36 @@ function clearError() {
 // Clear UI so nothing lingers from browser autofill or the bfcache.
 // localStorage is NOT touched.
 function resetForm() {
-  if (emailInput) emailInput.value = "";
+  // If we already have a session (arrived from Sign Up), prefill the email
+  // input with that account's address — even though the field will be hidden,
+  // prefilling keeps form-submit paths consistent and guarantees no extra typing.
+  if (emailInput) {
+    emailInput.value = hasExistingSession()
+      ? (profileStorage.getCurrentUser() || "")
+      : "";
+  }
   nameInput.value = "";
   optionButtons.forEach((button) => button.classList.remove("selected"));
+  customAllergenManager.setList([]);
   clearError();
   applyEmailFieldVisibility();
 }
 
 // Hide/show the email row depending on whether we already have a session.
+// Signed-in users (came from Sign Up) never need to re-enter their email.
 function applyEmailFieldVisibility() {
   if (!emailField) return;
-  emailField.hidden = hasExistingSession();
+  const signedIn = hasExistingSession();
+  emailField.hidden = signedIn;
+  // Belt-and-suspenders: also hide via inline style in case any CSS rule
+  // overrides the [hidden] attribute.
+  emailField.style.display = signedIn ? "none" : "";
+  // Remove `required` from a hidden input so form validation can't trip on it.
+  if (emailInput) {
+    if (signedIn) {
+      emailInput.removeAttribute("required");
+    }
+  }
 }
 
 resetForm();
@@ -82,7 +111,8 @@ function collectProfileFromUI() {
   return {
     name: nameInput.value.trim(),
     dietary,
-    allergens
+    allergens,
+    customAllergens: customAllergenManager.getList()
   };
 }
 

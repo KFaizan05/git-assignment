@@ -75,15 +75,17 @@
     const profile = profileStorage.getCurrentProfile();
     const dietary = Array.isArray(profile.dietary) ? profile.dietary : [];
     const allergens = Array.isArray(profile.allergens) ? profile.allergens : [];
+    const customAllergens = Array.isArray(profile.customAllergens) ? profile.customAllergens : [];
 
-    if (dietary.length === 0 && allergens.length === 0) {
+    if (dietary.length === 0 && allergens.length === 0 && customAllergens.length === 0) {
       profilePills.innerHTML = `<p class="empty-note">No dietary preferences set yet. Update your profile to get personalized recipes.</p>`;
       return;
     }
 
     const safePills = dietary.map((d) => `<span class="pill safe">${escapeHtml(d)}</span>`);
     const dangerPills = allergens.map((a) => `<span class="pill danger">No ${escapeHtml(a)}</span>`);
-    profilePills.innerHTML = safePills.concat(dangerPills).join("");
+    const customPills = customAllergens.map((a) => `<span class="pill danger">No ${escapeHtml(a)}</span>`);
+    profilePills.innerHTML = safePills.concat(dangerPills, customPills).join("");
   }
 
   function renderPromptGrid() {

@@ -20,7 +20,7 @@
   const PROFILES_KEY = "labelwiseProfiles";
   const SCANS_KEY = "labelwiseScans";
 
-  const EMPTY_PROFILE = Object.freeze({ name: "", dietary: [], allergens: [] });
+  const EMPTY_PROFILE = Object.freeze({ name: "", dietary: [], allergens: [], customAllergens: [] });
 
   function readJSON(key, fallback) {
     try {
@@ -110,21 +110,31 @@
       const profiles = readJSON(PROFILES_KEY, {});
       const stored = profiles[normalizeEmail(email)];
       return stored
-        ? { name: stored.name || "", dietary: stored.dietary || [], allergens: stored.allergens || [] }
-        : { ...EMPTY_PROFILE, dietary: [], allergens: [] };
+        ? {
+            name: stored.name || "",
+            dietary: Array.isArray(stored.dietary) ? stored.dietary : [],
+            allergens: Array.isArray(stored.allergens) ? stored.allergens : [],
+            customAllergens: Array.isArray(stored.customAllergens) ? stored.customAllergens : []
+          }
+        : { ...EMPTY_PROFILE, dietary: [], allergens: [], customAllergens: [] };
     },
     saveProfile(email, profile) {
       const profiles = readJSON(PROFILES_KEY, {});
       profiles[normalizeEmail(email)] = {
         name: profile.name || "",
         dietary: Array.isArray(profile.dietary) ? profile.dietary : [],
-        allergens: Array.isArray(profile.allergens) ? profile.allergens : []
+        allergens: Array.isArray(profile.allergens) ? profile.allergens : [],
+        customAllergens: Array.isArray(profile.customAllergens)
+          ? profile.customAllergens
+              .map((s) => String(s || "").trim())
+              .filter(Boolean)
+          : []
       };
       writeJSON(PROFILES_KEY, profiles);
     },
     getCurrentProfile() {
       const user = api.getCurrentUser();
-      return user ? api.getProfile(user) : { ...EMPTY_PROFILE, dietary: [], allergens: [] };
+      return user ? api.getProfile(user) : { ...EMPTY_PROFILE, dietary: [], allergens: [], customAllergens: [] };
     },
     saveCurrentProfile(profile) {
       const user = api.getCurrentUser();
@@ -156,6 +166,10 @@
         category: scan.category || "",
         note: scan.note || "",
         savedToSafe: !!scan.savedToSafe,
+        // Small data-URL thumbnail of the scanned/uploaded photo so the
+        // Scan History can show a visual preview instead of a generic icon.
+        // Empty string when the scan came from a manual text paste (no image).
+        thumbnail: typeof scan.thumbnail === "string" ? scan.thumbnail : "",
         timestamp: scan.timestamp || Date.now()
       };
       list.unshift(entry); // newest first

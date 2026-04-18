@@ -18,40 +18,46 @@ if (!storedImage) {
 //Display image
 capturedImage.src = storedImage;
 
-// Default the crop box to cover the full visible image area. Because the
-// image is rendered with object-fit: contain, the picture is often smaller
-// than its container — so we compute the image's rendered rect relative to
-// the wrap and position the crop box on top of that instead of just 100%
-// of the wrap (which would include the letterbox margins).
-function fitCropBoxToImage() {
-  if (!capturedImage.naturalWidth || !capturedImage.naturalHeight) return;
+// Compute the actual rendered image rect inside the <img> element. Because
+// the image uses object-fit: contain, the picture can be smaller than the
+// element and letterboxed — we need this rect to (a) position the default
+// crop box on top of only the visible image and (b) map crop-box pixels
+// back to natural-image pixels without the letterbox skewing the scale.
+function getRenderedImageRect() {
+  const elW = capturedImage.clientWidth;
+  const elH = capturedImage.clientHeight;
+  const nw = capturedImage.naturalWidth;
+  const nh = capturedImage.naturalHeight;
+  if (!elW || !elH || !nw || !nh) return null;
 
-  const wrapW = imageWrap.clientWidth;
-  const wrapH = imageWrap.clientHeight;
-  if (wrapW === 0 || wrapH === 0) return;
-
-  const imgAspect = capturedImage.naturalWidth / capturedImage.naturalHeight;
-  const wrapAspect = wrapW / wrapH;
+  const imgAspect = nw / nh;
+  const elAspect = elW / elH;
 
   let renderedW, renderedH, offsetX, offsetY;
-  if (imgAspect > wrapAspect) {
-    // Image is wider than the wrap — letterboxed top & bottom.
-    renderedW = wrapW;
-    renderedH = wrapW / imgAspect;
+  if (imgAspect > elAspect) {
+    // Image is wider than the element — letterboxed top & bottom.
+    renderedW = elW;
+    renderedH = elW / imgAspect;
     offsetX = 0;
-    offsetY = (wrapH - renderedH) / 2;
+    offsetY = (elH - renderedH) / 2;
   } else {
     // Image is taller/narrower — letterboxed left & right.
-    renderedH = wrapH;
-    renderedW = wrapH * imgAspect;
-    offsetX = (wrapW - renderedW) / 2;
+    renderedH = elH;
+    renderedW = elH * imgAspect;
+    offsetX = (elW - renderedW) / 2;
     offsetY = 0;
   }
+  return { renderedW, renderedH, offsetX, offsetY };
+}
 
-  cropBox.style.left = `${offsetX}px`;
-  cropBox.style.top = `${offsetY}px`;
-  cropBox.style.width = `${renderedW}px`;
-  cropBox.style.height = `${renderedH}px`;
+// Default the crop box to cover the full visible image area.
+function fitCropBoxToImage() {
+  const rect = getRenderedImageRect();
+  if (!rect) return;
+  cropBox.style.left = `${rect.offsetX}px`;
+  cropBox.style.top = `${rect.offsetY}px`;
+  cropBox.style.width = `${rect.renderedW}px`;
+  cropBox.style.height = `${rect.renderedH}px`;
 }
 
 capturedImage.addEventListener("load", fitCropBoxToImage);
@@ -149,25 +155,47 @@ cropBox.addEventListener("pointerdown", onPointerDown);
 //Clicking the green checkmark will have the crop image
 doneBtn.addEventListener("click", () => {
   const img = capturedImage;
-
-  const wrapRect = imageWrap.getBoundingClientRect();
-  const boxRect = cropBox.getBoundingClientRect();
-
-  const displayWidth = img.clientWidth;
-  const displayHeight = img.clientHeight;
-
   const naturalWidth = img.naturalWidth;
   const naturalHeight = img.naturalHeight;
 
-  const scaleX = naturalWidth / displayWidth;
-  const scaleY = naturalHeight / displayHeight;
+  if (!naturalWidth || !naturalHeight) {
+    alert("Image hasn't finished loading yet.");
+    return;
+  }
+
+  // Get the RENDERED image rect (not the <img> element rect) so we can
+  // subtract the letterbox offsets. Without this step, an untouched crop
+  // box that visually covers the whole image maps to a smaller crop in
+  // natural pixel space — that's why edge text was getting cut off when
+  // users uploaded a portrait photo and clicked Done without dragging.
+  const rendered = getRenderedImageRect();
+  if (!rendered) return;
+  const { renderedW, renderedH, offsetX, offsetY } = rendered;
+
+  const scaleX = naturalWidth / renderedW;
+  const scaleY = naturalHeight / renderedH;
 
   const imgRect = img.getBoundingClientRect();
+  const boxRect = cropBox.getBoundingClientRect();
 
-  const cropX = Math.max(0, boxRect.left - imgRect.left) * scaleX;
-  const cropY = Math.max(0, boxRect.top - imgRect.top) * scaleY;
-  const cropWidth = Math.min(boxRect.width, imgRect.right - boxRect.left) * scaleX;
-  const cropHeight = Math.min(boxRect.height, imgRect.bottom - boxRect.top) * scaleY;
+  // Box position in element-local coords, then shift into rendered-image
+  // coords by subtracting the letterbox offset. Clamp to [0, renderedW/H]
+  // so a box edge that sits in the letterbox doesn't contribute a crop
+  // region that falls outside the natural pixels.
+  let leftInImg = (boxRect.left - imgRect.left) - offsetX;
+  let topInImg = (boxRect.top - imgRect.top) - offsetY;
+  let rightInImg = (boxRect.right - imgRect.left) - offsetX;
+  let bottomInImg = (boxRect.bottom - imgRect.top) - offsetY;
+
+  leftInImg = Math.max(0, Math.min(renderedW, leftInImg));
+  topInImg = Math.max(0, Math.min(renderedH, topInImg));
+  rightInImg = Math.max(0, Math.min(renderedW, rightInImg));
+  bottomInImg = Math.max(0, Math.min(renderedH, bottomInImg));
+
+  const cropX = leftInImg * scaleX;
+  const cropY = topInImg * scaleY;
+  const cropWidth = Math.max(1, (rightInImg - leftInImg) * scaleX);
+  const cropHeight = Math.max(1, (bottomInImg - topInImg) * scaleY);
 
   cropCanvas.width = Math.round(cropWidth);
   cropCanvas.height = Math.round(cropHeight);

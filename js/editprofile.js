@@ -15,6 +15,16 @@ if (!currentUser) {
   window.location.replace("LoginPage.html");
 }
 
+// Custom allergens — free-form strings the user wants flagged in scans.
+const customAllergenManager = (window.customAllergens && window.customAllergens.init)
+  ? window.customAllergens.init({
+      listEl: document.getElementById("customAllergenList"),
+      inputEl: document.getElementById("customAllergenInput"),
+      addBtn: document.getElementById("customAllergenAddBtn"),
+      initial: []
+    })
+  : { getList: () => [], setList: () => {} };
+
 function applyProfileToUI(profile) {
   nameInput.value = profile.name || "";
 
@@ -30,6 +40,8 @@ function applyProfileToUI(profile) {
       button.classList.add("selected");
     }
   });
+
+  customAllergenManager.setList(profile.customAllergens || []);
 }
 
 function collectProfileFromUI() {
@@ -47,7 +59,8 @@ function collectProfileFromUI() {
   return {
     name: nameInput.value.trim(),
     dietary,
-    allergens
+    allergens,
+    customAllergens: customAllergenManager.getList()
   };
 }
 

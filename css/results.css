@@ -4,7 +4,10 @@
 
 html, body {
   margin: 0;
-  min-height: 100%;
+  /* 100% here doesn't resolve unless the parent has an explicit height, which
+     left the white container stopping short on tall scans. Use 100vh on html
+     and let body grow with content. */
+  min-height: 100vh;
   font-family: "Inter", sans-serif;
   background: #f5f8f7;
   color: #111827;
@@ -13,35 +16,52 @@ html, body {
 body {
   display: flex;
   justify-content: center;
+  /* Align children to the top so the flex container doesn't vertically
+     center when content overflows, and so min-height on .results-page
+     behaves predictably. */
+  align-items: flex-start;
+  min-height: 100vh;
 }
 
 .results-page {
   width: 100%;
   max-width: 430px;
+  /* Ensure the white shell always covers the viewport AND extends with
+     content. `min-height: 100vh` alone sometimes left the background short
+     when the body was taller than the viewport — add `align-self: stretch`
+     so the flex item fills the body height too. */
   min-height: 100vh;
   background: white;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
 }
 
 .results-header {
   background: linear-gradient(135deg, #6BA89E 0%, #5A978C 100%);
-  padding: 48px 24px 20px;
-  position: relative;
+  padding: 48px 24px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
 .back-btn {
-  position: absolute;
-  left: 24px;
-  top: 44px;
   background: none;
   border: none;
   color: white;
   font-size: 24px;
   cursor: pointer;
   padding: 0;
+  line-height: 1;
+}
+
+.header-title-wrap {
+  display: flex;
+  align-items: center;
 }
 
 .header-title-wrap h1 {
-  margin: 36px 0 0;
+  margin: 0;
   color: white;
   font-size: 24px;
   font-weight: 700;
@@ -53,6 +73,9 @@ body {
   display: flex;
   flex-direction: column;
   gap: 24px;
+  /* Flex grow so the white .results-page shell stays filled even when
+     content is shorter than the viewport (no gray gap at the bottom). */
+  flex: 1 0 auto;
 }
 
 .card,
@@ -85,6 +108,8 @@ body {
 .status-card {
   padding: 24px;
   text-align: center;
+  /* Default falls back to caution palette; proper state class (.safe/.caution/.unsafe)
+     is applied by results.js based on the computed verdict. */
   border: 1.78px solid #FFF085;
   background: #FEFCE8;
 }
@@ -122,6 +147,56 @@ body {
   color: #4A5565;
   font-size: 16px;
   line-height: 24px;
+}
+
+/* ---- Status card variants -----------------------------------------------
+   results.js toggles .safe / .caution / .unsafe on the .status-card so the
+   overall verdict box matches the color semantics of the per-ingredient
+   tags below it. */
+
+.status-card.safe {
+  border-color: #B9F8CF;
+  background: #F0FDF4;
+}
+
+.status-card.safe .status-icon {
+  background: #F0FDF4;
+  border-color: #008236;
+  color: #008236;
+}
+
+.status-card.safe h3 {
+  color: #008236;
+}
+
+.status-card.caution {
+  border-color: #FFF085;
+  background: #FEFCE8;
+}
+
+.status-card.caution .status-icon {
+  background: #FEFCE8;
+  border-color: #F0B100;
+  color: #F0B100;
+}
+
+.status-card.caution h3 {
+  color: #F0B100;
+}
+
+.status-card.unsafe {
+  border-color: #FFC9C9;
+  background: #FEF2F2;
+}
+
+.status-card.unsafe .status-icon {
+  background: #FEF2F2;
+  border-color: #C10007;
+  color: #C10007;
+}
+
+.status-card.unsafe h3 {
+  color: #C10007;
 }
 
 .analysis-section h3,
@@ -217,20 +292,16 @@ body {
   background: #F8FAFC;
   border-radius: 12px;
   padding: 14px;
-
   width: 100%;
   max-width: 100%;
   min-height: 120px;
   max-height: 220px;
-
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
-
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   word-break: break-word;
-
   font-size: 14px;
   line-height: 1.6;
   box-sizing: border-box;

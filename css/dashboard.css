@@ -220,7 +220,8 @@ button {
   gap: 12px;
 }
 
-.scan-left {
+.scan-left,
+.scan-item-left {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -236,6 +237,41 @@ button {
   font-size: 24px;
 }
 
+.scan-status.safe {
+  background: #DCFCE7;
+  color: #00A63E;
+}
+
+.scan-status.unsafe {
+  background: #FFE2E2;
+  color: #C10007;
+}
+
+.scan-status.caution {
+  background: #FEF3C7;
+  color: #B45309;
+}
+
+/* Dashboard recent-scan thumbnail (replaces the glyph when the scan has a
+   stored photo preview). The status-colored ring keeps the safety signal. */
+.scan-status.scan-thumb {
+  padding: 0;
+  overflow: hidden;
+  background: #F3F4F6;
+  border: 2px solid transparent;
+}
+
+.scan-status.scan-thumb.safe { border-color: #B9F8CF; background: #F0FDF4; }
+.scan-status.scan-thumb.unsafe { border-color: #FFC9C9; background: #FEF2F2; }
+.scan-status.scan-thumb.caution { border-color: #FDE68A; background: #FEFCE8; }
+
+.scan-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 .safe-box {
   background: #DCFCE7;
   color: #0A0A0A;
@@ -246,7 +282,8 @@ button {
   color: #0A0A0A;
 }
 
-.scan-item h3 {
+.scan-item h3,
+.scan-title {
   margin: 0 0 4px;
   color: #4A7C72;
   font-size: 16px;
@@ -254,7 +291,8 @@ button {
   line-height: 24px;
 }
 
-.scan-item p {
+.scan-item p,
+.scan-meta {
   margin: 0;
   color: #6A7282;
   font-size: 14px;
@@ -268,6 +306,21 @@ button {
   white-space: nowrap;
 }
 
+.scan-empty {
+  background: white;
+  border: 1.78px dashed #A8D5BA;
+  border-radius: 14px;
+  padding: 16px;
+  text-align: center;
+}
+
+.scan-empty p {
+  margin: 0;
+  color: #6A7282;
+  font-size: 14px;
+  line-height: 20px;
+}
+
 .safe-items-card {
   border: 1.78px solid #B9F8CF;
   background: #F0FDF4;
@@ -277,6 +330,14 @@ button {
   justify-content: space-between;
   align-items: center;
   gap: 16px;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.safe-items-card:hover {
+  background: #DCFCE7;
 }
 
 .safe-items-left {
@@ -376,4 +437,87 @@ button {
     max-width: 100%;
     box-shadow: none;
   }
+}
+
+.profile-card {
+  background: white;
+  border: 1.78px solid #E5E7EB;
+  border-radius: 16px;
+  padding: 18px;
+}
+
+.profile-summary h3 {
+  margin: 0 0 4px;
+  color: #4A7C72;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 28px;
+}
+
+.profile-summary p {
+  margin: 0 0 16px;
+  color: #6A7282;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.profile-section + .profile-section {
+  margin-top: 16px;
+}
+
+.profile-section h4 {
+  margin: 0 0 10px;
+  color: #4A7C72;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+.profile-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.profile-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 30px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+}
+
+.profile-tag.safe {
+  background: #DCFCE7;
+  color: #166534;
+}
+
+.profile-tag.danger {
+  background: #FEE2E2;
+  color: #B91C1C;
+}
+
+.profile-muted {
+  color: #99A1AF;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.profile-empty-state h3 {
+  margin: 0 0 4px;
+  color: #4A7C72;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 28px;
+}
+
+.profile-empty-state p {
+  margin: 0;
+  color: #6A7282;
+  font-size: 14px;
+  line-height: 20px;
 }

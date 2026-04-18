@@ -11,12 +11,66 @@ const statusMessage = document.getElementById("statusMessage");
 const ingredientList = document.getElementById("ingredientList");
 const rawOcrText = document.getElementById("rawOcrText");
 
+// Top-level verdict card + its icon. results.js toggles .safe / .caution /
+// .unsafe on the card so the green/yellow/red palette matches the verdict.
+const statusCard = document.querySelector(".status-card");
+const statusIcon = document.querySelector(".status-card .status-icon");
+
+// Paint the verdict card's color + icon glyph to match the computed status.
+// Call this from every branch that sets overallStatus so the box color and
+// the per-ingredient tags never drift out of sync.
+function applyStatusCardStyle(status) {
+  if (!statusCard) return;
+  statusCard.classList.remove("safe", "caution", "unsafe");
+  const key = String(status || "").toLowerCase();
+  if (key === "safe") {
+    statusCard.classList.add("safe");
+    if (statusIcon) statusIcon.textContent = "\u2713"; // ✓
+  } else if (key === "unsafe") {
+    statusCard.classList.add("unsafe");
+    if (statusIcon) statusIcon.textContent = "\u2715"; // ✕
+  } else {
+    statusCard.classList.add("caution");
+    if (statusIcon) statusIcon.textContent = "!";
+  }
+}
+
 // Pull the CURRENT user's profile (per-account isolated slot).
 // profileStorage returns an empty profile if nobody is logged in.
 const savedProfile = profileStorage.getCurrentProfile();
 const userAllergens = savedProfile.allergens || [];
 const userDietary = savedProfile.dietary || [];
+const userCustomAllergens = Array.isArray(savedProfile.customAllergens)
+  ? savedProfile.customAllergens.map((s) => String(s || "").trim()).filter(Boolean)
+  : [];
 const userName = savedProfile.name || "";
+
+// Escape a free-form allergen string for use inside a RegExp.
+function escapeRegex(s) {
+  return String(s).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+// Build a case-insensitive word-boundary regex for a custom allergen.
+// e.g. "corn syrup" matches "CORN SYRUP", "corn-syrup", "corn  syrup", but not
+// "scorn syrup" or "cornsyrups". Whitespace in the query tolerates any run of
+// non-letter characters between words (hyphens, multiple spaces, commas, etc.).
+function buildCustomAllergenRegex(raw) {
+  const trimmed = String(raw || "").trim();
+  if (!trimmed) return null;
+  // Split on whitespace, escape each part, rejoin with flexible separators.
+  const parts = trimmed.split(/\s+/).map(escapeRegex);
+  const core = parts.length > 1 ? parts.join("[^a-z0-9]+") : parts[0];
+  try {
+    return new RegExp(`(^|[^a-z0-9])${core}($|[^a-z0-9])`, "i");
+  } catch (err) {
+    console.warn("Bad custom allergen regex:", raw, err);
+    return null;
+  }
+}
+
+const userCustomAllergenRegexes = userCustomAllergens
+  .map((term) => ({ term, regex: buildCustomAllergenRegex(term) }))
+  .filter((x) => x.regex);
 
 //Get OCR extracted text
 const ocrText = sessionStorage.getItem("ocrText") || "";
@@ -190,6 +244,16 @@ function analyzeIngredient(name) {
     }
   }
 
+  // 1b. Custom user-defined allergens — treated the same as profile allergens.
+  for (const { term, regex } of userCustomAllergenRegexes) {
+    if (regex.test(lower)) {
+      return {
+        status: "Unsafe",
+        note: `Contains ${term.toLowerCase()} — listed in your custom allergens.`
+      };
+    }
+  }
+
   // 2. Dietary preference violation — also Unsafe (it breaks the user's diet).
   for (const diet of userDietary) {
     const keywords = DIETARY_KEYWORDS[diet];
@@ -226,11 +290,14 @@ function analyzeIngredient(name) {
 }
 
 // Analyze an explicit "CONTAINS X, Y" allergy statement from the label.
-// Returns { matchedUserAllergens, majorAllergens }.
+// Returns { matchedUserAllergens, matchedCustomAllergens, majorAllergens }.
 function analyzeAllergyStatement(statementLower) {
-  if (!statementLower) return { matchedUserAllergens: [], majorAllergens: [] };
+  if (!statementLower) {
+    return { matchedUserAllergens: [], matchedCustomAllergens: [], majorAllergens: [] };
+  }
 
   const matchedUserAllergens = new Set();
+  const matchedCustomAllergens = new Set();
   const majorAllergens = new Set();
 
   for (const [allergen, keywords] of Object.entries(ALLERGEN_KEYWORDS)) {
@@ -241,8 +308,17 @@ function analyzeAllergyStatement(statementLower) {
       }
     }
   }
+
+  // Check explicit custom allergens against the statement too.
+  for (const { term, regex } of userCustomAllergenRegexes) {
+    if (regex.test(statementLower)) {
+      matchedCustomAllergens.add(term);
+    }
+  }
+
   return {
     matchedUserAllergens: [...matchedUserAllergens],
+    matchedCustomAllergens: [...matchedCustomAllergens],
     majorAllergens: [...majorAllergens]
   };
 }
@@ -286,13 +362,22 @@ if (extracted) {
     // own card at the top so the user sees it was detected even when the
     // ingredients list is long.
     let allergyCardHtml = "";
-    if (allergyFindings.majorAllergens.length) {
-      const userHit = allergyFindings.matchedUserAllergens.length > 0;
+    if (allergyFindings.majorAllergens.length || allergyFindings.matchedCustomAllergens.length) {
+      const userHit = allergyFindings.matchedUserAllergens.length > 0
+        || allergyFindings.matchedCustomAllergens.length > 0;
+      const listedItems = [
+        ...allergyFindings.majorAllergens.map((a) => a.toLowerCase()),
+        ...allergyFindings.matchedCustomAllergens.map((a) => a.toLowerCase())
+      ];
+      const userHitNames = [
+        ...allergyFindings.matchedUserAllergens,
+        ...allergyFindings.matchedCustomAllergens
+      ];
       allergyCardHtml = renderIngredientCard(
-        `Allergy statement: contains ${allergyFindings.majorAllergens.map((a) => a.toLowerCase()).join(", ")}`,
+        `Allergy statement: contains ${listedItems.join(", ")}`,
         userHit ? "Unsafe" : "Caution",
         userHit
-          ? `Label explicitly lists ${allergyFindings.matchedUserAllergens.join(" & ").toLowerCase()} — in your allergen profile.`
+          ? `Label explicitly lists ${userHitNames.join(" & ").toLowerCase()} — in your allergen profile.`
           : "Label explicitly lists major allergens. Review if these are safe for you."
       );
     }
@@ -305,37 +390,65 @@ if (extracted) {
         )
         .join("");
 
+    // Top-level verdict is now strictly user-profile-driven: we only flag
+    // Unsafe / Caution when something matches THIS user's allergens, custom
+    // allergens, or dietary preferences. A product that contains, say,
+    // "milk" is informational on the per-ingredient list (yellow tag) but
+    // doesn't make the overall verdict yellow unless the user actually
+    // listed milk in their profile. This matches the user's expectation:
+    // "if every ingredient I read does not match a single allergen in my
+    // profile, say Safe."
     const hasUnsafe =
       analyses.some(({ analysis }) => analysis.status === "Unsafe") ||
-      allergyFindings.matchedUserAllergens.length > 0;
-    const hasCaution =
-      analyses.some(({ analysis }) => analysis.status === "Caution") ||
-      allergyFindings.majorAllergens.length > 0 ||
-      mayContainFindings.majorAllergens.length > 0;
+      allergyFindings.matchedUserAllergens.length > 0 ||
+      allergyFindings.matchedCustomAllergens.length > 0;
+
+    // Caution = potential (not confirmed) presence of something in the
+    // user's profile — e.g. "MAY CONTAIN peanuts" when the user is
+    // peanut-allergic. We deliberately do NOT trip Caution on generic
+    // FDA Big-9 mentions or generic additives unless they intersect the
+    // user's profile.
+    const hasUserCaution =
+      mayContainFindings.matchedUserAllergens.length > 0 ||
+      mayContainFindings.matchedCustomAllergens.length > 0;
 
     if (hasUnsafe) {
+      const profileHits = [
+        ...allergyFindings.matchedUserAllergens,
+        ...allergyFindings.matchedCustomAllergens
+      ];
       overallStatus = "Unsafe";
-      overallNote = allergyFindings.matchedUserAllergens.length > 0
-        ? `This product contains ${allergyFindings.matchedUserAllergens.join(" & ").toLowerCase()} — listed in your allergen profile.`
-        : "This product appears to contain ingredients that may be unsuitable.";
+      overallNote = profileHits.length > 0
+        ? `This product contains ${profileHits.join(" & ").toLowerCase()} — listed in your allergen profile.`
+        : "This product contains ingredients that conflict with your profile.";
       statusTitle.textContent = "Unsafe Ingredients";
       statusMessage.textContent = overallNote;
-    } else if (hasCaution) {
+      applyStatusCardStyle(overallStatus);
+    } else if (hasUserCaution) {
       overallStatus = "Caution";
-      if (allergyFindings.majorAllergens.length > 0) {
-        overallNote = `This product contains common allergens (${allergyFindings.majorAllergens.map((a) => a.toLowerCase()).join(", ")}). Review before consuming.`;
-      } else if (mayContainFindings.majorAllergens.length > 0) {
-        overallNote = `This product may contain traces of ${mayContainFindings.majorAllergens.map((a) => a.toLowerCase()).join(", ")} (shared facility).`;
-      } else {
-        overallNote = "This product may contain concerning ingredients.";
-      }
+      const cautionHits = [
+        ...mayContainFindings.matchedUserAllergens,
+        ...mayContainFindings.matchedCustomAllergens
+      ];
+      overallNote = `This product may contain traces of ${cautionHits.join(" & ").toLowerCase()} (shared facility) — listed in your profile.`;
       statusTitle.textContent = "Caution Required";
       statusMessage.textContent = overallNote;
+      applyStatusCardStyle(overallStatus);
     } else {
       overallStatus = "Safe";
-      overallNote = "No obvious concerns were detected in the extracted ingredients.";
+      // Tailor the copy depending on whether the user actually has a
+      // profile worth checking against — avoids the somewhat misleading
+      // "no concerns" line for someone who hasn't set any allergens yet.
+      const hasProfile =
+        userAllergens.length > 0 ||
+        userCustomAllergens.length > 0 ||
+        userDietary.length > 0;
+      overallNote = hasProfile
+        ? "No allergens or restrictions from your profile were detected in this product."
+        : "No obvious concerns were detected in the extracted ingredients.";
       statusTitle.textContent = "Safe";
       statusMessage.textContent = overallNote;
+      applyStatusCardStyle(overallStatus);
     }
 
     productName.textContent = "Scanned Product";
@@ -348,22 +461,35 @@ if (extracted) {
       "caution",
       overallNote
     );
+    applyStatusCardStyle(overallStatus);
   }
 } else if (allergyFindings.majorAllergens.length > 0) {
   // Ingredients list didn't parse cleanly, but we still caught an explicit
-  // "CONTAINS X" line — that's enough to flag the product.
-  const userHit = allergyFindings.matchedUserAllergens.length > 0;
-  overallStatus = userHit ? "Unsafe" : "Caution";
+  // "CONTAINS X" line. Only flag Unsafe if X is in the user's profile;
+  // otherwise the verdict is Safe (per the user-profile-driven rule). The
+  // per-ingredient card still lists what the label said so the info isn't
+  // hidden.
+  const userHit =
+    allergyFindings.matchedUserAllergens.length > 0 ||
+    allergyFindings.matchedCustomAllergens.length > 0;
+  const userHitNames = [
+    ...allergyFindings.matchedUserAllergens,
+    ...allergyFindings.matchedCustomAllergens
+  ];
+  overallStatus = userHit ? "Unsafe" : "Safe";
   overallNote = userHit
-    ? `This product contains ${allergyFindings.matchedUserAllergens.join(" & ").toLowerCase()} — listed in your allergen profile.`
-    : `This product contains common allergens (${allergyFindings.majorAllergens.map((a) => a.toLowerCase()).join(", ")}).`;
-  statusTitle.textContent = userHit ? "Unsafe Ingredients" : "Caution Required";
+    ? `This product contains ${userHitNames.join(" & ").toLowerCase()} — listed in your allergen profile.`
+    : "No allergens or restrictions from your profile were detected in this product.";
+  statusTitle.textContent = userHit ? "Unsafe Ingredients" : "Safe";
   statusMessage.textContent = overallNote;
   ingredientList.innerHTML = renderIngredientCard(
     `Allergy statement: contains ${allergyFindings.majorAllergens.map((a) => a.toLowerCase()).join(", ")}`,
     userHit ? "Unsafe" : "Caution",
-    overallNote
+    userHit
+      ? overallNote
+      : "Label lists common allergens for informational purposes. None are in your profile."
   );
+  applyStatusCardStyle(overallStatus);
 } else {
   overallStatus = "Caution";
   overallNote = "Failed to confidently identify ingredients.";
@@ -372,6 +498,43 @@ if (extracted) {
     "caution",
     overallNote
   );
+  applyStatusCardStyle(overallStatus);
+}
+
+// Build a tiny square thumbnail (data URL) from a full-size image data URL so
+// Scan History can render a visual preview without blowing localStorage.
+// Returns "" if there's no source image (e.g. manual paste flow) or the
+// source fails to decode — callers fall back to the status icon.
+function buildScanThumbnail(sourceDataUrl, maxDim = 128, quality = 0.6) {
+  return new Promise((resolve) => {
+    if (!sourceDataUrl || typeof sourceDataUrl !== "string") {
+      resolve("");
+      return;
+    }
+    const img = new Image();
+    img.onload = () => {
+      try {
+        const sw = img.naturalWidth;
+        const sh = img.naturalHeight;
+        if (!sw || !sh) return resolve("");
+        // Center-crop to a square so every history card has a uniform tile.
+        const side = Math.min(sw, sh);
+        const sx = (sw - side) / 2;
+        const sy = (sh - side) / 2;
+
+        const canvas = document.createElement("canvas");
+        canvas.width = maxDim;
+        canvas.height = maxDim;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, sx, sy, side, side, 0, 0, maxDim, maxDim);
+        resolve(canvas.toDataURL("image/jpeg", quality));
+      } catch (_) {
+        resolve("");
+      }
+    };
+    img.onerror = () => resolve("");
+    img.src = sourceDataUrl;
+  });
 }
 
 // Persist this scan into the current user's isolated scan history so
@@ -379,21 +542,56 @@ if (extracted) {
 // an `ocrText` check so we don't spam the history on refresh with no data.
 // sessionStorage key `resultsPersistedKey` prevents double-saves on reloads
 // of the same Results view.
-(function persistScan() {
+(async function persistScan() {
   if (!ocrText) return;
   if (!profileStorage.getCurrentUser()) return;
 
   const persistKey = "labelwiseLastSavedOcr";
   if (sessionStorage.getItem(persistKey) === ocrText) return;
 
-  profileStorage.addCurrentScan({
-    productName: (productName.textContent || "Scanned Product").trim(),
-    brandName: "",
-    status: overallStatus,
-    category: "",
-    note: overallNote,
-    savedToSafe: overallStatus === "Safe"
-  });
+  // Prefer the cropped image (the one OCR actually ran on) so the tile
+  // matches what the user confirmed. Fall back to the raw capture if
+  // somehow crop didn't happen. Manual paste leaves both empty → "".
+  const source =
+    sessionStorage.getItem("croppedImage") ||
+    sessionStorage.getItem("capturedImage") ||
+    "";
+  let thumbnail = "";
+  try {
+    thumbnail = await buildScanThumbnail(source);
+  } catch (_) {
+    thumbnail = "";
+  }
+
+  try {
+    profileStorage.addCurrentScan({
+      productName: (productName.textContent || "Scanned Product").trim(),
+      brandName: "",
+      status: overallStatus,
+      category: "",
+      note: overallNote,
+      savedToSafe: overallStatus === "Safe",
+      thumbnail
+    });
+  } catch (err) {
+    // localStorage quota errors (QuotaExceededError) can happen if history
+    // gets large + every scan has a thumbnail. Retry without the thumbnail
+    // so the scan itself still gets saved.
+    console.warn("Scan save failed with thumbnail, retrying without:", err);
+    try {
+      profileStorage.addCurrentScan({
+        productName: (productName.textContent || "Scanned Product").trim(),
+        brandName: "",
+        status: overallStatus,
+        category: "",
+        note: overallNote,
+        savedToSafe: overallStatus === "Safe",
+        thumbnail: ""
+      });
+    } catch (err2) {
+      console.warn("Scan save failed even without thumbnail:", err2);
+    }
+  }
 
   sessionStorage.setItem(persistKey, ocrText);
 })();

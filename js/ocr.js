@@ -1,17 +1,17 @@
 //Jenny Tran
-// OCR pipeline — Tesseract.js v5 with adaptive preprocessing and quality gates.
+// OCR pipeline — OCR.space (cloud) primary + Tesseract.js v5 fallback.
 //
 // Pipeline:
 //   1. Load the cropped image out of sessionStorage (set by CropPage).
 //   2. Sanity-check the image — if it's essentially blank/uniform, bail out
-//      before Tesseract hallucinates text on an empty picture.
-//   3. Preprocess: grayscale + Otsu adaptive threshold. The fixed cutoff we
-//      used before failed in low light and on dark labels.
-//   4. Run Tesseract with an ingredient-friendly character whitelist.
-//   5. Rebuild the output text from words that beat a confidence floor, so
-//      random low-confidence guesses don't leak through.
-//   6. Sanitize (strip non-whitelist chars, collapse whitespace) and verify
-//      that the result at least looks like ingredient text.
+//      before any engine hallucinates text on an empty picture.
+//   3. Preprocess: grayscale + Otsu-guided contrast stretch. Soft stretch
+//      preserves thin strokes that hard binarization would erase.
+//   4. Try OCR.space first (Engine 2). It handles real-world label fonts,
+//      curved packaging, and varied lighting far better than local Tesseract.
+//   5. If OCR.space is unavailable (network error, rate limit, poor result)
+//      fall back to Tesseract so the app still works offline.
+//   6. Sanitize the text and verify it at least looks like ingredient text.
 //   7. Store the result in sessionStorage and move on to Results.
 
 const croppedImage = sessionStorage.getItem("croppedImage");
@@ -95,6 +95,23 @@ const OCR_CHAR_WHITELIST =
 const MIN_WORD_CONFIDENCE = 40;    // drop Tesseract words below this confidence
 const BLANK_STDDEV_THRESHOLD = 8;  // images below this pixel stddev are treated as blank
 const MIN_OCR_WIDTH = 1200;        // upscale anything narrower — Tesseract needs ~300 DPI equivalent
+
+// -----------------------------------------------------------------------------
+// OCR.space (cloud) configuration
+// -----------------------------------------------------------------------------
+// `helloworld` is OCR.space's public test key (rate-limited, fine for demo).
+// Users can drop in their own free API key from https://ocr.space/ocrapi via:
+//   localStorage.setItem("labelwiseOcrSpaceKey", "<key>");
+const OCR_SPACE_API_KEY = (() => {
+  try {
+    return localStorage.getItem("labelwiseOcrSpaceKey") || "helloworld";
+  } catch (_) {
+    return "helloworld";
+  }
+})();
+const OCR_SPACE_ENDPOINT = "https://api.ocr.space/parse/image";
+const OCR_SPACE_MAX_BYTES = 1024 * 1024; // 1 MB free-tier upload limit
+const OCR_SPACE_TIMEOUT_MS = 20000;
 
 // -----------------------------------------------------------------------------
 // Step-indicator UI
@@ -265,6 +282,94 @@ async function preprocessImage(dataUrl) {
 }
 
 // -----------------------------------------------------------------------------
+// OCR.space client
+// -----------------------------------------------------------------------------
+
+// Approximate decoded byte size of a dataUrl payload.
+function dataUrlBytes(dataUrl) {
+  const commaIdx = dataUrl.indexOf(",");
+  if (commaIdx < 0) return dataUrl.length;
+  // Base64 expands 3 bytes -> 4 chars, minus padding.
+  return Math.ceil(((dataUrl.length - commaIdx - 1) * 3) / 4);
+}
+
+// Make sure the image fits inside OCR.space's free-tier 1 MB upload limit.
+// If the preprocessed PNG is too big we re-encode as progressively-lower-quality
+// JPEG until it fits. OCR.space handles both formats fine.
+async function fitOcrSpacePayload(dataUrl) {
+  if (dataUrlBytes(dataUrl) <= OCR_SPACE_MAX_BYTES) return dataUrl;
+
+  const { canvas } = await loadToCanvas(dataUrl);
+  const qualities = [0.9, 0.8, 0.7, 0.55, 0.4, 0.25];
+  for (const q of qualities) {
+    const candidate = canvas.toDataURL("image/jpeg", q);
+    if (dataUrlBytes(candidate) <= OCR_SPACE_MAX_BYTES) return candidate;
+  }
+  // Last resort — smallest JPEG, even if slightly over.
+  return canvas.toDataURL("image/jpeg", 0.2);
+}
+
+// Fetch with a timeout — OCR.space occasionally stalls and we don't want
+// users staring at a spinner forever before the Tesseract fallback runs.
+async function fetchWithTimeout(url, init, ms) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), ms);
+  try {
+    return await fetch(url, { ...init, signal: controller.signal });
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
+// Call OCR.space. Resolves with the recognized text or throws on any error
+// (network, rate limit, API error, empty result). The Tesseract fallback will
+// pick up from there.
+async function runOcrSpace(dataUrl) {
+  const payload = await fitOcrSpacePayload(dataUrl);
+
+  const form = new FormData();
+  form.append("base64Image", payload);
+  form.append("language", "eng");
+  form.append("OCREngine", "2");       // Engine 2: better for mixed fonts/label layouts
+  form.append("scale", "true");         // upscale small images server-side
+  form.append("isTable", "false");
+  form.append("detectOrientation", "true");
+
+  const response = await fetchWithTimeout(
+    OCR_SPACE_ENDPOINT,
+    {
+      method: "POST",
+      headers: { apikey: OCR_SPACE_API_KEY },
+      body: form
+    },
+    OCR_SPACE_TIMEOUT_MS
+  );
+
+  if (!response.ok) {
+    throw new Error(`OCR.space HTTP ${response.status}`);
+  }
+
+  const json = await response.json();
+  if (json.IsErroredOnProcessing) {
+    const message = Array.isArray(json.ErrorMessage)
+      ? json.ErrorMessage.join("; ")
+      : String(json.ErrorMessage || "OCR.space reported an error");
+    throw new Error(message);
+  }
+
+  const text = (json.ParsedResults || [])
+    .map((r) => (r && r.ParsedText) || "")
+    .join("\n")
+    .trim();
+
+  if (!text) {
+    throw new Error("OCR.space returned empty text");
+  }
+
+  return text;
+}
+
+// -----------------------------------------------------------------------------
 // Text post-processing
 // -----------------------------------------------------------------------------
 
@@ -300,10 +405,37 @@ function looksLikeIngredients(text) {
 }
 
 // -----------------------------------------------------------------------------
+// Engine runners
+// -----------------------------------------------------------------------------
+
+// Run the local Tesseract engine. Returns the sanitized text or "".
+async function runTesseract(processedDataUrl) {
+  if (typeof Tesseract === "undefined") {
+    throw new Error("Tesseract.js is not loaded");
+  }
+  const worker = await Tesseract.createWorker("eng", 1);
+  try {
+    // Bias Tesseract toward a single uniform block of label text. We don't
+    // use a character whitelist here because it made recognition worse
+    // (Tesseract tries harder to map glyphs into the whitelist and ends up
+    // misreading real characters). Instead we sanitize the output text
+    // afterward — that way we don't affect character recognition itself.
+    await worker.setParameters({
+      preserve_interword_spaces: "1",
+      tessedit_pageseg_mode: "6",
+      user_defined_dpi: "300"
+    });
+    const result = await worker.recognize(processedDataUrl);
+    return textFromConfidentWords(result);
+  } finally {
+    try { await worker.terminate(); } catch (_) { /* ignore */ }
+  }
+}
+
+// -----------------------------------------------------------------------------
 // Main OCR flow
 // -----------------------------------------------------------------------------
 async function runOCRFlow() {
-  let worker;
   try {
     setStepState(stepCapture, "completed", "Image captured");
     setStepState(stepRead, "active", "Reading ingredients...");
@@ -311,7 +443,7 @@ async function runOCRFlow() {
 
     const { processedDataUrl, stddev } = await preprocessImage(croppedImage);
 
-    // Blank / uniform image — bail before Tesseract hallucinates a label.
+    // Blank / uniform image — bail before any engine hallucinates a label.
     if (stddev < BLANK_STDDEV_THRESHOLD) {
       setStepState(stepRead, "pending", "No text found");
       setStepState(stepSafety, "pending", "Analyzing safety");
@@ -328,22 +460,40 @@ async function runOCRFlow() {
       return;
     }
 
-    worker = await Tesseract.createWorker("eng", 1);
-    // Bias Tesseract toward a single uniform block of label text. We don't
-    // use a character whitelist here because it made recognition worse
-    // (Tesseract tries harder to map glyphs into the whitelist and ends up
-    // misreading real characters). Instead we sanitize the output text
-    // afterward — that way we don't affect character recognition itself.
-    await worker.setParameters({
-      preserve_interword_spaces: "1",
-      tessedit_pageseg_mode: "6",
-      user_defined_dpi: "300"
-    });
+    // --- Attempt 1: OCR.space (cloud) ----------------------------------------
+    // Much more reliable than Tesseract for real-world label photos: handles
+    // curved packaging, varied lighting, and mixed fonts better out of the box.
+    let rawText = "";
+    let engineUsed = "";
+    try {
+      setStepState(stepRead, "active", "Reading ingredients (cloud OCR)...");
+      rawText = await runOcrSpace(processedDataUrl);
+      engineUsed = "ocr.space";
+    } catch (cloudErr) {
+      console.warn("OCR.space failed, falling back to Tesseract:", cloudErr);
+    }
 
-    const result = await worker.recognize(processedDataUrl);
+    // --- Attempt 2: Tesseract fallback ---------------------------------------
+    if (!looksLikeIngredients(sanitizeText(rawText))) {
+      try {
+        setStepState(stepRead, "active", "Reading ingredients (local OCR)...");
+        const tesseractText = await runTesseract(processedDataUrl);
+        // If Tesseract produces a longer / more readable result, prefer it.
+        const cloudSan = sanitizeText(rawText);
+        const tessSan = sanitizeText(tesseractText);
+        if (
+          looksLikeIngredients(tessSan) &&
+          (!looksLikeIngredients(cloudSan) || tessSan.length > cloudSan.length)
+        ) {
+          rawText = tesseractText;
+          engineUsed = "tesseract";
+        }
+      } catch (tessErr) {
+        console.warn("Tesseract fallback failed:", tessErr);
+      }
+    }
 
-    const rawFromWords = textFromConfidentWords(result);
-    const sanitized = sanitizeText(rawFromWords);
+    const sanitized = sanitizeText(rawText);
 
     if (!looksLikeIngredients(sanitized)) {
       setStepState(stepRead, "pending", "No readable text");
@@ -362,6 +512,7 @@ async function runOCRFlow() {
     }
 
     sessionStorage.setItem("ocrText", sanitized);
+    try { sessionStorage.setItem("ocrEngine", engineUsed); } catch (_) { /* ignore */ }
 
     setStepState(stepRead, "completed", "Ingredients extracted");
     setStepState(stepSafety, "active", "Analyzing safety");
@@ -385,10 +536,6 @@ async function runOCRFlow() {
       onRetry: () => { window.location.href = "CropPage.html"; },
       onCancel: () => { window.location.href = "ScanPage.html"; }
     });
-  } finally {
-    if (worker) {
-      try { await worker.terminate(); } catch (_) { /* ignore */ }
-    }
   }
 }
 

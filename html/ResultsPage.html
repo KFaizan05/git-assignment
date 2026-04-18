@@ -42,6 +42,14 @@ the logic of OCR proccessing is in ocr.js
         <p id="statusMessage">This product may contain concerning ingredients.</p>
       </section>
 
+      <!-- Raw Text sits up here (under Scanned Product + verdict) so the user
+           can eyeball what OCR actually read before scrolling through the
+           per-ingredient analysis below. -->
+      <section class="card raw-ocr-card">
+        <h3>Raw Text</h3>
+        <pre id="rawOcrText" class="text-box">No text found.</pre>
+      </section>
+
       <section class="analysis-section">
         <div class="section-title-row">
           <h3>Ingredient Analysis</h3>
@@ -50,11 +58,6 @@ the logic of OCR proccessing is in ocr.js
         <div id="ingredientList" class="ingredient-list">
           <!-- DB fills this -->
         </div>
-      </section>
-
-      <section class="card raw-ocr-card">
-        <h3>Raw Text</h3>
-        <pre id="rawOcrText" class="text-box">No text found.</pre>
       </section>
 
       <button class="primary-action" id="alternativesBtn" type="button">

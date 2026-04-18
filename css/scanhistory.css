@@ -154,6 +154,35 @@ button { font: inherit; }
 .history-icon.unsafe { background: #FFE2E2; }
 .history-icon.caution { background: #FEF9C2; }
 
+/* ---- Thumbnail preview -------------------------------------------------
+   Replaces the generic status icon with the actual photo the user scanned
+   or uploaded. A thin status-colored ring keeps the safety signal visible
+   at a glance. */
+
+.history-thumb {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #F3F4F6;
+  border: 2px solid transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.history-thumb.safe { border-color: #B9F8CF; }
+.history-thumb.unsafe { border-color: #FFC9C9; }
+.history-thumb.caution { border-color: #FDE68A; }
+
+.history-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 .history-main {
   flex: 1;
   display: flex;

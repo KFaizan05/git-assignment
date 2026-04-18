@@ -63,6 +63,23 @@ body {
   cursor: pointer;
 }
 
+/* Groups flip + flash on the right side of the top bar so the left-aligned
+   back button still hugs the corner. Without this, justify-content:
+   space-between splays three buttons evenly across the bar. */
+.top-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.icon-btn svg {
+  display: block;
+}
+
+.icon-btn:active {
+  transform: scale(0.92);
+}
+
 .icon-img {
   width: 28px;
   height: 28px;
@@ -78,6 +95,38 @@ body {
   cursor: pointer;
   justify-self: start;
   margin-left: 16px;
+}
+
+.paste-action {
+  justify-self: end;
+  margin-left: 0;
+  margin-right: 16px;
+}
+
+.paste-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 56px;
+  height: 32px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1.5px solid rgba(255, 255, 255, 0.75);
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  backdrop-filter: blur(6px);
+  transition: background 0.15s ease, transform 0.08s ease;
+}
+
+.paste-action:hover .paste-pill {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.paste-action:active .paste-pill {
+  transform: scale(0.95);
 }
 
 .icon-bttn {
@@ -233,4 +282,141 @@ body {
   .camera-stage {
     height: 85vh;
   }
+}
+
+/* ---- Paste-text modal ---------------------------------------------------- */
+
+.paste-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: pasteFadeIn 0.15s ease;
+}
+
+.paste-modal[hidden] {
+  display: none !important;
+}
+
+.paste-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(16, 24, 40, 0.55);
+  backdrop-filter: blur(3px);
+}
+
+.paste-modal-card {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  background: white;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  animation: pastePopIn 0.18s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.paste-modal-title {
+  margin: 0;
+  color: #4A7C72;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 28px;
+}
+
+.paste-modal-subtitle {
+  margin: 0;
+  color: #6A7282;
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.paste-modal-textarea {
+  width: 100%;
+  min-height: 180px;
+  max-height: 40vh;
+  resize: vertical;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1.78px solid #A8D5BA;
+  outline: none;
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  color: #0A0A0A;
+  background: #fafcfb;
+}
+
+.paste-modal-textarea::placeholder {
+  color: rgba(10, 10, 10, 0.45);
+}
+
+.paste-modal-textarea:focus {
+  border-color: #6BA89E;
+  background: white;
+}
+
+.paste-modal-error {
+  margin: 0;
+  padding: 8px 12px;
+  background: #FEF2F2;
+  border: 1px solid #FFC9C9;
+  border-radius: 10px;
+  color: #A61B1B;
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.paste-modal-error[hidden] {
+  display: none;
+}
+
+.paste-modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+
+.paste-modal-btn {
+  height: 44px;
+  padding: 0 20px;
+  border-radius: 12px;
+  border: none;
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.paste-modal-btn.secondary {
+  background: #F3F4F6;
+  color: #4A7C72;
+}
+
+.paste-modal-btn.primary {
+  background: linear-gradient(90deg, #6BA89E 0%, #5A978C 100%);
+  color: white;
+  box-shadow: 0 4px 6px -4px rgba(0, 0, 0, 0.10),
+              0 10px 15px -3px rgba(0, 0, 0, 0.10);
+}
+
+.paste-modal-btn:hover {
+  filter: brightness(1.05);
+}
+
+@keyframes pasteFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes pastePopIn {
+  from { transform: scale(0.94); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
 }

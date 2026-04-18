@@ -54,9 +54,19 @@
     const brand = scan.brandName || "Unknown brand";
     const category = scan.category || "Uncategorized";
 
+    // Prefer an actual image preview of the scanned/uploaded photo; fall
+    // back to the status icon tile when there's no thumbnail (older scans
+    // saved before thumbnails existed, or manual-paste scans).
+    const thumb = typeof scan.thumbnail === "string" ? scan.thumbnail : "";
+    const thumbHtml = thumb
+      ? `<div class="history-thumb ${statusClass}">
+           <img src="${escapeHtml(thumb)}" alt="" class="history-thumb-img" />
+         </div>`
+      : `<div class="history-icon ${statusClass}">${iconFor(scan.status)}</div>`;
+
     return `
       <article class="history-card" data-id="${escapeHtml(scan.id)}">
-        <div class="history-icon ${statusClass}">${iconFor(scan.status)}</div>
+        ${thumbHtml}
         <div class="history-main">
           <div class="history-title">${escapeHtml(scan.productName)}</div>
           <div class="history-brand">${escapeHtml(brand)}</div>

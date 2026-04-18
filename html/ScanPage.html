@@ -22,8 +22,24 @@ taking an image, and passing it to cropping page is in scan.js
       <header class="top-bar">
         <button class="icon-btn" id="backBtn" type="button" aria-label="Back">
             <img src="images/CancelIcon.png" class="icon-img"> </button>
-        <button class="icon-btn" type="button" aria-label="Flash">
-            <img src="images/FlashIcon.png" class="icon-img"> </button>
+        <div class="top-bar-right">
+          <!-- Flip between front/back cameras. If the requested direction
+               isn't available the video just goes black; tap again to swap
+               back. scan.js handles the getUserMedia restart. -->
+          <button class="icon-btn" id="flipBtn" type="button" aria-label="Flip camera">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
+                 stroke="white" stroke-width="2" stroke-linecap="round"
+                 stroke-linejoin="round" aria-hidden="true">
+              <path d="M11 19H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5"/>
+              <path d="M13 5h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-5"/>
+              <circle cx="12" cy="12" r="3"/>
+              <path d="m18 22-3-3 3-3"/>
+              <path d="m6 2 3 3-3 3"/>
+            </svg>
+          </button>
+          <button class="icon-btn" type="button" aria-label="Flash">
+              <img src="images/FlashIcon.png" class="icon-img"> </button>
+        </div>
       </header>
 
       <div class="camera-stage">
@@ -42,7 +58,7 @@ taking an image, and passing it to cropping page is in scan.js
       </div>
 
       <footer class="bottom-bar">
-        <button class="small-action" id="uploadBtn" type="button">
+        <button class="small-action" id="uploadBtn" type="button" aria-label="Upload image">
         <img src="images/ImageIcon.png" class="icon-bttn" alt="Upload"> </button>
 
     <button class="capture-btn" id="scanBtn" type="button" aria-label="Capture and scan">
@@ -50,11 +66,62 @@ taking an image, and passing it to cropping page is in scan.js
             <span class="capture-inner"></span>
           </span>
         </button>
+
+        <button class="small-action paste-action" id="pasteBtn" type="button" aria-label="Paste text">
+          <span class="paste-pill">Paste</span>
+        </button>
       </footer>
     </section>
   </main>
 
   <input id="fileInput" type="file" accept="image/*" hidden />
+
+  <!-- Camera-permission modal: shown when the user taps the capture button
+       but the camera isn't running (usually because permission was denied).
+       Reuses the paste-modal styles so no duplicate CSS. The Try Again
+       button re-invokes getUserMedia, which works if the user just flipped
+       the site setting to Allow in the browser's address-bar menu. -->
+  <div class="paste-modal" id="cameraPermModal" hidden role="dialog" aria-modal="true" aria-labelledby="cameraPermTitle">
+    <div class="paste-modal-backdrop" id="cameraPermBackdrop"></div>
+    <div class="paste-modal-card">
+      <h2 class="paste-modal-title" id="cameraPermTitle">Camera access needed</h2>
+      <p class="paste-modal-subtitle">
+        To capture a label, LabelWise needs camera access. Please try again, after giving permission.</b>
+      </p>
+      <p class="paste-modal-subtitle">
+        No camera available? You can also <b>Upload</b> an image or <b>Paste</b>
+        ingredient text.
+      </p>
+      <div class="paste-modal-actions">
+        <button type="button" class="paste-modal-btn secondary" id="cameraPermCancel">Cancel</button>
+        <button type="button" class="paste-modal-btn primary" id="cameraPermRetry">Try Again</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Paste-text modal: lets the user paste ingredient text directly so it
+       gets cross-checked against their dietary profile without running OCR. -->
+  <div class="paste-modal" id="pasteModal" hidden role="dialog" aria-modal="true" aria-labelledby="pasteModalTitle">
+    <div class="paste-modal-backdrop" id="pasteModalBackdrop"></div>
+    <div class="paste-modal-card">
+      <h2 class="paste-modal-title" id="pasteModalTitle">Paste ingredients</h2>
+      <p class="paste-modal-subtitle">
+        Copy a product's ingredient list (or any text containing one) and paste it here.
+        We'll cross-check it against your dietary profile and allergens.
+      </p>
+
+      <textarea id="pasteTextInput" class="paste-modal-textarea"
+                placeholder="e.g. INGREDIENTS: Whole grain oats, sugar, almonds, salt. CONTAINS: tree nuts."
+                rows="10"></textarea>
+
+      <p class="paste-modal-error" id="pasteModalError" role="alert" hidden></p>
+
+      <div class="paste-modal-actions">
+        <button type="button" class="paste-modal-btn secondary" id="pasteCancelBtn">Cancel</button>
+        <button type="button" class="paste-modal-btn primary" id="pasteAnalyzeBtn">Analyze</button>
+      </div>
+    </div>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <script src="../js/scan.js"></script>

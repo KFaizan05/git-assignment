@@ -64,10 +64,19 @@
     const note = scan.note ? `<p class="safe-card-note">"${escapeHtml(scan.note)}"</p>` : "";
     const favoriteMarker = scan.savedToSafe === false ? "" : "";
 
+    // Use the actual scan photo when we have one; otherwise show the
+    // original ✓ tile so older scans keep rendering.
+    const thumb = typeof scan.thumbnail === "string" ? scan.thumbnail : "";
+    const iconHtml = thumb
+      ? `<div class="safe-card-icon safe-card-thumb">
+           <img src="${escapeHtml(thumb)}" alt="" class="safe-card-thumb-img" />
+         </div>`
+      : `<div class="safe-card-icon">✓</div>`;
+
     return `
       <article class="safe-card" data-id="${escapeHtml(scan.id)}">
         <div class="safe-card-top">
-          <div class="safe-card-icon">✓</div>
+          ${iconHtml}
           <div class="safe-card-main">
             <div class="safe-card-title">${escapeHtml(scan.productName)} ${favoriteMarker}</div>
             <div class="safe-card-brand">${brand}</div>

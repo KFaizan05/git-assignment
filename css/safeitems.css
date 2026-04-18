@@ -197,6 +197,21 @@ button { font: inherit; }
   justify-content: center;
 }
 
+/* When the card has a real photo preview instead of the ✓ glyph. */
+.safe-card-icon.safe-card-thumb {
+  padding: 0;
+  overflow: hidden;
+  background: #F0FDF4;
+  border: 2px solid #B9F8CF;
+}
+
+.safe-card-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 .safe-card-main {
   flex: 1;
   display: flex;

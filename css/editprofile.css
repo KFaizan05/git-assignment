@@ -78,6 +78,11 @@ button {
   gap: 8px;
 }
 
+/* Honor the `hidden` attribute even though .field-group sets display:flex. */
+.field-group[hidden] {
+  display: none !important;
+}
+
 .field-group label {
   color: #4A7C72;
   font-size: 16px;
@@ -318,4 +323,138 @@ button {
 
 .form-error[hidden] {
   display: none;
+}
+
+/* ---- Custom allergens ----------------------------------------------------- */
+
+.section-hint {
+  margin: -4px 0 12px;
+  color: #6A7282;
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.custom-allergen-adder {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.custom-allergen-input {
+  flex: 1;
+  height: 48px;
+  padding: 12px 16px;
+  border-radius: 14px;
+  border: 1.78px solid #A8D5BA;
+  outline: none;
+  font-size: 14px;
+  font-family: "Inter", sans-serif;
+  color: #0A0A0A;
+  background: white;
+}
+
+.custom-allergen-input::placeholder {
+  color: rgba(10, 10, 10, 0.45);
+}
+
+.custom-allergen-input:focus {
+  border-color: #6BA89E;
+}
+
+.custom-allergen-input--flash {
+  animation: customAllergenFlash 0.35s ease;
+}
+
+@keyframes customAllergenFlash {
+  0%   { border-color: #FB2C36; }
+  100% { border-color: #A8D5BA; }
+}
+
+.custom-allergen-add-btn {
+  height: 48px;
+  padding: 0 18px;
+  border-radius: 14px;
+  border: none;
+  background: linear-gradient(90deg, #6BA89E 0%, #5A978C 100%);
+  color: white;
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 6px -4px rgba(0, 0, 0, 0.10),
+              0 10px 15px -3px rgba(0, 0, 0, 0.10);
+  white-space: nowrap;
+}
+
+.custom-allergen-add-btn:hover {
+  filter: brightness(1.05);
+}
+
+.custom-allergen-list {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 0;
+}
+
+.custom-allergen-empty {
+  margin: 0;
+  color: #6A7282;
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.custom-allergen-empty em {
+  font-style: normal;
+  color: #4A7C72;
+  font-weight: 500;
+}
+
+.custom-allergen-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 6px 6px 12px;
+  background: #FEF2F2;
+  border: 1.78px solid #FFC9C9;
+  border-radius: 999px;
+  color: #A61B1B;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  max-width: 100%;
+}
+
+.custom-allergen-chip .chip-label {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chip-btn {
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: #A61B1B;
+  font-size: 14px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.12s ease;
+}
+
+.chip-btn:hover {
+  background: rgba(166, 27, 27, 0.1);
+}
+
+.chip-delete {
+  font-size: 18px;
+  font-weight: 600;
 }

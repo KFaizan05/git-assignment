@@ -119,6 +119,19 @@
           </div>
         </section>
 
+        <section class="section-block">
+          <h2>Custom Allergens</h2>
+          <p class="section-hint">Add anything else you want flagged in scans (e.g. sugar, MSG, corn syrup).</p>
+
+          <div class="custom-allergen-adder">
+            <input id="customAllergenInput" class="custom-allergen-input" type="text"
+                   placeholder="Type an ingredient..." maxlength="40" />
+            <button id="customAllergenAddBtn" class="custom-allergen-add-btn" type="button">Add</button>
+          </div>
+
+          <div id="customAllergenList" class="custom-allergen-list"></div>
+        </section>
+
       </section>
 
       <footer class="editprofile-footer">
@@ -129,6 +142,7 @@
   </main>
 
   <script src="../js/profileStorage.js"></script>
+  <script src="../js/customAllergens.js"></script>
   <script src="../js/editprofile.js"></script>
 </body>
 </html>
