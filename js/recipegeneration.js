@@ -1,12 +1,3 @@
-// Recipe Generation page — takes the prompt the user gave AI Chef (stored in
-// sessionStorage under `labelwiseChefPrompt`) and shows an honest placeholder
-// response. A real LLM-backed generator isn't wired up yet, so we don't
-// fabricate a recipe — we echo the user's prompt, confirm which of their
-// profile constraints we'd honor, and explain that generation is coming soon.
-//
-// No hardcoded recipes. Re-submitting from the composer just updates the
-// user bubble and re-runs the placeholder flow with the new prompt.
-
 (function initRecipeGeneration() {
   "use strict";
 
@@ -20,14 +11,19 @@
   const recipeContent = document.getElementById("recipeContent");
 
   const PROMPT_STORAGE_KEY = "labelwiseChefPrompt";
+  
+  // WARNING: Exposing your API key on the frontend is for prototyping only.
+  const OPENAI_API_KEY = ""; // openai key will be added here later when the final project is done, the AI chat bot works fully
 
-  backBtn.addEventListener("click", () => {
-    if (window.history.length > 1) {
-      window.history.back();
-    } else {
-      window.location.href = "AIChatbotPage.html";
-    }
-  });
+  // --- Utility Functions ---
+
+  function escapeHtml(text) {
+    return String(text ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
 
   function buildProfileSummary() {
     const profile = profileStorage.getCurrentProfile();
@@ -35,9 +31,76 @@
     const allergens = Array.isArray(profile.allergens) ? profile.allergens : [];
 
     const parts = [];
-    if (dietary.length) parts.push(`dietary preferences: ${dietary.join(", ")}`);
+    if (dietary.length) parts.push(`dietary: ${dietary.join(", ")}`);
     if (allergens.length) parts.push(`avoiding: ${allergens.join(", ")}`);
     return parts.length ? parts.join(" • ") : "No dietary preferences set.";
+  }
+
+  // --- Functional AI Logic ---
+
+  async function callOpenAI(prompt) {
+    const profile = profileStorage.getCurrentProfile();
+    const dietary = profile.dietary?.join(", ") || "None";
+    const allergens = profile.allergens?.join(", ") || "None";
+    
+    // 1. Show Loading State
+    recipeContent.innerHTML = `
+      <div class="ai-bubble">
+        <p class="loading-text">👨‍🍳 Chef is typing...</p>
+      </div>
+    `;
+
+    try {
+      const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${OPENAI_API_KEY}`
+        },
+        body: JSON.stringify({
+          model: "gpt-4o", 
+          messages: [
+            {
+              role: "system",
+              content: `You are an expert AI Chef. 
+                User Dietary Profile: ${dietary}. 
+                User Allergies: ${allergens}.
+                Instruction: Create a recipe based on the user's prompt. 
+                Crucially, you MUST NOT use any ingredients listed in the Allergies. 
+                Keep the tone helpful and concise. Format with Markdown.`
+            },
+            {
+              role: "user",
+              content: prompt
+            }
+          ],
+          temperature: 0.7
+        })
+      });
+
+      const data = await response.json();
+      
+      if (data.error) throw new Error(data.error.message);
+
+      const markdown = data.choices[0].message.content;
+
+      // 2. Render Response
+      // If you have marked.js installed, use: recipeContent.innerHTML = marked.parse(markdown);
+      // Otherwise, we use a simple formatted block:
+      recipeContent.innerHTML = `
+        <div class="ai-bubble">
+          <div style="white-space: pre-wrap;">${escapeHtml(markdown)}</div>
+        </div>
+      `;
+
+    } catch (err) {
+      console.error("AI Error:", err);
+      recipeContent.innerHTML = `
+        <div class="ai-bubble error">
+          <p>⚠️ Sorry, I had trouble reaching the kitchen. Make sure your API key is correct.</p>
+        </div>
+      `;
+    }
   }
 
   function showPromptResponse(prompt) {
@@ -45,7 +108,7 @@
 
     if (!clean) {
       userMessageBlock.hidden = true;
-      aiIntro.textContent = "Tell me what you're in the mood for and I'll build a recipe that matches your profile.";
+      aiIntro.textContent = "What would you like to cook?";
       emptyState.hidden = false;
       return;
     }
@@ -56,33 +119,15 @@
 
     const summary = buildProfileSummary();
     aiIntro.innerHTML = `
-      Got it — <strong>"${escapeHtml(clean)}"</strong>.<br>
-      I'll tailor recipes around your profile (${escapeHtml(summary)}).
+      Coming right up! 🍽️<br>
+      <small style="opacity: 0.8;">Applying filters: ${escapeHtml(summary)}</small>
     `;
 
-    // Add a placeholder note after the intro so we don't fake a recipe.
-    const existingNote = document.getElementById("placeholderNote");
-    if (existingNote) existingNote.remove();
-
-    const note = document.createElement("div");
-    note.className = "empty-state";
-    note.id = "placeholderNote";
-    note.innerHTML = `
-      <div class="empty-icon">✨</div>
-      <h3>Recipe generation coming soon</h3>
-      <p>Once the recipe engine is wired up, your prompt will be turned into a full recipe that respects your dietary needs. Thanks for your patience!</p>
-    `;
-    const bubbleWrap = document.querySelector(".ai-bubble-wrap");
-    if (bubbleWrap) bubbleWrap.appendChild(note);
+    // Fire the real API call
+    callOpenAI(clean);
   }
 
-  function escapeHtml(text) {
-    return String(text ?? "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;");
-  }
+  // --- UI Interactivity ---
 
   function submitFromComposer() {
     const value = chatInput.value.trim();
@@ -94,24 +139,22 @@
     }
     showPromptResponse(value);
     chatInput.value = "";
-    // Scroll to bottom so the newest content is visible.
     recipeContent.scrollTop = recipeContent.scrollHeight;
   }
 
+  backBtn.addEventListener("click", () => {
+    window.location.href = "AIChatbotPage.html";
+  });
+
   chatSendBtn.addEventListener("click", submitFromComposer);
-  chatInput.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") {
-      event.preventDefault();
+  chatInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
       submitFromComposer();
     }
   });
 
-  // On load, pull the prompt from sessionStorage and render a response.
-  let initialPrompt = "";
-  try {
-    initialPrompt = sessionStorage.getItem(PROMPT_STORAGE_KEY) || "";
-  } catch (err) {
-    initialPrompt = "";
-  }
+  // Initial Run
+  const initialPrompt = sessionStorage.getItem(PROMPT_STORAGE_KEY) || "";
   showPromptResponse(initialPrompt);
 })();
