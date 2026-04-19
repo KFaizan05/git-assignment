@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Chef</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/aichatbot.css" />
+</head>
+<body>
+  <main class="aichatbot-page">
+    <section class="aichatbot-shell">
+
+      <header class="aichatbot-header">
+        <div class="header-row">
+          <div class="avatar-wrap">
+            <img src="./images/ChefIcon.png">
+          </div>
+          <div class="header-text">
+            <h1>AI Chef</h1>
+            <p>Your personal recipe assistant</p>
+          </div>
+        </div>
+      </header>
+
+      <section class="aichatbot-content">
+
+        <section class="welcome-card">
+          <div class="welcome-icon">
+            <img src="./images/GStarIcon.png">
+          </div>
+          <div class="welcome-text">
+            <h2 id="welcomeTitle">Welcome to AI Chef!</h2>
+            <p>I can create personalized recipes based on your dietary preferences and safe foods. Choose a prompt below or ask me anything!</p>
+          </div>
+        </section>
+
+        <section class="section-block">
+          <h3>Based on Your Profile</h3>
+          <div class="profile-pills" id="profilePills"></div>
+        </section>
+
+        <section class="section-block">
+          <h3>Try asking me...</h3>
+          <div class="prompt-grid" id="promptGrid"></div>
+        </section>
+
+      </section>
+
+      <footer class="chat-composer">
+        <input type="text" id="chatInput" class="chat-input" placeholder="Ask me for a recipe..." />
+        <button id="chatSendBtn" class="send-btn" type="button" aria-label="Send">
+          <img src="./images/WChatIcon.png">
+        </button>
+      </footer>
+
+      <nav class="bottom-nav">
+        <a href="DashboardPage.html" class="nav-item">
+          <div class="nav-icon">
+            <img src="./images/WHomeIcon.png" class="nav-icon" alt="Home"/>
+          </div>
+          <span>Home</span>
+        </a>
+
+        <a href="ScanPage.html" class="nav-item nav-scan">
+          <div class="scan-fab">
+             <img src="./images/SmallScanIcon.png" class="nav-icon" alt="Scan"/>
+          </div>
+          <span>Scan</span>
+        </a>
+
+        <a href="AIChatbotPage.html" class="nav-item active">
+          <div class="nav-icon">
+            <img src="./images/GChatIcon.png" class="nav-icon" alt="AI Chef"/>
+          </div>
+          <span>AI Chef</span>
+        </a>
+
+        <a href="ScanHistoryPage.html" class="nav-item">
+          <div class="nav-icon">
+            <img src="./images/RecentIcon.png" class="nav-icon" alt="History"/>
+          </div>
+          <span>History</span>
+        </a>
+      </nav>
+
+    </section>
+  </main>
+
+  <script src="../js/i18n.js"></script>
+  <script src="../js/profileStorage.js"></script>
+  <script src="../js/aichatbot.js"></script>
+</body>
+</html>

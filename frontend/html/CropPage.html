@@ -1,0 +1,58 @@
+<!-- 
+Jenny Tran
+This HTML file is the Cropping UI. Cropping logic is in crop.js
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crop Image</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/crop.css" />
+</head>
+<body>
+  <main class="crop-page">
+    <section class="crop-shell">
+      <header class="crop-topbar">
+        <button class="icon-btn" id="backBtn" type="button" aria-label="Back">
+          <img src="images/WLeftArrow.png" class="icon-img">
+        </button>
+        <h1>Crop Image</h1>
+        <button class="done-btn" id="doneBtn" type="button">
+            <img src="images/CheckmarkIcon.png" class="icon-img"> </button>
+      </header>
+
+      <div class="crop-hint">Drag corners to adjust crop area</div>
+
+      <section class="crop-stage">
+        <div class="image-wrap" id="imageWrap">
+          <img id="capturedImage" alt="Captured ingredient label" />
+
+          <div class="crop-box" id="cropBox">
+            <div class="grid-line v1"></div>
+            <div class="grid-line v2"></div>
+            <div class="grid-line h1"></div>
+            <div class="grid-line h2"></div>
+
+            <div class="handle tl" data-handle="tl"></div>
+            <div class="handle tr" data-handle="tr"></div>
+            <div class="handle bl" data-handle="bl"></div>
+            <div class="handle br" data-handle="br"></div>
+          </div>
+        </div>
+        
+      </section>
+    </section>
+
+    <canvas id="cropCanvas" hidden></canvas>
+  </main>
+
+  <script src="../js/i18n.js"></script>
+  <script src="../js/crop.js"></script>
+</body>
+</html>

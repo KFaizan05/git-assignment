@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Settings</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/settings.css" />
+</head>
+<body>
+  <main class="settings-page">
+    <section class="settings-shell">
+
+      <header class="settings-header">
+        <button class="back-btn" id="backBtn" type="button" aria-label="Back">
+          <img src="./images/WLeftArrow.png">
+        </button>
+        <div class="header-title-wrap">
+          <h1>Settings</h1>
+        </div>
+      </header>
+
+      <section class="settings-content">
+
+        <section class="section-block">
+          <h2>Profile</h2>
+
+          <a href="EditProfilePage.html" class="settings-row profile-row">
+            <div class="row-left">
+              <div class="row-icon profile-icon">
+                <img src="./images/ProfileIcon.png" alt="">
+              </div>
+              <div class="row-text">
+                <h3>Personal Information</h3>
+                <p>Name, dietary preferences, allergens</p>
+              </div>
+            </div>
+            <span class="row-chevron">
+              <img src="./images/WRightArrow.png" alt="">
+            </span>
+          </a>
+        </section>
+
+        <section class="section-block">
+          <h2>Preferences</h2>
+
+          <button class="settings-row" id="languageBtn" type="button">
+            <div class="row-left">
+              <div class="row-icon language-icon">
+                <img src="./images/LangIcon.png" alt="">
+              </div>
+              <div class="row-text">
+                <h3>Language</h3>
+                <p id="currentLanguageText">English</p>
+              </div>
+            </div>
+            <span class="row-chevron">
+              <img src="./images/WRightArrow.png" alt="">
+            </span>
+          </button>
+
+          <div class="settings-row">
+            <div class="row-left">
+              <div class="row-icon bell-icon">
+                <img src="./images/NotifIcon.png" alt="">
+              </div>
+              <div class="row-text">
+                <h3>Notifications</h3>
+                <p>Scan alerts and updates</p>
+              </div>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+        </section>
+
+        <section class="section-block">
+          <h2>Support</h2>
+
+          <button class="settings-row" type="button">
+            <div class="row-left">
+              <div class="row-icon help-icon">
+                <img src="./images/HelpIcon.png" alt="">
+              </div>
+              <div class="row-text">
+                <h3>Help Center</h3>
+                <p>FAQs and support</p>
+              </div>
+            </div>
+            <span class="row-chevron">
+              <img src="./images/WRightArrow.png" alt="">
+            </span>
+          </button>
+
+          <button class="settings-row" type="button">
+            <div class="row-left">
+              <div class="row-icon help-icon">
+                <img src="./images/InfoIcon.png" alt="">
+              </div>
+              <div class="row-text">
+                <h3>About LabelWise</h3>
+                <p>Version 1.0.0</p>
+              </div>
+            </div>
+            <span class="row-chevron">
+              <img src="./images/WRightArrow.png" alt="">
+            </span>
+          </button>
+        </section>
+
+        <section class="section-block">
+          <h2>Legal</h2>
+
+          <button class="settings-row" type="button">
+            <div class="row-left">
+              <div class="row-icon legal-icon">
+                <img src="./images/ShieldIcon.png" alt="">
+              </div>
+              <div class="row-text">
+                <h3>Privacy Policy</h3>
+              </div>
+            </div>
+            <span class="row-chevron">
+              <img src="./images/WRightArrow.png" alt="">
+            </span>
+          </button>
+
+          <button class="settings-row" type="button">
+            <div class="row-left">
+              <div class="row-icon legal-icon">
+                <img src="./images/ShieldIcon.png" alt="">
+              </div>
+              <div class="row-text">
+                <h3>Terms of Service</h3>
+              </div>
+            </div>
+            <span class="row-chevron">
+              <img src="./images/WRightArrow.png" alt="">
+            </span>
+          </button>
+        </section>
+
+        <button class="logout-btn" id="logoutBtn" type="button">
+          <span class="logout-icon">
+            <img src="./images/LogoutIcon.png" alt="">
+          </span>
+          Log Out
+        </button>
+
+      </section>
+    </section>
+  </main>
+
+  <!-- Bottom Sheet -->
+  <div class="sheet-overlay hidden" id="languageSheetOverlay">
+    <div class="language-sheet" id="languageSheet">
+      <div class="sheet-header">
+        <h2>Select Language</h2>
+        <button class="sheet-close-btn" id="closeLanguageSheet" type="button" aria-label="Close">✕</button>
+      </div>
+
+      <div class="sheet-options">
+        <button class="language-option" type="button" data-language="English">English</button>
+        <button class="language-option" type="button" data-language="Español">Español</button>
+        <button class="language-option" type="button" data-language="Français">Français</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/i18n.js"></script>
+  <script src="../js/profileStorage.js"></script>
+  <script src="../js/settings.js"></script>
+</body>
+</html>
