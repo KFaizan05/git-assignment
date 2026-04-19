@@ -19,6 +19,7 @@
   const ACCOUNTS_KEY = "labelwiseAccounts";
   const PROFILES_KEY = "labelwiseProfiles";
   const SCANS_KEY = "labelwiseScans";
+  const LANGUAGE_KEY = "labelwiseLanguage";
 
   const EMPTY_PROFILE = Object.freeze({ name: "", dietary: [], allergens: [], customAllergens: [] });
 
@@ -220,6 +221,7 @@
         api.deleteAccount(user);
       }
       api.clearCurrentUser();
+      localStorage.removeItem(LANGUAGE_KEY);
     },
 
     // ---- Utilities --------------------------------------------------------

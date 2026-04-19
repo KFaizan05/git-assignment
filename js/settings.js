@@ -1,4 +1,4 @@
-const LANGUAGE_STORAGE_KEY = "labelwiseLanguage";
+const LANGUAGE_STORAGE_KEY = (window.i18n && window.i18n.key) || "labelwiseLanguage";
 
 const backBtn = document.getElementById("backBtn");
 const logoutBtn = document.getElementById("logoutBtn");
@@ -14,7 +14,11 @@ function getSavedLanguage() {
 }
 
 function saveLanguage(language) {
-  localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
+  if (window.i18n) {
+    window.i18n.saveLanguage(language);
+  } else {
+    localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
+  }
 }
 
 function updateLanguageUI(language) {
@@ -67,9 +71,13 @@ languageSheetOverlay.addEventListener("click", (event) => {
 languageOptions.forEach((option) => {
   option.addEventListener("click", () => {
     const selectedLanguage = option.dataset.language;
+    if (selectedLanguage === getSavedLanguage()) {
+      closeLanguageSheetModal();
+      return;
+    }
     saveLanguage(selectedLanguage);
-    updateLanguageUI(selectedLanguage);
     closeLanguageSheetModal();
+    window.location.reload();
   });
 });
 
