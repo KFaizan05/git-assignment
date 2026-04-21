@@ -1,0 +1,376 @@
+/* Scan History page — list of every scan the current user has made. */
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+  font-family: "Inter", sans-serif;
+  background: #f5f8f7;
+  color: #111827;
+}
+
+body { display: flex; justify-content: center; }
+a { text-decoration: none; color: inherit; }
+button { font: inherit; }
+
+.scanhistory-page {
+  width: 100%;
+  max-width: 430px;
+  min-height: 100vh;
+  background: white;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+}
+
+.scanhistory-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.scanhistory-header {
+  padding: 48px 24px 24px;
+  background: linear-gradient(135deg, #6BA89E 0%, #5A978C 100%);
+  color: white;
+}
+
+.scanhistory-header h1 {
+  margin: 0 0 4px;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 32px;
+}
+
+.scanhistory-header p {
+  margin: 0;
+  color: #A8D5BA;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.scanhistory-search {
+  padding: 16px 24px;
+  background: white;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.search-input {
+  width: 100%;
+  height: 44px;
+  padding: 0 16px;
+  border-radius: 14px;
+  border: 1.78px solid #A8D5BA;
+  font: inherit;
+  font-size: 15px;
+  color: #111827;
+  background: white;
+  outline: none;
+}
+
+.search-input::placeholder {
+  color: rgba(10, 10, 10, 0.5);
+}
+
+.search-input:focus {
+  border-color: #6BA89E;
+}
+
+.scanhistory-stats {
+  padding: 16px 24px;
+  background: white;
+  border-bottom: 1px solid #E5E7EB;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.stat {
+  border-radius: 14px;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.stat strong {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 32px;
+}
+
+.stat span {
+  color: #4A5565;
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.stat.safe { background: #F0FDF4; }
+.stat.safe strong { color: #00A63E; }
+
+.stat.unsafe { background: #FEF2F2; }
+.stat.unsafe strong { color: #E7000B; }
+
+.stat.caution { background: #FEFCE8; }
+.stat.caution strong { color: #D08700; }
+
+/* Clickable filter tiles — all three stat cards act as click-to-filter
+   toggles. The active filter gets a colored ring so users can tell which
+   filter is currently applied at a glance. */
+.stat[data-filter] {
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+  user-select: none;
+}
+
+.stat[data-filter]:hover {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.stat[data-filter]:active {
+  transform: scale(0.98);
+}
+
+.stat[data-filter]:focus-visible {
+  outline: none;
+  border-color: #6BA89E;
+}
+
+.stat.safe.is-active { border-color: #00A63E; }
+.stat.unsafe.is-active { border-color: #E7000B; }
+.stat.caution.is-active { border-color: #D08700; }
+
+.scanhistory-content {
+  flex: 1;
+  padding: 16px 24px 24px;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.history-card {
+  background: white;
+  border: 1.78px solid #E5E7EB;
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.history-card:hover {
+  border-color: #A8D5BA;
+  background: #F7FBF9;
+}
+
+.history-icon {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  color: #0A0A0A;
+}
+
+.history-icon.safe { background: #DCFCE7; }
+.history-icon.unsafe { background: #FFE2E2; }
+.history-icon.caution { background: #FEF9C2; }
+
+/* ---- Thumbnail preview -------------------------------------------------
+   Replaces the generic status icon with the actual photo the user scanned
+   or uploaded. A thin status-colored ring keeps the safety signal visible
+   at a glance. */
+
+.history-thumb {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #F3F4F6;
+  border: 2px solid transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.history-thumb.safe { border-color: #B9F8CF; }
+.history-thumb.unsafe { border-color: #FFC9C9; }
+.history-thumb.caution { border-color: #FDE68A; }
+
+.history-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.history-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.history-title {
+  color: #4A7C72;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 22px;
+}
+
+.history-brand {
+  color: #6A7282;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.history-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  color: #99A1AF;
+  font-size: 12px;
+  line-height: 16px;
+  margin-top: 4px;
+}
+
+.status-pill {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.status-pill.safe { background: #DCFCE7; color: #008236; }
+.status-pill.unsafe { background: #FFE2E2; color: #C10007; }
+.status-pill.caution { background: #FEF9C2; color: #A65F00; }
+
+/* Empty state */
+.empty-state {
+  margin-top: 32px;
+  text-align: center;
+  padding: 24px;
+  border: 1.78px dashed #A8D5BA;
+  border-radius: 14px;
+  background: #F7FBF9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Honor the `hidden` attribute even though .empty-state sets display:flex.
+   Without this override, the empty state keeps showing even when the JS
+   sets `emptyState.hidden = true` — making it look like "No scans yet"
+   is always present. */
+.empty-state[hidden] {
+  display: none !important;
+}
+
+.empty-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  background: #DCFCE7;
+  color: #4A7C72;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-state h3 {
+  margin: 4px 0 0;
+  color: #4A7C72;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.empty-state p {
+  margin: 0;
+  color: #6A7282;
+  font-size: 14px;
+  line-height: 20px;
+  max-width: 280px;
+}
+
+.primary-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 48px;
+  border-radius: 14px;
+  background: linear-gradient(90deg, #6BA89E 0%, #5A978C 100%);
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+/* Bottom nav */
+.bottom-nav {
+  height: 68px;
+  border-top: 1.78px solid #E5E7EB;
+  background: white;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  align-items: center;
+}
+
+.nav-item {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: #99A1AF;
+  font-size: 12px;
+}
+
+.nav-item.active { color: #6BA89E; }
+
+.nav-item .nav-icon {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.nav-scan { position: relative; top: -8px; }
+
+.nav-scan .scan-fab {
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  background: #6BA89E;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 480px) {
+  .scanhistory-page {
+    max-width: 100%;
+    box-shadow: none;
+  }
+}

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Safe Alternatives</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/alternatives.css" />
+</head>
+<body>
+  <main class="alternatives-page">
+    <section class="alternatives-shell">
+      <header class="alternatives-header">
+      <button class="back-btn" id="backBtn" type="button" aria-label="Back">
+        <img src="./images/WLeftArrow.png" alt="">
+      </button>
+
+      <div class="header-text">
+        <h1>Safe Alternatives</h1>
+        <p>Similar products that match your preferences</p>
+      </div>
+    </header>
+
+      <section class="alternatives-content">
+
+        <section class="original-card" id="originalCard" hidden>
+          <div class="original-row">
+            <span class="original-label">Last Scanned:</span>
+            <span class="original-name" id="originalName"></span>
+          </div>
+          <p class="original-note" id="originalNote"></p>
+        </section>
+
+        <section class="alternatives-list" id="alternativesList"></section>
+
+        <div class="empty-state" id="emptyState" hidden>
+          <div class="empty-icon">✨</div>
+          <h3>No alternatives to show yet</h3>
+          <p>Alternatives are tailored to the product you just scanned. Scan something first and we'll find safe swaps that match your profile.</p>
+          <a href="ScanPage.html" class="primary-action inline-link">Scan a Product</a>
+        </div>
+
+        <button class="primary-action" id="homeBtn" type="button">Back to Home</button>
+
+      </section>
+
+      <nav class="bottom-nav">
+        <a href="DashboardPage.html" class="nav-item active">
+          <div class="nav-icon">
+            <img src="./images/HomeIcon.png" class="nav-icon" alt="Home"/>
+          </div>
+          <span>Home</span>
+        </a>
+
+        <a href="ScanPage.html" class="nav-item nav-scan">
+          <div class="scan-fab">
+            <img src="./images/SmallScanIcon.png" class="nav-icon" alt="Scan"/>
+          </div>
+          <span>Scan</span>
+        </a>
+
+        <a href="AIChatbotPage.html" class="nav-item">
+          <div class="nav-icon">
+            <img src="./images/ChatIcon.png" class="nav-icon" alt="AI Chef"/>
+          </div>
+          <span>AI Chef</span>
+        </a>
+
+        <a href="ScanHistoryPage.html" class="nav-item">
+          <div class="nav-icon">
+            <img src="./images/RecentIcon.png" class="nav-icon" alt="History"/>
+          </div>
+          <span>History</span>
+        </a>
+      </nav>
+
+    </section>
+  </main>
+
+  <script src="../js/i18n.js"></script>
+  <script src="../js/profileStorage.js"></script>
+  <script src="../js/alternatives.js"></script>
+</body>
+</html>

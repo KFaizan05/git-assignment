@@ -1,0 +1,142 @@
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+  font-family: "Inter", sans-serif;
+  background: #000;
+  color: white;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+}
+
+.crop-page {
+  width: 100%;
+  max-width: 430px;
+  min-height: 100vh;
+  background: #000;
+}
+
+.crop-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.crop-topbar {
+  height: 64px;
+  padding: 0 20px;
+  background: rgba(0, 0, 0, 0.8);
+  display: grid;
+  grid-template-columns: 40px 1fr 64px;
+  align-items: center;
+}
+
+.crop-topbar h1 {
+  margin: 0;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.icon-btn,
+.done-btn {
+  background: none;
+  border: none;
+  color: white;
+  font: inherit;
+  cursor: pointer;
+}
+
+.done-btn {
+  color: #6BA89E;
+  font-weight: 600;
+}
+
+.crop-hint {
+  text-align: center;
+  padding: 16px 12px;
+  color: rgba(255,255,255,0.6);
+  font-size: 14px;
+}
+
+.crop-stage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 16px 32px;
+  overflow: hidden;
+}
+
+.image-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+  aspect-ratio: 3 / 4;
+  background: #1f2937;
+  overflow: hidden;
+}
+
+#capturedImage {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.crop-box {
+  position: absolute;
+  left: 10%;
+  top: 10%;
+  width: 80%;
+  height: 80%;
+  border: 2px solid #F4D166;
+  box-shadow: 0 0 0 9999px rgba(0,0,0,0.6);
+  touch-action: none;
+}
+
+.grid-line {
+  position: absolute;
+  background: rgba(255,255,255,0.4);
+}
+
+.v1, .v2 {
+  top: 0;
+  bottom: 0;
+  width: 1px;
+}
+
+.v1 { left: 33.333%; }
+.v2 { left: 66.666%; }
+
+.h1, .h2 {
+  left: 0;
+  right: 0;
+  height: 1px;
+}
+
+.h1 { top: 33.333%; }
+.h2 { top: 66.666%; }
+
+.handle {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  background: #F4D166;
+  border: 2px solid white;
+  border-radius: 50%;
+}
+
+.tl { left: -12px; top: -12px; cursor: nwse-resize; }
+.tr { right: -12px; top: -12px; cursor: nesw-resize; }
+.bl { left: -12px; bottom: -12px; cursor: nesw-resize; }
+.br { right: -12px; bottom: -12px; cursor: nwse-resize; }

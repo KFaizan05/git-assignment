@@ -20,4 +20,40 @@ This app aims to eliminate the frustration and uncertainty of reading
 complex ingredient labels, especially for individuals with allergies, 
 dietary restrictions, or ethical food preferences. 
 
+# LabelWise - MySQL + PHP Setup
 
+## 1. Install XAMPP
+
+Download XAMPP from <https://www.apachefriends.org/> and run the installer
+with the default options (Apache, MySQL, PHP, phpMyAdmin all ticked).
+
+Start the XAMPP Control Panel and click **Start** next to **Apache** and
+**MySQL**.
+
+## 2. Drop the project into `htdocs`
+
+XAMPP serves files out of `C:\xampp\htdocs\`.
+Create a symlink to the folder(s):
+  ```cmd
+  mklink /D "C:\xampp\htdocs\labelwise" "C:\Users\<name>\git-assignment"
+  ```
+
+"C:\Users\<name>\git-assignment" can be replaceable with wherever the downloaded files are.
+When it succeeds, you should see all the folders when you go into "C:\xampp\htdocs\labelwise"
+
+## 3. Create the database
+
+Open <http://localhost/phpmyadmin/> in your browser. Click the **SQL** tab,
+paste the contents of `sql/labelwise_createSchema.sql`, and press **Go**. You
+should see `labelwise` appear in the left sidebar with six tables:
+`accounts`, `profiles`, `account_dietary`, `account_allergens`,
+`account_custom_allergens`, and `scans`.
+
+If phpMyAdmin is giving an error, you may need to download mySQL from <https://www.mysql.com/downloads/>. Follow a setup guide then reclick **Start** so that MySQL is highlighted green in XAMPP.
+
+## 5. Open the app
+
+Paste <http://localhost/LabelWise/frontend/html/LoginPage.html> into the browser.
+
+**Create an account via Sign Up**, or click **Quick Start** on the Login page
+to spin up an ephemeral guest account.

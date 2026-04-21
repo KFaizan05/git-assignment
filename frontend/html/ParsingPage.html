@@ -1,0 +1,68 @@
+<!-- 
+Jenny Tran
+This HTML file is the Classification Result UI. Shows the result
+of OCR processing, database search, crosschecking profile, etc.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Analyzing Ingredients</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/ocr.css" />
+</head>
+<body>
+  <main class="ocr-loading-page">
+    <section class="ocr-shell">
+      <div class="hero-loader">
+        <div class="hero-ring">
+          <div class="hero-icon">⌲</div>
+        </div>
+      </div>
+
+      <h1>Analyzing Ingredients</h1>
+      <p class="subtitle">Reading the label...</p>
+
+      <section class="steps">
+        <div class="step completed" id="stepCapture">
+          <div class="step-icon check">✓</div>
+          <div class="step-text">Image captured</div>
+        </div>
+
+        <div class="step active" id="stepRead">
+          <div class="step-icon spinner"></div>
+          <div class="step-text">Reading ingredients...</div>
+        </div>
+
+        <div class="step pending" id="stepSafety">
+          <div class="step-icon dot"></div>
+          <div class="step-text">Analyzing safety</div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <!-- In-app error popup used by ocr.js instead of alert(). Hidden by default. -->
+  <div class="ocr-modal" id="ocrErrorModal" hidden role="dialog" aria-modal="true" aria-labelledby="ocrErrorTitle">
+    <div class="ocr-modal-backdrop"></div>
+    <div class="ocr-modal-card">
+      <div class="ocr-modal-icon" id="ocrErrorIcon">⚠</div>
+      <h2 class="ocr-modal-title" id="ocrErrorTitle">Unreadable scan</h2>
+      <p class="ocr-modal-body" id="ocrErrorBody">We couldn't read any ingredients from that image.</p>
+      <div class="ocr-modal-actions">
+        <button type="button" class="ocr-modal-btn secondary" id="ocrErrorCancel">Cancel</button>
+        <button type="button" class="ocr-modal-btn primary" id="ocrErrorRetry">Try Again</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/i18n.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <script src="../js/ocr.js"></script>
+</body>
+</html>

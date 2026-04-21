@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Profile</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/editprofile.css" />
+</head>
+<body>
+  <main class="editprofile-page">
+    <section class="editprofile-shell">
+      <header class="editprofile-header">
+        <button class="back-btn" id="backBtn" type="button" aria-label="Back">
+          <img src="./images/WLeftArrow.png" alt="">
+        </button>
+        <h1>Create Profile</h1>
+      </header>
+
+      <section class="editprofile-content">
+
+        <div class="field-group">
+          <label for="profileEmail">Email</label>
+          <input id="profileEmail" type="email" placeholder="you@example.com" autocomplete="email" />
+        </div>
+
+        <div class="field-group">
+          <label for="name">Name</label>
+          <input id="name" type="text" placeholder="Name" />
+        </div>
+
+        <p id="profileError" class="form-error" role="alert" hidden></p>
+
+        <section class="section-block">
+          <h2>Dietary Preferences</h2>
+          <div class="option-grid" id="dietaryOptions">
+            <button class="option-btn" type="button" data-group="dietary" data-value="Vegan">
+              <span>Vegan</span>
+              <span class="check">
+                <img src="./images/WCheckmark.png" alt="">
+              </span>
+            </button>
+            <button class="option-btn" type="button" data-group="dietary" data-value="Vegetarian">
+              <span>Vegetarian</span>
+              <span class="check">
+                <img src="./images/WCheckmark.png" alt="">
+              </span>
+            </button>
+            <button class="option-btn" type="button" data-group="dietary" data-value="Gluten-Free">
+              <span>Gluten-Free</span>
+              <span class="check">
+                <img src="./images/WCheckmark.png" alt="">
+              </span>
+            </button>
+            <button class="option-btn" type="button" data-group="dietary" data-value="Dairy-Free">
+              <span>Dairy-Free</span>
+              <span class="check">
+                <img src="./images/WCheckmark.png" alt="">
+              </span>
+            </button>
+          </div>
+        </section>
+
+        <section class="section-block">
+          <h2>Allergens to Avoid</h2>
+          <div class="option-grid" id="allergenOptions">
+            <button class="option-btn allergen-btn" type="button" data-group="allergens" data-value="Peanuts">
+              <span>Peanuts</span>
+              <span class="check">
+                <img src="./images/WCheckmark.png" alt="">
+              </span>
+            </button>
+            <button class="option-btn allergen-btn" type="button" data-group="allergens" data-value="Tree Nuts">
+              <span>Tree Nuts</span>
+              <span class="check">
+                <img src="./images/WCheckmark.png" alt="">
+              </span>
+            </button>
+            <button class="option-btn allergen-btn" type="button" data-group="allergens" data-value="Milk">
+              <span>Milk</span>
+              <span class="check">
+                <img src="./images/WCheckmark.png" alt="">
+              </span>
+            </button>
+            <button class="option-btn allergen-btn" type="button" data-group="allergens" data-value="Eggs">
+              <span>Eggs</span>
+              <span class="check">
+                <img src="./images/WCheckmark.png" alt="">
+              </span>
+            </button>
+            <button class="option-btn allergen-btn" type="button" data-group="allergens" data-value="Soy">
+              <span>Soy</span>
+              <span class="check">
+                <img src="./images/WCheckmark.png" alt="">
+              </span>
+            </button>
+            <button class="option-btn allergen-btn" type="button" data-group="allergens" data-value="Wheat">
+              <span>Wheat</span>
+              <span class="check">
+                <img src="./images/WCheckmark.png" alt="">
+              </span>
+            </button>
+            <button class="option-btn allergen-btn" type="button" data-group="allergens" data-value="Fish">
+              <span>Fish</span>
+              <span class="check">
+                <img src="./images/WCheckmark.png" alt="">
+              </span>
+            </button>
+            <button class="option-btn allergen-btn" type="button" data-group="allergens" data-value="Shellfish">
+              <span>Shellfish</span>
+              <span class="check">
+                <img src="./images/WCheckmark.png" alt="">
+              </span>
+            </button>
+            <button class="option-btn allergen-btn" type="button" data-group="allergens" data-value="Sesame">
+              <span>Sesame</span>
+              <span class="check">
+                <img src="./images/WCheckmark.png" alt="">
+              </span>
+            </button>
+          </div>
+        </section>
+
+        <section class="section-block">
+          <h2>Custom Allergens</h2>
+          <p class="section-hint">Add anything else you want flagged in scans (e.g. sugar, MSG, corn syrup).</p>
+
+          <div class="custom-allergen-adder">
+            <input id="customAllergenInput" class="custom-allergen-input" type="text"
+                   placeholder="Type an ingredient..." maxlength="40" />
+            <button id="customAllergenAddBtn" class="custom-allergen-add-btn" type="button">Add</button>
+          </div>
+
+          <div id="customAllergenList" class="custom-allergen-list"></div>
+        </section>
+
+      </section>
+
+      <footer class="editprofile-footer">
+        <button class="primary-action" id="saveBtn" type="button">Get Started</button>
+      </footer>
+    </section>
+  </main>
+
+  <script src="../js/profileStorage.js"></script>
+  <script src="../js/customAllergens.js"></script>
+  <script src="../js/createprofile.js"></script>
+</body>
+</html>
