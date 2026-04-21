@@ -56,4 +56,4 @@ If phpMyAdmin is giving an error, you may need to download mySQL from <https://w
 Paste <http://localhost/LabelWise/frontend/html/LoginPage.html> into the browser.
 
 **Create an account via Sign Up**, or click **Quick Start** on the Login page
-to spin up an ephemeral guest account.
+for a temporary guest account that gets purged after logging out.
