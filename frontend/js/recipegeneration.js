@@ -16,8 +16,7 @@
   const PROMPT_STORAGE_KEY = "labelwiseChefPrompt";
   
   // WARNING: Exposing your API key on the frontend is for prototyping only.
-  const OPENAI_API_KEY = ""; // openai key will be added here later when the final project is done, the AI chat bot works fully
-
+  const OPENAI_API_KEY = "";
   // --- Utility Functions ---
 
   function escapeHtml(text) {
