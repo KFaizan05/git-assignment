@@ -1,0 +1,7 @@
+# Local secrets and env files
+.env
+.env.*
+!.env.example
+
+# Frontend local API key config (do not commit real keys)
+frontend/js/openai-config.local.js
