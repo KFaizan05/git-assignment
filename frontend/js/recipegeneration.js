@@ -15,10 +15,9 @@
 
   const PROMPT_STORAGE_KEY = "labelwiseChefPrompt";
   
-  // WARNING: Exposing your API key on the frontend is for prototyping only.
-  const OPENAI_API_KEY = ""; // openai key will be added here later when the final project is done, the AI chat bot works fully
-
-  // --- Utility Functions ---
+  
+  const OPENAI_API_KEY = String(window.__LABELWISE_OPENAI_API_KEY__ || "").trim();
+  
 
   function escapeHtml(text) {
     return String(text ?? "")
@@ -54,6 +53,11 @@
     `;
 
     try {
+      if (!OPENAI_API_KEY) {
+        throw new Error(
+          "Missing OpenAI key. Add it to frontend/js/openai-config.local.js"
+        );
+      }
       const response = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
         headers: {
