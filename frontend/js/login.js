@@ -6,6 +6,7 @@ const loginForm = document.getElementById("loginForm");
 const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
 const errorMsg = document.getElementById("loginError");
+const googleLoginBtn = document.getElementById("googleLoginBtn");
 
 function showError(message) {
   errorMsg.textContent = message;
@@ -45,6 +46,21 @@ loginForm.addEventListener("submit", async (event) => {
     if (submitBtn) submitBtn.disabled = false;
   }
 });
+
+if (googleLoginBtn) {
+  googleLoginBtn.addEventListener("click", async () => {
+    googleLoginBtn.disabled = true;
+    try {
+      await profileStorage.loginWithGoogle();
+      clearError();
+      window.location.href = "DashboardPage.html";
+    } catch (err) {
+      showError(err && err.message ? err.message : "Google login failed. Try again.");
+    } finally {
+      googleLoginBtn.disabled = false;
+    }
+  });
+}
 
 // Clear the error as soon as the user starts correcting their input.
 [emailInput, passwordInput].forEach((input) => {

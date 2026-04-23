@@ -10,7 +10,9 @@ body {
 }
 
 body.login-page {
-  background: linear-gradient(135deg, #A8D5BA 0%, #6BA89E 100%);
+  background:
+    radial-gradient(circle at 20% 0%, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0) 42%),
+    linear-gradient(150deg, #8cc9b0 0%, #5faca1 48%, #4a8f88 100%);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -25,11 +27,13 @@ body.login-page {
 }
 
 .card {
-  background: white;
-  width: 318px;
-  padding: 32px;
-  border-radius: 16px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  width: 330px;
+  padding: 32px 28px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 24px 44px -20px rgba(10, 24, 35, 0.42);
 }
 
 h2 {
@@ -56,7 +60,7 @@ input {
   padding: 12px 16px;
   margin-bottom: 16px;
   border-radius: 14px;
-  border: 1.78px solid #A8D5BA;
+  border: 1px solid #CFE1E5;
   outline: none;
   font-size: 16px;
   font-family: 'Inter', sans-serif;
@@ -91,7 +95,7 @@ input::placeholder {
 .primary-btn {
   border: none;
   color: white;
-  background: linear-gradient(90deg, #6BA89E 0%, #5A978C 100%);
+  background: linear-gradient(135deg, #1f9b8f 0%, #177a71 100%);
   box-shadow: 0 4px 6px -4px rgba(0, 0, 0, 0.1),
               0 10px 15px -3px rgba(0, 0, 0, 0.1);
   margin-top: 0;
@@ -122,10 +126,49 @@ input::placeholder {
 }
 
 .secondary {
-  background: white;
-  border: 1.78px solid #6BA89E;
-  color: #6BA89E;
+  background: #fff;
+  border: 1px solid #d2dde2;
+  color: #2b3f44;
   margin-top: 0;
+}
+
+.google-login-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 1px solid #DADCE0;
+  color: #1F1F1F;
+  background: #FFFFFF;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.08);
+  margin-bottom: 12px;
+  transition: background-color 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.google-login-btn:hover {
+  background: #F8FAFC;
+  border-color: #C9D0D7;
+  box-shadow: 0 2px 8px rgba(16, 24, 40, 0.12);
+}
+
+.google-login-btn:active {
+  background: #F1F5F9;
+}
+
+.google-login-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.google-logo {
+  display: inline-flex;
+  width: 18px;
+  height: 18px;
+}
+
+.google-login-text {
+  font-weight: 600;
+  letter-spacing: 0.01em;
 }
 
 /* Allow the secondary style to apply cleanly to an <a> used as a button */

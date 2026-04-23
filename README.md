@@ -20,7 +20,25 @@ This app aims to eliminate the frustration and uncertainty of reading
 complex ingredient labels, especially for individuals with allergies, 
 dietary restrictions, or ethical food preferences. 
 
-# LabelWise - MySQL + PHP Setup
+# LabelWise - Firebase Setup
+
+## 1. Create a Firebase project
+
+Create a project in [Firebase Console](https://console.firebase.google.com/), then enable:
+- **Authentication** -> Sign-in providers -> **Email/Password** and **Anonymous**
+- **Firestore Database** (production or test mode based on your needs)
+
+## 2. Add your web app config
+
+Open `frontend/js/firebase-config.js` and replace placeholder values with your
+project credentials from Firebase Console -> Project settings -> Your apps.
+
+## 3. Run the frontend
+
+Open `frontend/html/LoginPage.html` (or your local hosted URL for this folder).
+All login/profile/scan data is stored in Firebase Auth + Firestore.
+
+# Legacy Local Stack (MySQL + PHP)
 
 ## 1. Install XAMPP
 
