@@ -51,6 +51,12 @@
         </div>
       </section>
 
+      <div class="compare-bar" id="compareBar" hidden>
+        <button class="compare-btn" id="compareBtn" type="button">
+          Compare Scans
+        </button>
+      </div>
+
       <nav class="bottom-nav">
         <a href="DashboardPage.html" class="nav-item">
           <div class="nav-icon">
@@ -83,6 +89,26 @@
 
     </section>
   </main>
+
+  <div class="compare-modal" id="compareModal" hidden role="dialog" aria-modal="true" aria-labelledby="compareModalTitle">
+    <div class="compare-modal-backdrop" id="compareModalBackdrop"></div>
+    <div class="compare-modal-card">
+      <div class="compare-modal-header">
+        <h2 id="compareModalTitle">Ingredient Comparison</h2>
+        <button class="compare-close-btn" id="compareCloseBtn" type="button" aria-label="Close comparison">✕</button>
+      </div>
+
+      <div class="compare-modal-section">
+        <h3>Same Ingredients</h3>
+        <div id="sameIngredientsBox" class="compare-list-box"></div>
+      </div>
+
+      <div class="compare-modal-section">
+        <h3>Different Ingredients</h3>
+        <div id="differentIngredientsBox" class="compare-list-box"></div>
+      </div>
+    </div>
+  </div>
 
   <script src="../js/i18n.js"></script>
   <script src="../js/firebase-config.js"></script>

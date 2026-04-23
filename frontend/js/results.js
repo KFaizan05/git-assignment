@@ -10,6 +10,7 @@
 const backBtn = document.getElementById("backBtn");
 const homeBtn = document.getElementById("homeBtn");
 const alternativesBtn = document.getElementById("alternativesBtn");
+const shareBtn = document.getElementById("shareBtn");
 
 const productName = document.getElementById("productName");
 const brandName = document.getElementById("brandName");
@@ -118,8 +119,68 @@ homeBtn.addEventListener("click", () => {
 });
 
 alternativesBtn.addEventListener("click", () => {
+  try {
+    sessionStorage.setItem("alternativesProductName", (productName.textContent || "Scanned Product").trim());
+    sessionStorage.setItem("alternativesOcrText", ocrText || "");
+    sessionStorage.setItem("alternativesStatus", overallStatus || "");
+    sessionStorage.setItem("alternativesNote", overallNote || "");
+  } catch (_) {
+    // Non-blocking: if sessionStorage fails, Alternatives page can still use
+    // the latest persisted scan from profileStorage.
+  }
   window.location.href = "AlternativesPage.html";
 });
+
+function buildShareMessage() {
+  const name = (productName && productName.textContent ? productName.textContent : "Scanned Product").trim();
+  const status = (overallStatus || statusTitle.textContent || "Caution").trim();
+  const note = (overallNote || statusMessage.textContent || "").trim();
+  const raw = (ocrText || "").trim();
+  const rawSnippet = raw ? raw.slice(0, 260) + (raw.length > 260 ? "..." : "") : "No OCR text available.";
+  return [
+    "LabelWise Product Safety Report",
+    `Product: ${name}`,
+    `Status: ${status}`,
+    `Summary: ${note}`,
+    "",
+    "OCR Snippet:",
+    rawSnippet
+  ].join("\n");
+}
+
+if (shareBtn) {
+  shareBtn.addEventListener("click", async () => {
+    const message = buildShareMessage();
+    const subject = "LabelWise Product Safety";
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: subject,
+          text: message
+        });
+        return;
+      } catch (_) {
+        // User canceled or share target failed; continue to fallback links.
+      }
+    }
+
+    const encodedSubject = encodeURIComponent(subject);
+    const encodedBody = encodeURIComponent(message);
+    const choice = window.prompt(
+      "Type E for email or S for text message (SMS).",
+      "E"
+    );
+
+    if (!choice) return;
+    const normalized = String(choice).trim().toUpperCase();
+    if (normalized === "S") {
+      window.location.href = `sms:?&body=${encodedBody}`;
+      return;
+    }
+    window.location.href = `mailto:?subject=${encodedSubject}&body=${encodedBody}`;
+  });
+}
 
 // Extract the ingredients body from free OCR text.
 function extractIngredients(text) {
