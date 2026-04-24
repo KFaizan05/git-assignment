@@ -225,6 +225,141 @@ button { font: inherit; }
   min-width: 0;
 }
 
+.history-select {
+  margin-left: auto;
+  align-self: center;
+}
+
+.scan-select-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  border: 2px solid #B8C8CD;
+  background: #FFFFFF;
+  color: transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.scan-select-btn.is-selected {
+  border-color: #1f9b8f;
+  background: #1f9b8f;
+  color: #FFFFFF;
+}
+
+.compare-bar {
+  position: sticky;
+  bottom: 74px;
+  z-index: 15;
+  padding: 10px 24px 6px;
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.88));
+}
+
+.compare-btn {
+  width: 100%;
+  height: 48px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(90deg, #6BA89E 0%, #5A978C 100%);
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: "Inter", sans-serif;
+  cursor: pointer;
+}
+
+.compare-modal[hidden] {
+  display: none !important;
+}
+
+.compare-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+}
+
+.compare-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 20, 24, 0.45);
+}
+
+.compare-modal-card {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(92vw, 380px);
+  max-height: 82vh;
+  overflow-y: auto;
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid #DCE7EA;
+  padding: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.compare-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.compare-modal-header h2 {
+  margin: 0;
+  font-size: 18px;
+  color: #1f4f56;
+}
+
+.compare-close-btn {
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 8px;
+  background: #F3F6F7;
+  color: #335f66;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.compare-modal-section {
+  margin-top: 12px;
+}
+
+.compare-modal-section h3 {
+  margin: 0 0 8px;
+  font-size: 14px;
+  color: #4A7C72;
+}
+
+.compare-list-box {
+  border: 1px solid #DCE7EA;
+  background: #F9FCFC;
+  border-radius: 12px;
+  min-height: 52px;
+  padding: 10px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #304A4F;
+}
+
+.compare-chip {
+  display: inline-block;
+  margin: 0 6px 6px 0;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #EAF5F3;
+  color: #2E6E66;
+  font-size: 12px;
+}
+
 .history-title {
   color: #4A7C72;
   font-size: 17px;

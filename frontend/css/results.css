@@ -379,7 +379,8 @@ body {
 }
 
 .primary-action,
-.secondary-action {
+.secondary-action,
+.tertiary-action {
   width: 100%;
   height: 56px;
   border-radius: 14px;
@@ -400,4 +401,10 @@ body {
 .secondary-action {
   background: #A8D5BA;
   color: #4A7C72;
+}
+
+.tertiary-action {
+  background: #FFFFFF;
+  border: 1.5px solid #CFE1E5;
+  color: #2F5F69;
 }

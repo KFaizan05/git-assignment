@@ -18,11 +18,19 @@
   const statUnsafe = document.getElementById("statUnsafe");
   const statCaution = document.getElementById("statCaution");
   const statTiles = document.querySelectorAll(".stat[data-filter]");
+  const compareBar = document.getElementById("compareBar");
+  const compareBtn = document.getElementById("compareBtn");
+  const compareModal = document.getElementById("compareModal");
+  const compareModalBackdrop = document.getElementById("compareModalBackdrop");
+  const compareCloseBtn = document.getElementById("compareCloseBtn");
+  const sameIngredientsBox = document.getElementById("sameIngredientsBox");
+  const differentIngredientsBox = document.getElementById("differentIngredientsBox");
 
   // Active status filter: null = show everything, otherwise the lowercase
   // status string ("safe" | "unsafe" | "caution"). Clicking the matching
   // stat tile toggles the filter on and off.
   let activeStatusFilter = null;
+  const selectedScanIds = new Set();
 
   function getScans() {
     return profileStorage.getCurrentScans();
@@ -96,8 +104,62 @@
             <span>${formatRelativeTime(scan.timestamp)}</span>
           </div>
         </div>
+        <div class="history-select">
+          <button type="button"
+                  class="scan-select-btn ${selectedScanIds.has(scan.id) ? "is-selected" : ""}"
+                  data-select-id="${escapeHtml(scan.id)}"
+                  aria-label="Select scan ${escapeHtml(scan.productName || "Scanned Product")} for comparison"
+                  aria-pressed="${selectedScanIds.has(scan.id) ? "true" : "false"}">✓</button>
+        </div>
       </article>
     `;
+  }
+
+  function renderIngredientChips(items) {
+    if (!items.length) return `<p style="margin:0;color:#60757A;">None detected</p>`;
+    return items.map((item) => `<span class="compare-chip">${escapeHtml(item)}</span>`).join("");
+  }
+
+  function parseIngredientsFromOcr(ocrText) {
+    if (!ocrText) return [];
+    const normalized = String(ocrText).replace(/\r/g, " ");
+    const match =
+      normalized.match(/ingredients?\s*[:\-]\s*([\s\S]*)/i) ||
+      normalized.match(/ingredients?\s+([\s\S]*)/i);
+    const source = match && match[1] ? match[1] : normalized;
+    return source
+      .split(/,(?![^(]*\))/)
+      .map((x) => x.toLowerCase().replace(/[^a-z0-9\s]/g, " ").replace(/\s+/g, " ").trim())
+      .filter(Boolean)
+      .slice(0, 120);
+  }
+
+  function openCompareModal() {
+    const scans = getScans().filter((s) => selectedScanIds.has(s.id));
+    if (scans.length < 2) return;
+
+    const ingredientSets = scans.map((scan) => new Set(parseIngredientsFromOcr(scan.ocrText)));
+    const union = new Set();
+    ingredientSets.forEach((set) => set.forEach((x) => union.add(x)));
+
+    const same = [...union].filter((item) => ingredientSets.every((set) => set.has(item)));
+    const different = [...union].filter((item) => !ingredientSets.every((set) => set.has(item)));
+
+    sameIngredientsBox.innerHTML = renderIngredientChips(same);
+    differentIngredientsBox.innerHTML = renderIngredientChips(different);
+    compareModal.hidden = false;
+  }
+
+  function closeCompareModal() {
+    compareModal.hidden = true;
+  }
+
+  function syncCompareBar() {
+    const count = selectedScanIds.size;
+    compareBar.hidden = count < 2;
+    if (compareBtn) {
+      compareBtn.textContent = `Compare Scans (${count})`;
+    }
   }
 
   function render() {
@@ -164,6 +226,7 @@
     }
 
     historyList.innerHTML = matching.map(renderCard).join("");
+    syncCompareBar();
   }
 
   searchInput.addEventListener("input", render);
@@ -190,6 +253,25 @@
   // text + saved product name. results.js detects the revisit via the
   // `revisitScanId` session key and skips re-saving a duplicate record.
   historyList.addEventListener("click", (event) => {
+    const selectBtn = event.target.closest(".scan-select-btn");
+    if (selectBtn) {
+      event.preventDefault();
+      event.stopPropagation();
+      const id = selectBtn.dataset.selectId;
+      if (!id) return;
+      if (selectedScanIds.has(id)) {
+        selectedScanIds.delete(id);
+      } else {
+        if (selectedScanIds.size >= 3) {
+          alert("You can compare a maximum of 3 scans.");
+          return;
+        }
+        selectedScanIds.add(id);
+      }
+      render();
+      return;
+    }
+
     const card = event.target.closest(".history-card");
     if (!card) return;
     const id = card.dataset.id;
@@ -218,6 +300,23 @@
     sessionStorage.removeItem("capturedImage");
     window.location.href = "ResultsPage.html";
   });
+
+  if (compareBtn) {
+    compareBtn.addEventListener("click", () => {
+      if (selectedScanIds.size < 2) {
+        alert("Please select at least 2 scans to compare.");
+        return;
+      }
+      openCompareModal();
+    });
+  }
+
+  if (compareModalBackdrop) {
+    compareModalBackdrop.addEventListener("click", closeCompareModal);
+  }
+  if (compareCloseBtn) {
+    compareCloseBtn.addEventListener("click", closeCompareModal);
+  }
 
   render();
 })();
