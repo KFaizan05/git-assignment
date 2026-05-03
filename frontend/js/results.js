@@ -136,15 +136,40 @@ function buildShareMessage() {
   const status = (overallStatus || statusTitle.textContent || "Caution").trim();
   const note = (overallNote || statusMessage.textContent || "").trim();
   const raw = (ocrText || "").trim();
-  const rawSnippet = raw ? raw.slice(0, 260) + (raw.length > 260 ? "..." : "") : "No OCR text available.";
+  const fullOcr = raw || "No OCR text available.";
+
+  // Summary rules per user spec:
+  //   Unsafe → list the unsafe ingredient names + the overall note.
+  //   Safe   → show ONLY the standard safe-profile line, regardless
+  //            of which note text the page is displaying.
+  //   Caution → show the overall note (no ingredient list).
+  // Caution ingredients are intentionally omitted in every case.
+  const statusKey = String(status).toLowerCase();
+  let summary;
+  if (statusKey === "safe") {
+    summary = "No allergens or restrictions from your profile were detected in this product.";
+  } else if (statusKey === "unsafe") {
+    const unsafeList = (typeof unsafeIngredientNames !== "undefined" ? unsafeIngredientNames : [])
+      .map((s) => String(s).trim())
+      .filter(Boolean);
+    const parts = [];
+    if (unsafeList.length) {
+      parts.push(`Unsafe ingredient${unsafeList.length === 1 ? "" : "s"}: ${unsafeList.join(", ")}.`);
+    }
+    if (note) parts.push(note);
+    summary = parts.length ? parts.join(" ") : "This product contains ingredients that conflict with your profile.";
+  } else {
+    summary = note || "Review the label for ingredients that may need closer inspection.";
+  }
+
   return [
     "LabelWise Product Safety Report",
     `Product: ${name}`,
     `Status: ${status}`,
-    `Summary: ${note}`,
+    `Summary: ${summary}`,
     "",
-    "OCR Snippet:",
-    rawSnippet
+    "Full OCR Text:",
+    fullOcr
   ].join("\n");
 }
 
@@ -431,6 +456,12 @@ function renderIngredientCard(name, status, note) {
 let overallStatus = "Safe";
 let overallNote = "No obvious concerns were detected in the extracted ingredients.";
 
+// Per-ingredient verdicts collected during analysis. buildShareMessage()
+// reads these so the shared safety report names the actual offending
+// ingredients instead of just labeling the product Unsafe/Caution.
+let unsafeIngredientNames = [];
+let cautionIngredientNames = [];
+
 const extracted = extractIngredients(ocrText);
 
 // Check the explicit "CONTAINS X, Y" allergy statement and the
@@ -448,6 +479,32 @@ if (extracted) {
 
   if (items.length > 0) {
     const analyses = items.map((item) => ({ item, analysis: analyzeIngredient(item) }));
+
+    // Collect per-ingredient verdicts so the share message can name them.
+    unsafeIngredientNames = analyses
+      .filter(({ analysis }) => analysis.status === "Unsafe")
+      .map(({ item }) => item);
+    cautionIngredientNames = analyses
+      .filter(({ analysis }) => analysis.status === "Caution")
+      .map(({ item }) => item);
+    // Also surface allergy-statement hits ("CONTAINS: milk") so they show up
+    // in the shared report even when they don't appear as their own card.
+    [
+      ...allergyFindings.matchedUserAllergens,
+      ...allergyFindings.matchedCustomAllergens,
+    ].forEach((name) => {
+      if (name && !unsafeIngredientNames.includes(name)) {
+        unsafeIngredientNames.push(name);
+      }
+    });
+    [
+      ...mayContainFindings.matchedUserAllergens,
+      ...mayContainFindings.matchedCustomAllergens,
+    ].forEach((name) => {
+      if (name && !cautionIngredientNames.includes(name) && !unsafeIngredientNames.includes(name)) {
+        cautionIngredientNames.push(name);
+      }
+    });
 
     // If the label has a "CONTAINS: almonds, milk" line, surface it as its
     // own card at the top so the user sees it was detected even when the

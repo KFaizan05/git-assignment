@@ -123,7 +123,7 @@ button {
 
 .alt-card {
   background: white;
-  border: 1.78px solid #A8D5BA;
+  border: 1.78px solid #E5E7EB;
   border-radius: 14px;
   padding: 18px;
   display: flex;
@@ -282,7 +282,7 @@ button {
 .empty-state {
   text-align: center;
   padding: 24px;
-  border: 1.78px dashed #A8D5BA;
+  border: 1.78px dashed #E5E7EB;
   border-radius: 14px;
   background: #F7FBF9;
   display: flex;

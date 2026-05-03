@@ -22,7 +22,8 @@
     user: null,
     isGuest: false,
     profile: null,
-    scans: []
+    scans: [],
+    chats: []
   };
 
   let firebaseReadyPromise = null;
@@ -56,6 +57,21 @@
       thumbnail: String(data.thumbnail || ""),
       ocrText: String(data.ocrText || ""),
       timestamp: Number(data.timestamp || Date.now())
+    };
+  }
+
+  // Mirrors toScanRecord but for AI Chef chat threads. Each chat persists the
+  // user's prompt + the assistant's response so the user can re-open a past
+  // conversation from AIChatbotPage's recents list.
+  function toChatRecord(id, data) {
+    const prompt = String((data && data.prompt) || "");
+    const fallbackTitle = prompt.length > 60 ? prompt.slice(0, 60).trim() + "..." : prompt;
+    return {
+      id: String(id),
+      title: String((data && data.title) || fallbackTitle || "Untitled chat"),
+      prompt,
+      response: String((data && data.response) || ""),
+      timestamp: Number((data && data.timestamp) || Date.now())
     };
   }
 
@@ -180,7 +196,7 @@
     const { auth, db } = await ensureFirebase();
     const user = (await waitForAuthStateReady(auth)) || currentAuthUser(auth);
     if (!user) {
-      cache = { user: null, isGuest: false, profile: null, scans: [] };
+      cache = { user: null, isGuest: false, profile: null, scans: [], chats: [] };
       return;
     }
 
@@ -188,6 +204,14 @@
     const userRef = db.collection("users").doc(user.uid);
     const profileSnap = await userRef.collection("profile").doc("main").get();
     const scansSnap = await userRef.collection("scans").orderBy("timestamp", "desc").get();
+    // AI Chef chat threads, newest-first. Empty array if the user has never
+    // started a chat — AIChatbotPage falls back to its preset prompt grid.
+    let chatsSnap = { docs: [] };
+    try {
+      chatsSnap = await userRef.collection("chats").orderBy("timestamp", "desc").get();
+    } catch (err) {
+      console.warn("profileStorage: chats hydration failed –", err && err.message);
+    }
 
     const profileData = profileSnap.exists ? profileSnap.data() : EMPTY_PROFILE;
     cache = {
@@ -200,7 +224,8 @@
         allergens: safeArray(profileData.allergens),
         customAllergens: safeArray(profileData.customAllergens)
       },
-      scans: scansSnap.docs.map((doc) => toScanRecord(doc.id, doc.data()))
+      scans: scansSnap.docs.map((doc) => toScanRecord(doc.id, doc.data())),
+      chats: chatsSnap.docs.map((doc) => toChatRecord(doc.id, doc.data()))
     };
     syncLanguageToLocalStorage();
   }
@@ -228,6 +253,13 @@
     for (const doc of scans.docs) {
       await doc.ref.delete();
     }
+    // Chats live in their own subcollection alongside scans.
+    try {
+      const chats = await userRef.collection("chats").get();
+      for (const doc of chats.docs) {
+        await doc.ref.delete();
+      }
+    } catch (_) {}
     await userRef.collection("profile").doc("main").delete().catch(() => {});
     await userRef.delete().catch(() => {});
   }
@@ -237,7 +269,7 @@
       if (!readyPromise) {
         readyPromise = loadSnapshot().catch((err) => {
           console.warn("profileStorage: hydration failed –", err && err.message);
-          cache = { user: null, isGuest: false, profile: null, scans: [] };
+          cache = { user: null, isGuest: false, profile: null, scans: [], chats: [] };
         });
       }
       return readyPromise;
@@ -322,7 +354,7 @@
         await deleteUserData(db, user.uid);
       }
       await auth.signOut();
-      cache = { user: null, isGuest: false, profile: null, scans: [] };
+      cache = { user: null, isGuest: false, profile: null, scans: [], chats: [] };
       readyPromise = Promise.resolve();
     },
 
@@ -451,6 +483,63 @@
       return true;
     },
 
+    // ---- AI Chef chat history --------------------------------------------
+    // Mirrors the scans API but for chat threads. Each saved chat is a
+    // single prompt + AI response; the AIChatbotPage shows them as a recents
+    // list and tapping one re-opens it on RecipeGenerationPage.
+
+    getCurrentChats() {
+      return safeArray(cache.chats);
+    },
+
+    async addCurrentChat(chat) {
+      if (!cache.user) throw new Error("Not logged in.");
+      const { auth, db } = await ensureFirebase();
+      const user = (await waitForAuthStateReady(auth)) || currentAuthUser(auth);
+      if (!user) throw new Error("Not logged in.");
+
+      const prompt = String((chat && chat.prompt) || "");
+      const payload = {
+        title: String((chat && chat.title) || (prompt.length > 60 ? prompt.slice(0, 60).trim() + "..." : prompt) || "Untitled chat"),
+        prompt,
+        response: String((chat && chat.response) || ""),
+        timestamp: Number((chat && chat.timestamp) || Date.now())
+      };
+      const ref = await db.collection("users").doc(user.uid).collection("chats").add(payload);
+      const saved = toChatRecord(ref.id, payload);
+      cache.chats = [saved].concat(cache.chats || []);
+      return saved;
+    },
+
+    async updateCurrentChat(id, patch) {
+      if (!cache.user) throw new Error("Not logged in.");
+      if (!id) throw new Error("Chat id is required.");
+      const { auth, db } = await ensureFirebase();
+      const user = (await waitForAuthStateReady(auth)) || currentAuthUser(auth);
+      if (!user) throw new Error("Not logged in.");
+
+      const cleanPatch = Object.assign({}, patch || {});
+      await db.collection("users").doc(user.uid).collection("chats").doc(String(id)).set(cleanPatch, { merge: true });
+      const idx = (cache.chats || []).findIndex((c) => String(c.id) === String(id));
+      if (idx !== -1) {
+        const merged = { ...cache.chats[idx], ...cleanPatch, id: String(id) };
+        cache.chats[idx] = toChatRecord(id, merged);
+      }
+      return (cache.chats || []).find((c) => String(c.id) === String(id)) || null;
+    },
+
+    async deleteCurrentChat(id) {
+      if (!cache.user) throw new Error("Not logged in.");
+      if (!id) throw new Error("Chat id is required.");
+      const { auth, db } = await ensureFirebase();
+      const user = (await waitForAuthStateReady(auth)) || currentAuthUser(auth);
+      if (!user) throw new Error("Not logged in.");
+
+      await db.collection("users").doc(user.uid).collection("chats").doc(String(id)).delete();
+      cache.chats = (cache.chats || []).filter((c) => String(c.id) !== String(id));
+      return true;
+    },
+
     async deleteCurrentAccount() {
       if (!cache.user) return false;
       const { auth, db } = await ensureFirebase();
@@ -459,7 +548,7 @@
 
       await deleteUserData(db, user.uid);
       await user.delete();
-      cache = { user: null, isGuest: false, profile: null, scans: [] };
+      cache = { user: null, isGuest: false, profile: null, scans: [], chats: [] };
       readyPromise = Promise.resolve();
       return true;
     }

@@ -45,9 +45,13 @@
           <div class="profile-pills" id="profilePills"></div>
         </section>
 
-        <section class="section-block">
-          <h3>Try asking me...</h3>
+        <section class="section-block" id="promptSection">
+          <h3 id="promptSectionTitle">Try asking me...</h3>
+          <!-- aichatbot.js shows EITHER promptGrid (preset prompts) OR
+               recentsList (saved chat threads), depending on whether the
+               user has any past chats. -->
           <div class="prompt-grid" id="promptGrid"></div>
+          <div class="recents-list" id="recentsList" hidden></div>
         </section>
 
       </section>

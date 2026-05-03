@@ -3,7 +3,6 @@
 (async function initScanHistory() {
   "use strict";
 
-  // Hydrate the client cache from the server before any sync getter.
   await profileStorage.ready();
 
   if (!profileStorage.getCurrentUser()) {
@@ -26,9 +25,6 @@
   const sameIngredientsBox = document.getElementById("sameIngredientsBox");
   const differentIngredientsBox = document.getElementById("differentIngredientsBox");
 
-  // Active status filter: null = show everything, otherwise the lowercase
-  // status string ("safe" | "unsafe" | "caution"). Clicking the matching
-  // stat tile toggles the filter on and off.
   let activeStatusFilter = null;
   const selectedScanIds = new Set();
 
@@ -66,16 +62,8 @@
 
   function renderCard(scan) {
     const statusClass = String(scan.status || "Safe").toLowerCase();
-    // Brand is optional now — we only render the brand line if the user
-    // actually set one. The old "Unknown brand" fallback was noise.
     const brand = (scan.brandName || "").trim();
-    // Category is optional too. When it's blank we omit the span and its
-    // separator so the meta row doesn't end up with back-to-back bullets.
     const category = (scan.category || "").trim();
-
-    // Prefer an actual image preview of the scanned/uploaded photo; fall
-    // back to the status icon tile when there's no thumbnail (older scans
-    // saved before thumbnails existed, or manual-paste scans).
     const thumb = typeof scan.thumbnail === "string" ? scan.thumbnail : "";
     const thumbHtml = thumb
       ? `<div class="history-thumb ${statusClass}">
@@ -116,37 +104,117 @@
   }
 
   function renderIngredientChips(items) {
-    if (!items.length) return `<p style="margin:0;color:#60757A;">None detected</p>`;
+    if (!items.length) return `<p class="compare-empty">None detected</p>`;
     return items.map((item) => `<span class="compare-chip">${escapeHtml(item)}</span>`).join("");
   }
 
+  function renderProductGroups(groups) {
+    if (!groups.length) return `<p class="compare-empty">No scans selected</p>`;
+    return groups
+      .map(
+        (group) => `
+          <div class="compare-product-group">
+            <h4 class="compare-product-name">${escapeHtml(group.name)}</h4>
+            <div class="compare-product-chips">${renderIngredientChips(group.items)}</div>
+          </div>
+        `
+      )
+      .join("");
+  }
+
+  // Pull a clean, deduplicated ingredient list out of OCR text. Designed so
+  // the same ingredient written slightly differently across products still
+  // collapses to one canonical form: "Salt (Sea Salt)" → both "salt" and
+  // "sea salt"; "and salt" → "salt"; "less than 2% of: X" → just "X".
   function parseIngredientsFromOcr(ocrText) {
     if (!ocrText) return [];
-    const normalized = String(ocrText).replace(/\r/g, " ");
+
+    let source = String(ocrText).replace(/\r/g, " ");
+
     const match =
-      normalized.match(/ingredients?\s*[:\-]\s*([\s\S]*)/i) ||
-      normalized.match(/ingredients?\s+([\s\S]*)/i);
-    const source = match && match[1] ? match[1] : normalized;
+      source.match(/ingredients?\s*[:\-]\s*([\s\S]*)/i) ||
+      source.match(/ingredients?\s+([\s\S]*)/i);
+    if (match && match[1]) source = match[1];
+
+    source = source.split(
+      /\n\s*(allergy\s+information|allergen|distributed by|manufactured by|nutrition facts|warning|directions|storage|keep refrigerated)\b/i
+    )[0];
+
+    // Surface bracketed sub-ingredients as siblings of the parent so both
+    // get matched across products. "salt (sea salt)" → "salt, sea salt".
+    source = source.replace(/\(([^)]*)\)/g, (_, inner) => `, ${inner}`);
+
+    // Drop "contains less than X% of:" / "X% or less of:" qualifier headers
+    // so only the actual ingredient names that follow survive into the list.
+    source = source.replace(
+      /(?:contains\s+)?(?:less\s+than\s+\d+\s*%?|\d+\s*%\s+or\s+less)\s*(?:of\s+)?[:\-]?/gi,
+      " "
+    );
+
+    const LEADING_FILLER = /^(?:and|or|with|of|from|the|a|an|plus|including)\s+/i;
+    const seen = new Set();
+
     return source
-      .split(/,(?![^(]*\))/)
-      .map((x) => x.toLowerCase().replace(/[^a-z0-9\s]/g, " ").replace(/\s+/g, " ").trim())
-      .filter(Boolean)
-      .slice(0, 120);
+      .split(/[,;•\n]+/)
+      .flatMap((chunk) =>
+        chunk
+          .toLowerCase()
+          .replace(/&/g, " and ")
+          .split(/\s+(?:and\s*\/\s*or|and|or)\s+/i)
+      )
+      .map((x) => {
+        let s = x
+          .replace(/[^a-z0-9\s\-]/g, " ")
+          .replace(/\s+/g, " ")
+          .trim();
+        let prev;
+        do {
+          prev = s;
+          s = s
+            .replace(LEADING_FILLER, "")
+            .replace(/^\d+\s*(?:%|percent)?\s*/i, "")
+            .trim();
+        } while (s !== prev);
+        return s;
+      })
+      .filter((x) => x && x.length >= 2 && x.length <= 60)
+      .filter((x) => {
+        if (seen.has(x)) return false;
+        seen.add(x);
+        return true;
+      })
+      .slice(0, 200);
   }
 
   function openCompareModal() {
     const scans = getScans().filter((s) => selectedScanIds.has(s.id));
     if (scans.length < 2) return;
 
-    const ingredientSets = scans.map((scan) => new Set(parseIngredientsFromOcr(scan.ocrText)));
-    const union = new Set();
-    ingredientSets.forEach((set) => set.forEach((x) => union.add(x)));
+    const products = scans.map((scan) => ({
+      name: scan.productName || "Untitled scan",
+      ingredients: parseIngredientsFromOcr(scan.ocrText),
+    }));
 
-    const same = [...union].filter((item) => ingredientSets.every((set) => set.has(item)));
-    const different = [...union].filter((item) => !ingredientSets.every((set) => set.has(item)));
+    const ingredientSets = products.map((p) => new Set(p.ingredients));
 
-    sameIngredientsBox.innerHTML = renderIngredientChips(same);
-    differentIngredientsBox.innerHTML = renderIngredientChips(different);
+    const sameSet = new Set(
+      products[0].ingredients.filter((ing) =>
+        ingredientSets.every((set) => set.has(ing))
+      )
+    );
+
+    const sameByProduct = products.map((p) => ({
+      name: p.name,
+      items: p.ingredients.filter((ing) => sameSet.has(ing)),
+    }));
+
+    const differentByProduct = products.map((p) => ({
+      name: p.name,
+      items: p.ingredients.filter((ing) => !sameSet.has(ing)),
+    }));
+
+    sameIngredientsBox.innerHTML = renderProductGroups(sameByProduct);
+    differentIngredientsBox.innerHTML = renderProductGroups(differentByProduct);
     compareModal.hidden = false;
   }
 
@@ -166,8 +234,6 @@
     const query = searchInput.value.trim().toLowerCase();
     const allScans = getScans();
 
-    // Stat tiles always show the TOTAL counts across the full history, not
-    // the filtered view — the filter only narrows the list below.
     const counts = allScans.reduce(
       (acc, scan) => {
         const key = (scan.status || "Safe").toLowerCase();
@@ -180,14 +246,12 @@
     statUnsafe.textContent = String(counts.unsafe);
     statCaution.textContent = String(counts.caution);
 
-    // Sync the visual active-state of each stat tile with the current filter.
     statTiles.forEach((tile) => {
       const on = tile.dataset.filter === activeStatusFilter;
       tile.classList.toggle("is-active", on);
       tile.setAttribute("aria-pressed", on ? "true" : "false");
     });
 
-    // Compose status filter + search filter. Both are optional.
     const statusFiltered = activeStatusFilter
       ? allScans.filter((scan) => String(scan.status || "Safe").toLowerCase() === activeStatusFilter)
       : allScans;
@@ -211,8 +275,6 @@
     historyList.hidden = false;
 
     if (matching.length === 0) {
-      // Tailor the empty message so users understand whether it's the search
-      // query or the status filter that's hiding everything.
       let message;
       if (query && activeStatusFilter) {
         message = `No ${activeStatusFilter} scans match "${escapeHtml(searchInput.value)}".`;
@@ -231,9 +293,6 @@
 
   searchInput.addEventListener("input", render);
 
-  // Click (or keyboard-activate) a stat tile to toggle the matching status
-  // filter. Clicking the same tile again clears the filter and restores the
-  // full list.
   function toggleFilter(filter) {
     activeStatusFilter = activeStatusFilter === filter ? null : filter;
     render();
@@ -249,9 +308,6 @@
     });
   });
 
-  // Click a history card → open ResultsPage with that scan's stored OCR
-  // text + saved product name. results.js detects the revisit via the
-  // `revisitScanId` session key and skips re-saving a duplicate record.
   historyList.addEventListener("click", (event) => {
     const selectBtn = event.target.closest(".scan-select-btn");
     if (selectBtn) {
@@ -279,9 +335,6 @@
     const scan = getScans().find((s) => s.id === id);
     if (!scan) return;
 
-    // If the scan was saved before we started persisting OCR text, there's
-    // nothing to replay — let the user know instead of silently opening an
-    // empty Results page.
     if (!scan.ocrText) {
       alert("This scan was saved before the revisit feature existed. Re-scan to see the full results.");
       return;
@@ -290,12 +343,7 @@
     sessionStorage.setItem("ocrText", scan.ocrText);
     sessionStorage.setItem("revisitScanId", scan.id);
     sessionStorage.setItem("revisitProductName", scan.productName || "");
-    // Remember that this scan was opened from Scan History so the Results
-    // page's back button returns the user here instead of falling back to
-    // whatever page happens to be on top of the history stack.
     sessionStorage.setItem("revisitOrigin", "ScanHistoryPage.html");
-    // Clear any lingering image so we don't show a stale photo from the
-    // previous fresh scan; revisit mode has no cropped image to display.
     sessionStorage.removeItem("croppedImage");
     sessionStorage.removeItem("capturedImage");
     window.location.href = "ResultsPage.html";

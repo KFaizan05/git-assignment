@@ -62,7 +62,7 @@ button { font: inherit; }
   height: 44px;
   padding: 0 16px;
   border-radius: 14px;
-  border: 1.78px solid #A8D5BA;
+  border: 1.78px solid #E5E7EB;
   font: inherit;
   font-size: 15px;
   color: #111827;
@@ -153,6 +153,16 @@ button { font: inherit; }
   display: flex;
   flex-direction: column;
   gap: 12px;
+  /* Cap the visible list and let it scroll internally — same idea as the
+     Raw OCR / Ingredient Breakdown sections on Results page. Keeps the
+     header, search, stats, compare bar, and bottom nav visible no matter
+     how many scans the user has accumulated. */
+  max-height: calc(100vh - 380px);
+  min-height: 240px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding-right: 4px;
 }
 
 .history-card {
@@ -168,7 +178,7 @@ button { font: inherit; }
 }
 
 .history-card:hover {
-  border-color: #A8D5BA;
+  border-color: #D1D5DB;
   background: #F7FBF9;
 }
 
@@ -348,6 +358,45 @@ button { font: inherit; }
   font-size: 13px;
   line-height: 1.5;
   color: #304A4F;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Each product gets its own labeled block inside a compare-list-box, so the
+   user can see at a glance which ingredients come from which product. */
+.compare-product-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed #DCE7EA;
+}
+
+.compare-product-group:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.compare-product-name {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1f4f56;
+  line-height: 18px;
+}
+
+.compare-product-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+}
+
+.compare-empty {
+  margin: 0;
+  color: #60757A;
+  font-size: 12px;
+  font-style: italic;
 }
 
 .compare-chip {
@@ -400,7 +449,7 @@ button { font: inherit; }
   margin-top: 32px;
   text-align: center;
   padding: 24px;
-  border: 1.78px dashed #A8D5BA;
+  border: 1.78px dashed #E5E7EB;
   border-radius: 14px;
   background: #F7FBF9;
   display: flex;

@@ -174,7 +174,7 @@ button {
 }
 
 .profile-card {
-  border: 1.78px solid #A8D5BA;
+  border: 1.78px solid #E5E7EB;
   border-radius: 14px;
   padding: 18px;
   display: flex;
@@ -223,7 +223,7 @@ button {
 }
 
 .scan-item:hover {
-  border-color: #A8D5BA;
+  border-color: #D1D5DB;
   background: #F7FBF9;
 }
 
@@ -360,7 +360,7 @@ button {
 
 .scan-empty {
   background: white;
-  border: 1.78px dashed #A8D5BA;
+  border: 1.78px dashed #E5E7EB;
   border-radius: 14px;
   padding: 16px;
   text-align: center;
@@ -374,7 +374,7 @@ button {
 }
 
 .safe-items-card {
-  border: 1.78px solid #B9F8CF;
+  border: 1.78px solid #E5E7EB;
   background: #F0FDF4;
   border-radius: 14px;
   padding: 16px;

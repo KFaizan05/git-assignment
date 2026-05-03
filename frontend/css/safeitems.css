@@ -100,7 +100,7 @@ button { font: inherit; }
   height: 44px;
   padding: 0 16px;
   border-radius: 14px;
-  border: 1.78px solid #A8D5BA;
+  border: 1.78px solid #E5E7EB;
   font: inherit;
   font-size: 15px;
   color: #111827;
@@ -207,11 +207,21 @@ button { font: inherit; }
   display: flex;
   flex-direction: column;
   gap: 12px;
+  /* Cap the visible list and let it scroll internally — same idea as the
+     Raw OCR / Ingredient Breakdown sections on Results page. Keeps the
+     header, search, stats, footer button, and bottom nav visible no matter
+     how many safe items the user has accumulated. */
+  max-height: calc(100vh - 440px);
+  min-height: 240px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding-right: 4px;
 }
 
 .safe-card {
   background: white;
-  border: 1.78px solid #B9F8CF;
+  border: 1.78px solid #E5E7EB;
   border-radius: 14px;
   padding: 16px;
   display: flex;
@@ -243,7 +253,7 @@ button { font: inherit; }
   padding: 0;
   overflow: hidden;
   background: #F0FDF4;
-  border: 2px solid #B9F8CF;
+  border: 2px solid #E5E7EB;
 }
 
 .safe-card-thumb-img {
@@ -382,7 +392,7 @@ button { font: inherit; }
   margin-top: 32px;
   text-align: center;
   padding: 24px;
-  border: 1.78px dashed #A8D5BA;
+  border: 1.78px dashed #E5E7EB;
   border-radius: 14px;
   background: #F0FDF4;
   display: flex;

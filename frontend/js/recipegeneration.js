@@ -14,10 +14,15 @@
   const recipeContent = document.getElementById("recipeContent");
 
   const PROMPT_STORAGE_KEY = "labelwiseChefPrompt";
-  
-  
+  const REVISIT_CHAT_KEY = "labelwiseChefRevisitChatId";
+
   const OPENAI_API_KEY = String(window.__LABELWISE_OPENAI_API_KEY__ || "").trim();
-  
+
+  // Tracks the saved chat id for the conversation rendered on this page so
+  // a follow-up message can update the same record instead of creating a
+  // duplicate. Set when (a) the user revisited from AIChatbot's recents,
+  // or (b) we successfully saved a fresh AI response.
+  let currentChatId = "";
 
   function escapeHtml(text) {
     return String(text ?? "")
@@ -38,13 +43,43 @@
     return parts.length ? parts.join(" • ") : "No dietary preferences set.";
   }
 
+  // Persist the chat thread to the user's account so it shows up on the
+  // AIChatbotPage recents list. Best-effort — failures here shouldn't break
+  // the visible conversation.
+  async function persistChat(prompt, response) {
+    const cleanPrompt = String(prompt || "").trim();
+    const cleanResponse = String(response || "").trim();
+    if (!cleanPrompt || !cleanResponse) return;
+    if (!profileStorage.getCurrentUser()) return;
+
+    try {
+      if (currentChatId) {
+        // Refresh an existing thread (e.g. after a follow-up message).
+        await profileStorage.updateCurrentChat(currentChatId, {
+          prompt: cleanPrompt,
+          response: cleanResponse,
+          timestamp: Date.now()
+        });
+      } else {
+        const saved = await profileStorage.addCurrentChat({
+          prompt: cleanPrompt,
+          response: cleanResponse,
+          timestamp: Date.now()
+        });
+        if (saved && saved.id) currentChatId = saved.id;
+      }
+    } catch (err) {
+      console.warn("recipegeneration: could not persist chat", err);
+    }
+  }
+
   // --- Functional AI Logic ---
 
   async function callOpenAI(prompt) {
     const profile = profileStorage.getCurrentProfile();
     const dietary = profile.dietary?.join(", ") || "None";
     const allergens = profile.allergens?.join(", ") || "None";
-    
+
     // 1. Show Loading State
     recipeContent.innerHTML = `
       <div class="ai-bubble">
@@ -65,7 +100,7 @@
           "Authorization": `Bearer ${OPENAI_API_KEY}`
         },
         body: JSON.stringify({
-          model: "gpt-4o", 
+          model: "gpt-4o",
           messages: [
             {
               role: "system",
@@ -86,19 +121,20 @@
       });
 
       const data = await response.json();
-      
+
       if (data.error) throw new Error(data.error.message);
 
       const markdown = data.choices[0].message.content;
 
       // 2. Render Response
-      // If you have marked.js installed, use: recipeContent.innerHTML = marked.parse(markdown);
-      // Otherwise, we use a simple formatted block:
       recipeContent.innerHTML = `
         <div class="ai-bubble">
           <div style="white-space: pre-wrap;">${escapeHtml(markdown)}</div>
         </div>
       `;
+
+      // 3. Persist so the user can revisit this chat later from AI Chef.
+      await persistChat(prompt, markdown);
 
     } catch (err) {
       console.error("AI Error:", err);
@@ -134,6 +170,35 @@
     callOpenAI(clean);
   }
 
+  // Render an existing saved chat WITHOUT re-calling the AI. Used when the
+  // user opens this page from the AIChatbot recents list.
+  function showSavedChat(chat) {
+    if (!chat) return;
+    currentChatId = chat.id || "";
+    const prompt = String(chat.prompt || "");
+    const response = String(chat.response || "");
+
+    userPromptEl.textContent = prompt;
+    userMessageBlock.hidden = !prompt;
+    emptyState.hidden = true;
+
+    aiIntro.textContent = "Picking up where you left off:";
+
+    recipeContent.innerHTML = `
+      <div class="chat-message user-message">
+        <p>${escapeHtml(prompt)}</p>
+      </div>
+      <div class="chat-message ai-message">
+        <div class="ai-avatar">✨</div>
+        <div class="ai-bubble-wrap">
+          <div class="ai-bubble">
+            <div style="white-space: pre-wrap;">${escapeHtml(response)}</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
   // --- UI Interactivity ---
 
   function submitFromComposer() {
@@ -141,6 +206,10 @@
     if (!value) return;
     try {
       sessionStorage.setItem(PROMPT_STORAGE_KEY, value);
+      // A typed-in follow-up creates a brand-new chat record so threads
+      // don't get clobbered by unrelated questions.
+      currentChatId = "";
+      sessionStorage.removeItem(REVISIT_CHAT_KEY);
     } catch (err) {
       console.warn("recipegeneration: could not persist prompt", err);
     }
@@ -161,7 +230,25 @@
     }
   });
 
-  // Initial Run
-  const initialPrompt = sessionStorage.getItem(PROMPT_STORAGE_KEY) || "";
-  showPromptResponse(initialPrompt);
+  // Initial Run — figure out whether this is a revisit or a fresh prompt.
+  // Revisit takes priority: if AIChatbot stored a chat id in sessionStorage,
+  // we render that saved chat verbatim instead of re-calling OpenAI (which
+  // would burn tokens AND produce a slightly different recipe).
+  const revisitChatId = sessionStorage.getItem(REVISIT_CHAT_KEY) || "";
+  sessionStorage.removeItem(REVISIT_CHAT_KEY);
+
+  if (revisitChatId) {
+    const chats = profileStorage.getCurrentChats();
+    const chat = chats.find((c) => String(c.id) === String(revisitChatId));
+    if (chat) {
+      showSavedChat(chat);
+    } else {
+      // Stored id no longer matches anything (deleted from another tab).
+      // Fall back to the empty state.
+      showPromptResponse("");
+    }
+  } else {
+    const initialPrompt = sessionStorage.getItem(PROMPT_STORAGE_KEY) || "";
+    showPromptResponse(initialPrompt);
+  }
 })();

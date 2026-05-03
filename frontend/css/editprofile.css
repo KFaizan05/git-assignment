@@ -95,7 +95,7 @@ button {
   height: 52px;
   padding: 12px 16px;
   border-radius: 14px;
-  border: 1.78px solid #A8D5BA;
+  border: 1.78px solid #E5E7EB;
   outline: none;
   font-size: 16px;
   font-family: "Inter", sans-serif;
@@ -124,7 +124,7 @@ button {
   height: 48px;
   padding: 12px 18px;
   background: white;
-  border: 1.78px solid #A8D5BA;
+  border: 1.78px solid #E5E7EB;
   border-radius: 14px;
   color: #4A7C72;
   font-size: 14px;
@@ -345,7 +345,7 @@ button {
   height: 48px;
   padding: 12px 16px;
   border-radius: 14px;
-  border: 1.78px solid #A8D5BA;
+  border: 1.78px solid #E5E7EB;
   outline: none;
   font-size: 14px;
   font-family: "Inter", sans-serif;
@@ -367,7 +367,7 @@ button {
 
 @keyframes customAllergenFlash {
   0%   { border-color: #FB2C36; }
-  100% { border-color: #A8D5BA; }
+  100% { border-color: #E5E7EB; }
 }
 
 .custom-allergen-add-btn {
