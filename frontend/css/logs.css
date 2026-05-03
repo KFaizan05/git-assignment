@@ -12,7 +12,7 @@ body {
 body.login-page {
   background:
     radial-gradient(circle at 20% 0%, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0) 42%),
-    linear-gradient(150deg, #8cc9b0 0%, #5faca1 48%, #4a8f88 100%);
+    linear-gradient(135deg, #A3D1B8, #6AA399);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -27,12 +27,12 @@ body.login-page {
 }
 
 .card {
-  background: rgba(255, 255, 255, 0.9);
+  background: #FFFFFF;
   backdrop-filter: blur(10px);
   width: 330px;
   padding: 32px 28px;
   border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.8);
+  border: 1px #FFFFFF;
   box-shadow: 0 24px 44px -20px rgba(10, 24, 35, 0.42);
 }
 
@@ -95,7 +95,7 @@ input::placeholder {
 .primary-btn {
   border: none;
   color: white;
-  background: linear-gradient(135deg, #1f9b8f 0%, #177a71 100%);
+  background: linear-gradient(135deg, #6BA89E 0%, #5A978C 100%);
   box-shadow: 0 4px 6px -4px rgba(0, 0, 0, 0.1),
               0 10px 15px -3px rgba(0, 0, 0, 0.1);
   margin-top: 0;
@@ -127,8 +127,8 @@ input::placeholder {
 
 .secondary {
   background: #fff;
-  border: 1px solid #d2dde2;
-  color: #2b3f44;
+  border: 1px solid #6BA89E;
+  color: #6BA89E;
   margin-top: 0;
 }
 
